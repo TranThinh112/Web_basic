@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Admin\\Documents\\Web_basic\\Web_Buoi3\\webtestbuoi3\\WebTestBuoi3.csproj": {}
+    "C:\\Users\\Admin\\Documents\\web_basic\\web_buoi3\\webtestbuoi3\\WebTestBuoi3.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Admin\\Documents\\Web_basic\\Web_Buoi3\\webtestbuoi3\\WebTestBuoi3.csproj": {
+    "C:\\Users\\Admin\\Documents\\web_basic\\web_buoi3\\webtestbuoi3\\WebTestBuoi3.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Admin\\Documents\\Web_basic\\Web_Buoi3\\webtestbuoi3\\WebTestBuoi3.csproj",
+        "projectUniqueName": "C:\\Users\\Admin\\Documents\\web_basic\\web_buoi3\\webtestbuoi3\\WebTestBuoi3.csproj",
         "projectName": "WebTestBuoi3",
-        "projectPath": "C:\\Users\\Admin\\Documents\\Web_basic\\Web_Buoi3\\webtestbuoi3\\WebTestBuoi3.csproj",
+        "projectPath": "C:\\Users\\Admin\\Documents\\web_basic\\web_buoi3\\webtestbuoi3\\WebTestBuoi3.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Admin\\Documents\\Web_basic\\Web_Buoi3\\webtestbuoi3\\obj\\",
+        "outputPath": "C:\\Users\\Admin\\Documents\\web_basic\\web_buoi3\\webtestbuoi3\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\DevExpress 25.2\\Components\\Offline Packages",
