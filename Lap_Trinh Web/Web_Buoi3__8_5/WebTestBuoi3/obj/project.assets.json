@@ -15,11 +15,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Admin\\Documents\\Web_basic\\Web_Buoi3\\WebTestBuoi3\\WebTestBuoi3.csproj",
+      "projectUniqueName": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_Buoi3__8_5\\WebTestBuoi3\\WebTestBuoi3.csproj",
       "projectName": "WebTestBuoi3",
-      "projectPath": "C:\\Users\\Admin\\Documents\\Web_basic\\Web_Buoi3\\WebTestBuoi3\\WebTestBuoi3.csproj",
+      "projectPath": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_Buoi3__8_5\\WebTestBuoi3\\WebTestBuoi3.csproj",
       "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Admin\\Documents\\Web_basic\\Web_Buoi3\\WebTestBuoi3\\obj\\",
+      "outputPath": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_Buoi3__8_5\\WebTestBuoi3\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\DevExpress 25.2\\Components\\Offline Packages",

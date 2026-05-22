@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_Buoi4_15_5\\web_buoi4\\Web_Buoi4.csproj": {}
+    "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_Buoi4_15_5\\Web_Buoi4\\Web_Buoi4.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_Buoi4_15_5\\web_buoi4\\Web_Buoi4.csproj": {
+    "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_Buoi4_15_5\\Web_Buoi4\\Web_Buoi4.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_Buoi4_15_5\\web_buoi4\\Web_Buoi4.csproj",
+        "projectUniqueName": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_Buoi4_15_5\\Web_Buoi4\\Web_Buoi4.csproj",
         "projectName": "Web_Buoi4",
-        "projectPath": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_Buoi4_15_5\\web_buoi4\\Web_Buoi4.csproj",
+        "projectPath": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_Buoi4_15_5\\Web_Buoi4\\Web_Buoi4.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_Buoi4_15_5\\web_buoi4\\obj\\",
+        "outputPath": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_Buoi4_15_5\\Web_Buoi4\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\DevExpress 25.2\\Components\\Offline Packages",
