@@ -1,0 +1,20 @@
+Add-Migration Tao_Bang_Student_va_Grade
+Add-Migration 'Them Du Lieu'
+Update-Database
+
+viet gop:
+    migrationBuilder.InsertData(
+        table: "Grades",
+        columns: new[] { "GradeId", "GradeName" },
+        values: new object[,]
+        {
+            { 1, "CNTT1" },
+            { 2, "LS" },
+            { 3, "TY" },
+            { 4, "KTOT" }
+        });
+
+
+dotnet new sln -n test
+dotnet new mvc -n test
+dotnet sln test.sln add test/test.csproj

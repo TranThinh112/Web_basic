@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_buoi5_22_5\\web_buoi_5\\Web_Buoi_5.csproj": {}
+    "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_buoi5_22_5\\Web_Buoi_5\\Web_Buoi_5.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_buoi5_22_5\\web_buoi_5\\Web_Buoi_5.csproj": {
+    "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_buoi5_22_5\\Web_Buoi_5\\Web_Buoi_5.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_buoi5_22_5\\web_buoi_5\\Web_Buoi_5.csproj",
+        "projectUniqueName": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_buoi5_22_5\\Web_Buoi_5\\Web_Buoi_5.csproj",
         "projectName": "Web_Buoi_5",
-        "projectPath": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_buoi5_22_5\\web_buoi_5\\Web_Buoi_5.csproj",
+        "projectPath": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_buoi5_22_5\\Web_Buoi_5\\Web_Buoi_5.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_buoi5_22_5\\web_buoi_5\\obj\\",
+        "outputPath": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_buoi5_22_5\\Web_Buoi_5\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\DevExpress 25.2\\Components\\Offline Packages",
@@ -33,6 +33,7 @@
         },
         "frameworks": {
           "net10.0": {
+            "framework": "net10.0",
             "targetAlias": "net10.0",
             "projectReferences": {}
           }
@@ -47,10 +48,11 @@
           "auditLevel": "low",
           "auditMode": "all"
         },
-        "SdkAnalysisLevel": "10.0.200"
+        "SdkAnalysisLevel": "10.0.300"
       },
       "frameworks": {
         "net10.0": {
+          "framework": "net10.0",
           "targetAlias": "net10.0",
           "dependencies": {
             "Microsoft.EntityFrameworkCore.Design": {
@@ -89,7 +91,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.203/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.300/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.AspNetCore": "(,10.0.32767]",
             "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",
