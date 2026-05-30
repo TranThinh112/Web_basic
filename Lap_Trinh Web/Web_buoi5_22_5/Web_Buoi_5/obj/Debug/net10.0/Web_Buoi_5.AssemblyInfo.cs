@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Web_Buoi_5")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+628005322147b8c0879f89c63879c19d66d8eb28")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+edd746832db800c9523a8d90c382bab6d2823026")]
 [assembly: System.Reflection.AssemblyProductAttribute("Web_Buoi_5")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Web_Buoi_5")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

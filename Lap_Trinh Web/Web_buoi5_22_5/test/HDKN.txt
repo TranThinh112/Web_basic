@@ -14,7 +14,14 @@ viet gop:
             { 4, "KTOT" }
         });
 
+tao project truoc roi add sln sau
+	dotnet new sln -n Web_buoi_6
+	dotnet sln add Web_buoi_6.csproj
 
-dotnet new sln -n test
-dotnet new mvc -n test
-dotnet sln test.sln add test/test.csproj
+
+tao sln truoc
+	dotnet new sln -n test
+	dotnet new mvc -n test
+	dotnet sln test.sln add test/test.csproj
+
+Can tai: design, Tools, SqlServer
