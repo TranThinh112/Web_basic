@@ -6,9 +6,6 @@
 
 <h2>Danh sách sản phẩm</h2>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New</a>
-</p>
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -39,9 +36,7 @@
                 <td>@product.Description</td>
                 <td>@product.CategoryId</td>
                 <td>
-                    <a asp-action="Display" asp-route-id="@product.Id">Details</a> |
-                    <a asp-action="Update" asp-route-id="@product.Id">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@product.Id">Delete</a>
+                    <a asp-action="Display" asp-route-id="@product.Id">Details</a>
                 </td>
             </tr>
         }

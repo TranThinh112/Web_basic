@@ -6363,11 +6363,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_buoi6_29_5\\Web_buoi_6\\Web_buoi_6.csproj",
+      "projectUniqueName": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_buoi6_29_5\\web_buoi_6\\Web_buoi_6.csproj",
       "projectName": "Web_buoi_6",
-      "projectPath": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_buoi6_29_5\\Web_buoi_6\\Web_buoi_6.csproj",
+      "projectPath": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_buoi6_29_5\\web_buoi_6\\Web_buoi_6.csproj",
       "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_buoi6_29_5\\Web_buoi_6\\obj\\",
+      "outputPath": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_buoi6_29_5\\web_buoi_6\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\DevExpress 25.2\\Components\\Offline Packages",

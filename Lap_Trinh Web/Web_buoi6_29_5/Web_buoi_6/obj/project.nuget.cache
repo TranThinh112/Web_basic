@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "BOV+D7z+jCU=",
+  "dgSpecHash": "5AUFD5SMisY=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_buoi6_29_5\\Web_buoi_6\\Web_buoi_6.csproj",
+  "projectFilePath": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_buoi6_29_5\\web_buoi_6\\Web_buoi_6.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Admin\\.nuget\\packages\\azure.core\\1.47.1\\azure.core.1.47.1.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\azure.identity\\1.14.2\\azure.identity.1.14.2.nupkg.sha512",
@@ -137,9 +137,9 @@
       "code": "NU1901",
       "level": "Warning",
       "message": "Package 'NuGet.Packaging' 6.12.1 has a known low severity vulnerability, https://github.com/advisories/GHSA-g4vj-cjjj-v7hg",
-      "projectPath": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_buoi6_29_5\\Web_buoi_6\\Web_buoi_6.csproj",
+      "projectPath": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_buoi6_29_5\\web_buoi_6\\Web_buoi_6.csproj",
       "warningLevel": 1,
-      "filePath": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_buoi6_29_5\\Web_buoi_6\\Web_buoi_6.csproj",
+      "filePath": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_buoi6_29_5\\web_buoi_6\\Web_buoi_6.csproj",
       "libraryId": "NuGet.Packaging",
       "targetGraphs": [
         "net10.0"
@@ -149,9 +149,9 @@
       "code": "NU1901",
       "level": "Warning",
       "message": "Package 'NuGet.Protocol' 6.12.1 has a known low severity vulnerability, https://github.com/advisories/GHSA-g4vj-cjjj-v7hg",
-      "projectPath": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_buoi6_29_5\\Web_buoi_6\\Web_buoi_6.csproj",
+      "projectPath": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_buoi6_29_5\\web_buoi_6\\Web_buoi_6.csproj",
       "warningLevel": 1,
-      "filePath": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_buoi6_29_5\\Web_buoi_6\\Web_buoi_6.csproj",
+      "filePath": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_buoi6_29_5\\web_buoi_6\\Web_buoi_6.csproj",
       "libraryId": "NuGet.Protocol",
       "targetGraphs": [
         "net10.0"
