@@ -1,0 +1,54 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<h2 class="mb-4">Admin Dashboard</h2>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <h5>Tổng học phần</h5>
+                <h2>@ViewBag.TotalCourses</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <h5>Tổng danh mục</h5>
+                <h2>@ViewBag.TotalCategories</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <h5>Lượt đăng ký</h5>
+                <h2>@ViewBag.TotalEnrollments</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex gap-2">
+    <a asp-controller="Course"
+       asp-action="Index"
+       class="btn btn-primary">
+        Quản lý học phần
+    </a>
+
+    <a asp-controller="Course"
+       asp-action="Create"
+       class="btn btn-success">
+        Thêm học phần
+    </a>
+
+    <a asp-controller="Home"
+       asp-action="Index"
+       class="btn btn-secondary">
+        Về trang Home
+    </a>
+</div>
