@@ -1,6 +1,6 @@
 ﻿@model Web_buoi_7.Models.Course
 
-<h2>Create Course</h2>
+<h2>Thêm học phần</h2>
 
 <form asp-action="Create" method="post">
     @Html.AntiForgeryToken()
@@ -27,7 +27,11 @@
 
     <div class="mb-3">
         <label asp-for="CategoryId"></label>
-        <input asp-for="CategoryId" class="form-control" />
+        <select asp-for="CategoryId"
+                asp-items="ViewBag.Categories"
+                class="form-select">
+            <option value="">-- Chọn danh mục --</option>
+        </select>
     </div>
 
     <button type="submit" class="btn btn-success">Save</button>

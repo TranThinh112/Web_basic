@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Web_buoi_6")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fd52ad1f9702761c7e5bba98006b7a4546dc9552")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2bc44ca2d37176ead57f1e1f6ad5cddfabd16a2b")]
 [assembly: System.Reflection.AssemblyProductAttribute("Web_buoi_6")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Web_buoi_6")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

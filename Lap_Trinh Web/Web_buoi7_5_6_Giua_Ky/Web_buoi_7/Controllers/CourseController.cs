@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Web_buoi_7.Data;
 using Web_buoi_7.Models;
 
@@ -23,6 +24,7 @@ namespace Web_buoi_7.Controllers
 
         public IActionResult Create()
         {
+            ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name");
             return View();
         }
 
@@ -35,6 +37,8 @@ namespace Web_buoi_7.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name");
+
 
             return View(course);
         }
@@ -45,6 +49,7 @@ namespace Web_buoi_7.Controllers
 
             if (course == null)
                 return NotFound();
+            
 
             return View(course);
         }
@@ -58,6 +63,11 @@ namespace Web_buoi_7.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.Categories = new SelectList(
+                _context.Categories,
+                "Id",
+                "Name",
+                course.CategoryId);
 
             return View(course);
         }

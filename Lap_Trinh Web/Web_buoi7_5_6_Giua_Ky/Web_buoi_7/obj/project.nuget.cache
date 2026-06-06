@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "V3hPxUVlfbI=",
+  "dgSpecHash": "97yRZt4rGsM=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_buoi7_5_6_Giua_Ky\\web_buoi_7\\Web_buoi_7.csproj",
+  "projectFilePath": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_buoi7_5_6_Giua_Ky\\Web_buoi_7\\Web_buoi_7.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Admin\\.nuget\\packages\\azure.core\\1.47.1\\azure.core.1.47.1.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\azure.identity\\1.14.2\\azure.identity.1.14.2.nupkg.sha512",
