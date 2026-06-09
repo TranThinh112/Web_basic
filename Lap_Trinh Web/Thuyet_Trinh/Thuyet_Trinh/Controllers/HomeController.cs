@@ -1,35 +1,33 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Web_buoi_7.Models;
-using Web_buoi_7.Data;
+using Thuyet_Trinh.Models;
+using Thuyet_Trinh.Services;
 
-namespace Web_buoi_7.Controllers
+namespace Thuyet_Trinh.Controllers;
+
+public class HomeController : Controller
 {
-    public class HomeController : Controller
+    private readonly IWeatherService _weatherService;
+
+    public HomeController(IWeatherService weatherService)
     {
-        private readonly ApplicationDbContext _context;
+        _weatherService = weatherService;
+    }
 
-        public HomeController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+    public async Task<IActionResult> Index(string city = "Hanoi")
+    {
+        var weatherData = await _weatherService.GetWeatherByCityAsync(city);
+        return View(weatherData);
+    }
 
-        public async Task<IActionResult> Index(int page = 1)
-        {
-            int pageSize = 5;
+    public IActionResult Privacy()
+    {
+        return View();
+    }
 
-            var totalCourses = await _context.Courses.CountAsync();
-
-            var courses = await _context.Courses
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-
-            ViewBag.CurrentPage = page;
-            ViewBag.TotalPages = (int)Math.Ceiling((double)totalCourses / pageSize);
-
-            return View(courses);
-        }
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult Error()
+    {
+        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 }
