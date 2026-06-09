@@ -6363,11 +6363,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_buoi7_5_6_Giua_Ky\\Web_buoi_7\\Web_buoi_7.csproj",
+      "projectUniqueName": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Thuyet_Trinh\\Thuyet_Trinh\\Web_buoi_7.csproj",
       "projectName": "Web_buoi_7",
-      "projectPath": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_buoi7_5_6_Giua_Ky\\Web_buoi_7\\Web_buoi_7.csproj",
+      "projectPath": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Thuyet_Trinh\\Thuyet_Trinh\\Web_buoi_7.csproj",
       "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Web_buoi7_5_6_Giua_Ky\\Web_buoi_7\\obj\\",
+      "outputPath": "C:\\Users\\Admin\\Documents\\Web_basic\\Lap_Trinh Web\\Thuyet_Trinh\\Thuyet_Trinh\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\DevExpress 25.2\\Components\\Offline Packages",
@@ -6384,7 +6384,6 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\DevExpress 25.2\\Components\\System\\Components\\Packages": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
