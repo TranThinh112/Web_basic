@@ -10,9 +10,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 builder.Services.AddDefaultIdentity<AppUser>(options =>
     options.SignIn.RequireConfirmedAccount = false)
     .AddRoles<IdentityRole>()
@@ -45,40 +42,6 @@ app.MapControllerRoute(
     .WithStaticAssets();
 
 app.MapRazorPages();
-//tao role
-using (var scope = app.Services.CreateScope())
-{
-    var roleManager = scope.ServiceProvider
-        .GetRequiredService<RoleManager<IdentityRole>>();
-
-    if (!await roleManager.RoleExistsAsync("Admin"))
-        await roleManager.CreateAsync(new IdentityRole("Admin"));
-
-    if (!await roleManager.RoleExistsAsync("Student"))
-        await roleManager.CreateAsync(new IdentityRole("Student"));
-
-var userManager =
-    scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
-
-    string email = "admin@gmail.com";
-    string password = "Admin@123";
-
-    var admin = await userManager.FindByEmailAsync(email);
-
-    if (admin == null)
-    {
-        admin = new AppUser
-        {
-            UserName = email,
-            Email = email
-        };
-
-        await userManager.CreateAsync(admin, password);
-
-        await userManager.AddToRoleAsync(admin, "Admin");
-    }
-}
-
 
 
 app.Run();
