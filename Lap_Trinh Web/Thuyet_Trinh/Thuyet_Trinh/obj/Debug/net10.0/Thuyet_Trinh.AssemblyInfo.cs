@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Thuyet_Trinh")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a16b453bc2383cfbedf7c33f5c38937e2ab3f433")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c56fd56ddc309d4b3ad32277f1f805593d5ce6de")]
 [assembly: System.Reflection.AssemblyProductAttribute("Thuyet_Trinh")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Thuyet_Trinh")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
