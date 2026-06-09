@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Web_buoi_7")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9178dadd62b2c3e4284021910918405c2cc28c44")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+501cf37fdd8de8c2e735d12deda3f66fb5ff6dbb")]
 [assembly: System.Reflection.AssemblyProductAttribute("Web_buoi_7")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Web_buoi_7")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
