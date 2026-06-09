@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
-using Web_buoi_7.Models;
-using Web_buoi_7.Data;
+using Thuyet_Trinh.Models;
+using Thuyet_Trinh.Data;
+using Thuyet_Trinh.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,12 +13,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddDefaultIdentity<AppUser>(options =>
-    options.SignIn.RequireConfirmedAccount = false)
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>();
-
-builder.Services.AddRazorPages();
+// Identity removed: authentication, roles and Razor Pages are disabled.
+builder.Services.AddHttpClient<IWeatherService, WeatherService>();
 
 var app = builder.Build();
 
@@ -33,9 +29,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
-app.UseAuthentication();
-
-app.UseAuthorization();
+// Authentication/Authorization removed
 
 app.MapStaticAssets();
 
@@ -44,40 +38,7 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
-app.MapRazorPages();
-//tao role
-using (var scope = app.Services.CreateScope())
-{
-    var roleManager = scope.ServiceProvider
-        .GetRequiredService<RoleManager<IdentityRole>>();
-
-    if (!await roleManager.RoleExistsAsync("Admin"))
-        await roleManager.CreateAsync(new IdentityRole("Admin"));
-
-    if (!await roleManager.RoleExistsAsync("Student"))
-        await roleManager.CreateAsync(new IdentityRole("Student"));
-
-var userManager =
-    scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
-
-    string email = "admin@gmail.com";
-    string password = "Admin@123";
-
-    var admin = await userManager.FindByEmailAsync(email);
-
-    if (admin == null)
-    {
-        admin = new AppUser
-        {
-            UserName = email,
-            Email = email
-        };
-
-        await userManager.CreateAsync(admin, password);
-
-        await userManager.AddToRoleAsync(admin, "Admin");
-    }
-}
+// Authentication/Identity seeding removed
 
 
 

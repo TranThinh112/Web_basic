@@ -1,10 +1,10 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Web_buoi_7.Models;
-using Web_buoi_7.Data;
+using Thuyet_Trinh.Models;
+using Thuyet_Trinh.Data;
 
-namespace Web_buoi_7.Controllers
+namespace Thuyet_Trinh.Controllers
 {
     public class HomeController : Controller
     {
@@ -15,21 +15,9 @@ namespace Web_buoi_7.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(int page = 1)
+        public IActionResult Index()
         {
-            int pageSize = 5;
-
-            var totalCourses = await _context.Courses.CountAsync();
-
-            var courses = await _context.Courses
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-
-            ViewBag.CurrentPage = page;
-            ViewBag.TotalPages = (int)Math.Ceiling((double)totalCourses / pageSize);
-
-            return View(courses);
+            return RedirectToAction("Index", "Weather");
         }
     }
 }

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Web_buoi_7.Migrations
+namespace Thuyet_Trinh.Migrations
 {
     /// <inheritdoc />
     public partial class AddIdentity : Migration

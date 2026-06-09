@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace Web_buoi_7.Models
+namespace Thuyet_Trinh.Models
 {
     public class AppUser : IdentityUser
     {

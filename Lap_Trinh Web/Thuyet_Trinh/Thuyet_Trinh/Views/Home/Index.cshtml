@@ -1,0 +1,107 @@
+﻿@model IEnumerable<Web_buoi_7.Models.Course>
+
+<h2>Danh sách học phần</h2>
+
+<div class="row mb-4">
+
+    @* <div class="col-md-3">
+        <a asp-controller="Home"
+           asp-action="Index"
+           class="btn btn-primary w-100">
+            📚 Danh sách học phần
+        </a>
+    </div> *@
+
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="col-md-3">
+            <a asp-controller="Course"
+               asp-action="Index"
+               class="btn btn-warning w-100">
+                ⚙️ Quản lý Course
+            </a>
+        </div>
+
+        <div class="col-md-3">
+            <a asp-controller="Course"
+               asp-action="Create"
+               class="btn btn-success w-100">
+                ➕ Thêm Course
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a asp-controller="Admin"
+               asp-action="Dashboard"
+               class="btn btn-dark w-100">
+                ➕ Admin Dashboard
+            </a>
+        </div>
+    }
+
+
+    @if (User.IsInRole("Students"))
+    {
+        <div class="col-md-3">
+            <a asp-controller="Enrollment"
+               asp-action="MyCourses"
+               class="btn btn-info w-100">
+                🎓 Học phần đã đăng ký
+            </a>
+        </div>
+    }
+
+</div>
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4 mb-3">
+            <div class="card">
+
+                <img src="@item.Image"
+                     class="card-img-top"
+                     style="height:200px;object-fit:cover;" />
+
+                <div class="card-body">
+                    <h5>@item.Name</h5>
+
+                    <p>
+                        <strong>Số tín chỉ:</strong>
+                        @item.Credits
+                    </p>
+
+                    <p>
+                        <strong>Giảng viên:</strong>
+                        @item.Lecturer
+                    </p>
+                </div>
+                @* //nut dang ky hoc phan  *@
+                @if (User.IsInRole("Student"))
+                {
+                    <a asp-controller="Enrollment"
+                       asp-action="Register"
+                       asp-route-courseId="@item.Id"
+                       class="btn btn-success">
+                        Đăng ký học phần
+                    </a>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+<nav>
+    <ul class="pagination">
+
+        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+        {
+            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-page="@i">
+                    @i
+                </a>
+            </li>
+        }
+
+    </ul>
+</nav>

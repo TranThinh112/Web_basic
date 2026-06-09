@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Web_buoi_7.Data;
+using Thuyet_Trinh.Data;
 
 #nullable disable
 
-namespace Web_buoi_7.Migrations
+namespace Thuyet_Trinh.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20260605023720_AddIdentity")]
@@ -158,7 +158,7 @@ namespace Web_buoi_7.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Web_buoi_7.Models.AppUser", b =>
+            modelBuilder.Entity("Thuyet_Trinh.Models.AppUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -223,7 +223,7 @@ namespace Web_buoi_7.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Web_buoi_7.Models.Category", b =>
+            modelBuilder.Entity("Thuyet_Trinh.Models.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -240,7 +240,7 @@ namespace Web_buoi_7.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("Web_buoi_7.Models.Course", b =>
+            modelBuilder.Entity("Thuyet_Trinh.Models.Course", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -272,7 +272,7 @@ namespace Web_buoi_7.Migrations
                     b.ToTable("Courses");
                 });
 
-            modelBuilder.Entity("Web_buoi_7.Models.Enrollment", b =>
+            modelBuilder.Entity("Thuyet_Trinh.Models.Enrollment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -310,7 +310,7 @@ namespace Web_buoi_7.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Web_buoi_7.Models.AppUser", null)
+                    b.HasOne("Thuyet_Trinh.Models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -319,7 +319,7 @@ namespace Web_buoi_7.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Web_buoi_7.Models.AppUser", null)
+                    b.HasOne("Thuyet_Trinh.Models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -334,7 +334,7 @@ namespace Web_buoi_7.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Web_buoi_7.Models.AppUser", null)
+                    b.HasOne("Thuyet_Trinh.Models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -343,16 +343,16 @@ namespace Web_buoi_7.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Web_buoi_7.Models.AppUser", null)
+                    b.HasOne("Thuyet_Trinh.Models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Web_buoi_7.Models.Course", b =>
+            modelBuilder.Entity("Thuyet_Trinh.Models.Course", b =>
                 {
-                    b.HasOne("Web_buoi_7.Models.Category", "Category")
+                    b.HasOne("Thuyet_Trinh.Models.Category", "Category")
                         .WithMany("Courses")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -361,15 +361,15 @@ namespace Web_buoi_7.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("Web_buoi_7.Models.Enrollment", b =>
+            modelBuilder.Entity("Thuyet_Trinh.Models.Enrollment", b =>
                 {
-                    b.HasOne("Web_buoi_7.Models.Course", "Course")
+                    b.HasOne("Thuyet_Trinh.Models.Course", "Course")
                         .WithMany("Enrollments")
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Web_buoi_7.Models.AppUser", "User")
+                    b.HasOne("Thuyet_Trinh.Models.AppUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -380,12 +380,12 @@ namespace Web_buoi_7.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Web_buoi_7.Models.Category", b =>
+            modelBuilder.Entity("Thuyet_Trinh.Models.Category", b =>
                 {
                     b.Navigation("Courses");
                 });
 
-            modelBuilder.Entity("Web_buoi_7.Models.Course", b =>
+            modelBuilder.Entity("Thuyet_Trinh.Models.Course", b =>
                 {
                     b.Navigation("Enrollments");
                 });

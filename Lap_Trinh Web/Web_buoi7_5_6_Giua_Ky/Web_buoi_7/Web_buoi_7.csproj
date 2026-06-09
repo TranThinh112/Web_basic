@@ -5,6 +5,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <NuGetAudit>false</NuGetAudit>
+    <RootNamespace>Thuyet_Trinh</RootNamespace>
+    <AssemblyName>Thuyet_Trinh</AssemblyName>
   </PropertyGroup>
 
 
