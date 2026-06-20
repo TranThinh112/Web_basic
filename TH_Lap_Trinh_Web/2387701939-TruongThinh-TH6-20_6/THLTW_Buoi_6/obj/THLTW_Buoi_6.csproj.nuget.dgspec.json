@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Admin\\Documents\\Web_basic\\TH_Lap_Trinh_Web\\2387701939-TruongThinh-TH6-20_6\\thltw_buoi_6\\THLTW_Buoi_6.csproj": {}
+    "C:\\Users\\Admin\\Documents\\Web_basic\\TH_Lap_Trinh_Web\\2387701939-TruongThinh-TH6-20_6\\THLTW_Buoi_6\\THLTW_Buoi_6.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Admin\\Documents\\Web_basic\\TH_Lap_Trinh_Web\\2387701939-TruongThinh-TH6-20_6\\thltw_buoi_6\\THLTW_Buoi_6.csproj": {
+    "C:\\Users\\Admin\\Documents\\Web_basic\\TH_Lap_Trinh_Web\\2387701939-TruongThinh-TH6-20_6\\THLTW_Buoi_6\\THLTW_Buoi_6.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Admin\\Documents\\Web_basic\\TH_Lap_Trinh_Web\\2387701939-TruongThinh-TH6-20_6\\thltw_buoi_6\\THLTW_Buoi_6.csproj",
+        "projectUniqueName": "C:\\Users\\Admin\\Documents\\Web_basic\\TH_Lap_Trinh_Web\\2387701939-TruongThinh-TH6-20_6\\THLTW_Buoi_6\\THLTW_Buoi_6.csproj",
         "projectName": "THLTW_Buoi_6",
-        "projectPath": "C:\\Users\\Admin\\Documents\\Web_basic\\TH_Lap_Trinh_Web\\2387701939-TruongThinh-TH6-20_6\\thltw_buoi_6\\THLTW_Buoi_6.csproj",
+        "projectPath": "C:\\Users\\Admin\\Documents\\Web_basic\\TH_Lap_Trinh_Web\\2387701939-TruongThinh-TH6-20_6\\THLTW_Buoi_6\\THLTW_Buoi_6.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Admin\\Documents\\Web_basic\\TH_Lap_Trinh_Web\\2387701939-TruongThinh-TH6-20_6\\thltw_buoi_6\\obj\\",
+        "outputPath": "C:\\Users\\Admin\\Documents\\Web_basic\\TH_Lap_Trinh_Web\\2387701939-TruongThinh-TH6-20_6\\THLTW_Buoi_6\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\DevExpress 25.2\\Components\\Offline Packages",
