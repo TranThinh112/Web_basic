@@ -2,6 +2,8 @@ Add-Migration Tao_Bang_Student_va_Grade
 Add-Migration 'Them Du Lieu'
 Update-Database
 
+
+
 dotnet ef migrations add ThemDuLieuRole --context ApplicationDbContext
 dotnet ef database update --context ApplicationDbContext
 
