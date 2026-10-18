@@ -30,9 +30,27 @@ BunnyChat là hệ thống ứng dụng nhắn tin trực tuyến thời gian th
 
 ## 📐 Kiến Trúc Hệ Thống & Sơ Đồ Dữ Liệu
 
-| Sơ Đồ Kiến Trúc Hệ Thống (System Graph) | Sơ Đồ Cơ Sở Dữ Liệu (ERD) |
+### 3.3.1. Sơ đồ kiến trúc tổng quan (Architecture Overview)
+
+Mô hình kiến trúc tổng quan của hệ thống Bunny Chat được thiết kế theo dạng đa tầng (multi-tier), phân chia rõ ràng trách nhiệm giữa tầng hiển thị, truyền thông, nghiệp vụ và lưu trữ dữ liệu, cụ thể được minh họa tại Hình 3.1 dưới đây:
+
+- **Client Tier (Tầng ứng dụng người dùng)**: Ứng dụng di động Flutter (iOS/Android) đóng vai trò là giao diện tương tác người dùng, cung cấp các tính năng nhắn tin, gọi thoại, gửi file, v.v.
+- **Communication Layer (Tầng truyền thông)**: Sử dụng giao thức WebSockets (STOMP) để trao đổi tin nhắn hai chiều theo thời gian thực (real-time), kết hợp với RESTful APIs qua HTTPS cho các tác vụ nghiệp vụ như xác thực, tải file, quản lý người dùng.
+- **API Gateway & Load Balancer**: Đóng vai trò là điểm đón nhận duy nhất cho toàn bộ các yêu cầu từ Client, thực hiện định tuyến, cân bằng tải, xác thực bước đầu và giới hạn lưu lượng truy cập (rate limiting).
+- **Application Tier (Tầng nghiệp vụ)**: Bao gồm các vi dịch vụ (Microservices) độc lập chịu trách nhiệm xử lý các luồng nghiệp vụ cốt lõi:
+  - **Auth Service**: Quản lý người dùng, xử lý xác thực (JWT), phân quyền (RBAC).
+  - **Messaging Service**: Xử lý logic tin nhắn, định tuyến thông điệp, trạng thái đọc/gửi.
+  - **Notification Service**: Tích hợp FCM/APNs để gửi thông báo đẩy đến người dùng.
+  - **Media Service**: Tiếp nhận, tối ưu hóa và xử lý các tập tin đa phương tiện trước khi lưu trữ.
+- **Caching & Real-time Layer**: Sử dụng Redis Cluster để duy trì phiên làm việc (User Sessions), trạng thái trực tuyến (Presence) và đóng vai trò là Message Broker (Redis Pub/Sub) để đồng bộ tin nhắn tức thời giữa các thực thể dịch vụ.
+- **Persistence Tier (Tầng lưu trữ dữ liệu)**:
+  - **MongoDB**: Lưu trữ dữ liệu phi cấu trúc như tin nhắn, lịch sử trò chuyện, số lượng tin chưa đọc.
+  - **PostgreSQL**: Lưu trữ dữ liệu quan hệ như thông tin tài khoản người dùng, chứng thực, vai trò.
+  - **Object Storage (S3 / Firebase)**: Lưu trữ an toàn các tệp tin hình ảnh, âm thanh, tài liệu.
+
+| Sơ Đồ Kiến Trúc Hệ Thống (System Architecture) | Sơ Đồ Cơ Sở Dữ Liệu (ERD) |
 | :---: | :---: |
-| ![Kiến trúc hệ thống](screenshots/system_architecture.png) | ![Sơ đồ ERD](ERD.png) |
+| ![Kiến trúc hệ thống](screenshots/system_architecture.png)<br>*(Figure 3.1: Sơ đồ kiến trúc tổng quan hệ thống Bunny Chat)* | ![Sơ đồ ERD](ERD.png)<br>*(Sơ đồ cơ sở dữ liệu)* |
 
 ---
 
