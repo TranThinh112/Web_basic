@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\LT_Web_Buoi2.props" />
-</Project>
