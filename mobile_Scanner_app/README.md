@@ -1,13 +1,13 @@
-﻿# Mobile Scanner App
+# Mobile Scanner App
 
-Ứng dụng quét mã vạch và mã QR thời gian thực trên nền tảng **Flutter**, tích hợp hiệu ứng tia laser quét động và âm thanh phản hồi thông minh.
+Ứng dụng quét mã vạch và mã QR thời gian thực trên nền tảng **Flutter**, tích hợp giao diện ngắm quét chuyên nghiệp, nút điều khiển flash/camera và âm thanh phản hồi thông minh.
 
 ---
 
 ## 📸 Giao Diện Ứng Dụng (UI Screenshot)
 
 <p align="center">
-  <img src="./screenshots/scanner_screen.png" width="320" alt="Scanner Screen" />
+  <img src="./screenshots/scanner_screen.png" width="340" alt="Scanner Screen" />
 </p>
 
 ---
@@ -18,14 +18,18 @@
   - `QR Code`
   - `EAN-13` (Mã số thương phẩm quốc tế)
   - `Code 128` (Mã vạch công nghiệp)
-- **Giao diện quét chuyên nghiệp (Custom UI Overlay)**:
-  - Sử dụng `CustomPainter` để vẽ lớp nền tối mờ, khoét khung quét trung tâm kích thước 250x250 bo góc viền màu xanh lá nổi bật.
-  - Tia quét laser màu đỏ chuyển động lên xuống nhịp nhàng liên tục thông qua `AnimationController`.
+  - `Code 39`, `UPC`, v.v.
+- **Giao diện quét chuyên nghiệp (Custom UI Viewfinder)**:
+  - Khung ngắm quét trung tâm với các góc căn chỉnh màu xanh lá nổi bật.
+  - Thông báo hướng dẫn trực quan: *"Hướng camera về phía mã vạch để quét"*.
+  - Điều khiển thao tác nhanh dưới đáy màn hình:
+    - **Bật/Tắt Flash**: Hỗ trợ chiếu sáng khi quét trong môi trường thiếu sáng.
+    - **Đổi Camera**: Chuyển đổi linh hoạt giữa camera trước và camera sau.
 - **Phản hồi âm thanh tương tác**:
   - Âm **tít** (`beep.mp3`): Báo hiệu nhận diện thành công mã mới.
   - Âm **è** (`error.mp3`): Cảnh báo khi người dùng quét lại mã vừa quét trước đó.
-- **Cơ chế chống quét trùng lặp (Anti-Spam / Debounce)**: Tự động khóa quét tạm thời trong 900ms để tránh nhận diện trùng lặp nhiều lần mà vẫn giữ khung hình camera mở liên tục.
-- **Bảng kết quả dưới đáy màn hình**: Hiển thị rõ ràng loại mã (`Type`) và nội dung giá trị (`Result`) giải mã được.
+- **Cơ chế chống quét trùng lặp (Anti-Spam / Debounce)**: Tự động khóa quét tạm thời để tránh nhận diện trùng lặp nhiều lần mà vẫn giữ khung hình camera mở liên tục.
+- **Bảng kết quả nhận diện**: Hiển thị rõ ràng loại mã (`Type`) và nội dung giá trị (`Result`) giải mã được.
 
 ---
 
@@ -47,7 +51,7 @@ mobile_Scanner_app/
 │   ├── beep.mp3             # Âm thanh khi quét mã mới thành công
 │   └── error.mp3            # Âm thanh cảnh báo quét trùng mã
 ├── lib/
-│   └── main.dart            # Toàn bộ mã nguồn: MobileScanner, Animation, Sound logic & Overlay
+│   └── main.dart            # Toàn bộ mã nguồn: MobileScanner, Sound logic, Viewfinder & Controls
 ├── pubspec.yaml             # Khai báo packages và tài nguyên assets audio
 └── README.md
 ```

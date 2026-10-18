@@ -1,4 +1,4 @@
-﻿# HUTECH Campus App
+# HUTECH Campus App
 
 Ứng dụng di động được xây dựng bằng **Flutter**, dùng để giới thiệu các cơ sở đào tạo của **Trường Đại học Công nghệ TP.HCM (HUTECH)**.
 
@@ -19,7 +19,11 @@
   - **Ung Van Khiem Campus**: 31/36 Ung Văn Khiêm, P.25, Q.Bình Thạnh, TP.HCM
   - **Thu Duc Campus**: Khu Công nghệ cao TP.HCM, Xa lộ Hà Nội, TP.Thủ Đức
   - **Hitech Park Campus**: Khu Công nghệ cao TP.HCM, P.Long Thạnh Mỹ, TP.Thủ Đức
-- **Trang chi tiết cơ sở (Details Screen)**: Điều hướng và truyền tham số (`Route Arguments`) hiển thị địa chỉ chi tiết và hình ảnh thực tế chất lượng cao được tải trực tiếp từ internet (`Image.network`).
+- **Trang chi tiết cơ sở (Details Screen)**:
+  - Hiển thị hình ảnh thực tế chất lượng cao của từng campus.
+  - Thông tin liên hệ đầy đủ: địa chỉ chi tiết, hotline liên hệ (ví dụ: `028 5445 7777`).
+  - Danh sách các ngành nghề đào tạo tại cơ sở (Công nghệ thông tin, Tự động hóa, Công nghệ sinh học, Thiết kế đồ họa...).
+  - Tích hợp nút hành động **"Mở trên Google Maps"** để dẫn đường trực tiếp.
 - **Hỗ trợ đa nền tảng**: Tương thích tốt trên Android, iOS, Web và Desktop (Windows/macOS/Linux).
 
 ---
@@ -29,6 +33,7 @@
 - **Ngôn ngữ**: Dart (SDK `^3.10.7`)
 - **Framework**: Flutter
 - **Thiết kế giao diện**: Material Design 3, Cupertino Icons
+- **Tiện ích**: `url_launcher` (mở chỉ đường Google Maps)
 
 ---
 

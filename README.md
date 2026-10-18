@@ -9,9 +9,9 @@ Kho lưu trữ tổng hợp các dự án phần mềm đa nền tảng bao gồ
 | STT | Tên Thư Mục | Tên Dự Án | Nền Tảng / Công Nghệ | Mô Tả Tóm Tắt |
 | :---: | :--- | :--- | :--- | :--- |
 | 1 | [`hutech_campus_app`](hutech_campus_app/) | HUTECH Campus App | Flutter (Mobile) | Khám phá các cơ sở đào tạo trường ĐH Công nghệ TP.HCM kèm bản đồ dẫn đường |
-| 2 | [`mobile_Scanner_app`](mobile_Scanner_app/) | Mobile Scanner App | Flutter (Mobile) | Ứng dụng quét mã vạch và mã QR tốc độ cao, hỗ trợ âm thanh phản hồi |
+| 2 | [`mobile_Scanner_app`](mobile_Scanner_app/) | Mobile Scanner App | Flutter (Mobile) | Ứng dụng quét mã vạch và mã QR tốc độ cao, hỗ trợ âm thanh phản hồi & viewfinder chuyên nghiệp |
 | 3 | [`showroom_web`](showroom_web/) | GF Furniture Showroom | HTML5 / CSS3 (Web) | Website giới thiệu showroom nội thất cao cấp với giao diện sang trọng |
-| 4 | [`App_Web_Quet_Ma`](App_Web_Quet_Ma/) | SPX Express Scanner | Flutter + Node.js + MySQL | Hệ thống phân loại bao hàng TO, quét mã vạch & tra cứu đơn hàng logistics |
+| 4 | [`App_Web_Quet_Ma`](App_Web_Quet_Ma/) | SPX Express Scanner & Dispatch | Flutter + Node.js + MySQL | Hệ thống điều phối chuyến xe, phân loại bao hàng TO & tra cứu đơn hàng logistics |
 | 5 | [`BunnyChat`](BunnyChat/) | BunnyChat Platform | ASP.NET Core + SignalR + MongoDB | Ứng dụng trò chuyện trực tuyến realtime 1-1 và nhóm, Dark/Light mode |
 | 6 | [`dashboardTKT`](dashboardTKT/) | Tuyển Dụng TPD | Python + MongoDB + Telegram Bot | Bảng điều khiển quản lý tuyển dụng & bot tự động bóc tách ứng viên từ tin nhắn |
 | 7 | [`web_Desktop_Hospital`](web_Desktop_Hospital/) | Hospital Management (HMS) | C# .NET WinForms + SQL Server | Phần mềm desktop 3 lớp quản lý bệnh nhân, lịch hẹn, khám bệnh & kho dược |
@@ -21,7 +21,7 @@ Kho lưu trữ tổng hợp các dự án phần mềm đa nền tảng bao gồ
 ## 🌟 Chi Tiết Từng Dự Án & Hình Ảnh Giao Diện (UI Preview)
 
 ### 1. [HUTECH Campus App](hutech_campus_app/)
-- **Mô tả:** Ứng dụng di động hỗ trợ sinh viên và khách tham quan khám phá 4 cơ sở đào tạo chính của HUTECH (Trụ sở Điện Biên Phủ, Cơ sở Ung Văn Khiêm, Thu Duc Campus, Hiep Phuoc Campus).
+- **Mô tả:** Ứng dụng di động hỗ trợ sinh viên và khách tham quan khám phá các cơ sở đào tạo chính của HUTECH (Saigon Campus, Ung Văn Khiêm, Khu Công nghệ cao TP.HCM...).
 - **Tính năng nổi bật:** Danh sách cơ sở với hình ảnh sống động, xem chi tiết địa chỉ, số hotline, danh mục chuyên ngành đào tạo, tích hợp mở Google Maps dẫn đường trực tiếp.
 - **Công nghệ:** Flutter SDK, Dart, Material 3, `url_launcher`.
 
@@ -33,7 +33,7 @@ Kho lưu trữ tổng hợp các dự án phần mềm đa nền tảng bao gồ
 
 ### 2. [Mobile Scanner App](mobile_Scanner_app/)
 - **Mô tả:** Ứng dụng quét mã vạch (Barcode) và mã QR đa năng với hiệu năng cao và độ trễ thấp.
-- **Tính năng nổi bật:** Nhận diện đa định dạng (QR, EAN-13, Code 128, Code 39...), giao diện quét hiện đại với khung nhắm (scanner overlay), điều khiển bật/tắt đèn flash và lật camera, phát âm thanh bíp (`beep.mp3`) khi quét thành công.
+- **Tính năng nổi bật:** Nhận diện đa định dạng (QR, EAN-13, Code 128, Code 39...), giao diện ngắm quét chuyên nghiệp với khung ngắm viền xanh, nút bật/tắt flash, nút đổi camera trước/sau, phát âm thanh bíp (`beep.mp3`) khi quét thành công.
 - **Công nghệ:** Flutter SDK, `mobile_scanner`, `audioplayers`.
 
 | Giao Diện Quét Mã Barcode / QR |
@@ -53,14 +53,14 @@ Kho lưu trữ tổng hợp các dự án phần mềm đa nền tảng bao gồ
 
 ---
 
-### 4. [SPX Express Scanner System](App_Web_Quet_Ma/)
-- **Mô tả:** Hệ thống quản lý và phân loại bao hàng vận chuyển (Transfer Order - TO) dành cho các trung tâm phân loại / bưu cục logistics SPX Express.
-- **Tính năng nổi bật:** Quét mã bưu kiện đưa vào bao hàng TO, đếm số lượng kiện tự động, kiểm tra trùng lặp mã, phát âm thanh cảnh báo (Beep/Error), in phiếu thông tin bao hàng (Bill TO), tra cứu chi tiết vận đơn.
+### 4. [SPX Express Scanner & Dispatch System](App_Web_Quet_Ma/)
+- **Mô tả:** Hệ thống quản lý điều phối chuyến xe và phân loại bao hàng vận chuyển (Transfer Order - TO) dành cho các trung tâm phân loại / bưu cục logistics SPX Express.
+- **Tính năng nổi bật:** Điều phối chuyến xe trung chuyển, quy trình 4 bước tạo chuyến xe mới, quét mã bưu kiện đưa vào bao hàng TO, đếm số lượng kiện tự động, kiểm tra trùng lặp mã, phát âm thanh cảnh báo (Beep/Error), in phiếu thông tin bao hàng (Bill TO), tra cứu chi tiết vận đơn.
 - **Công nghệ:** Flutter (Mobile App), Node.js Express (Backend Server), MySQL/MariaDB & SQLite (Offline Storage), Python (Mock Data Generator).
 
-| Menu Điều Hành Nghiệp Vụ | Phân Loại Bao Hàng (TO) | Danh Sách Bao Hàng Đã Đóng |
+| Quản Lý Chuyến Xe Trung Chuyển | Tạo Chuyến Xe Trung Chuyển | Phân Loại Bao Hàng (TO) |
 | :---: | :---: | :---: |
-| ![Menu](App_Web_Quet_Ma/screenshots/home_menu.png) | ![Phân loại](App_Web_Quet_Ma/screenshots/phan_loai_bao.png) | ![Danh sách TO](App_Web_Quet_Ma/screenshots/danh_sach_to.png) |
+| ![Quản lý chuyến xe](App_Web_Quet_Ma/screenshots/home_menu.png) | ![Tạo chuyến xe](App_Web_Quet_Ma/screenshots/tao_chuyen_xe.png) | ![Phân loại](App_Web_Quet_Ma/screenshots/phan_loai_bao.png) |
 
 ---
 

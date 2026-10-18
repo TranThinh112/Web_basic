@@ -1,29 +1,32 @@
 # Hệ Thống Quản Lý & Phân Loại Bưu Kiện (SPX Express Scanner System)
 
-Hệ thống ứng dụng di động và máy chủ hỗ trợ bưu cục / trung tâm phân loại hàng hóa (Hub / Sorting Center) thực hiện quét mã barcode/QR bưu kiện, gom nhóm bao hàng vận chuyển (Transfer Order - TO), tra cứu vận đơn và quản lý chu trình giao nhận theo quy trình tiêu chuẩn logistics (SPX Express).
+Hệ thống ứng dụng di động và máy chủ hỗ trợ bưu cục / trung tâm phân loại hàng hóa (Hub / Sorting Center) thực hiện quét mã barcode/QR bưu kiện, gom nhóm bao hàng vận chuyển (Transfer Order - TO), điều phối chuyến xe trung chuyển, tra cứu vận đơn và quản lý chu trình giao nhận theo quy trình tiêu chuẩn logistics (SPX Express).
 
 ---
 
 ## 📸 Giao Diện Ứng Dụng (UI Screenshots)
 
-| 1. Menu Điều Hành Nghiệp Vụ | 2. Phân Loại Bao Hàng (TO) |
+| 1. Quản Lý Chuyến Xe Trung Chuyển (Dashboard) | 2. Tạo Chuyến Xe Trung Chuyển |
 | :---: | :---: |
-| ![Menu Điều Hành](screenshots/home_menu.png) | ![Phân Loại Bao](screenshots/phan_loai_bao.png) |
+| ![Quản Lý Chuyến Xe](screenshots/home_menu.png) | ![Tạo Chuyến Xe](screenshots/tao_chuyen_xe.png) |
 
-| 3. Quản Lý Danh Sách Bao Hàng | 4. Chi Tiết Kiện Hàng Trong Bao |
+| 3. Phân Loại Bao Hàng (TO) | 4. Quản Lý Danh Sách Bao Hàng |
 | :---: | :---: |
-| ![Danh Sách TO](screenshots/danh_sach_to.png) | ![Chi Tiết TO](screenshots/chi_tiet_to.png) |
+| ![Phân Loại Bao](screenshots/phan_loai_bao.png) | ![Danh Sách TO](screenshots/danh_sach_to.png) |
 
-| 5. Tra Cứu Vận Đơn Bưu Kiện |
-| :---: |
-| ![Tra Cứu Đơn](screenshots/tra_cuu_don.png) |
+| 5. Chi Tiết Kiện Hàng Trong Bao | 6. Tra Cứu Vận Đơn Bưu Kiện |
+| :---: | :---: |
+| ![Chi Tiết TO](screenshots/chi_tiet_to.png) | ![Tra Cứu Đơn](screenshots/tra_cuu_don.png) |
 
 ---
 
 ## 🚀 Tính Năng Chính
 
-1. **Đăng nhập & Phân quyền nhân viên:**
-   - Xác thực tài khoản nhân viên bưu cục và kho hàng.
+1. **Điều phối & Quản lý chuyến xe trung chuyển:**
+   - Theo dõi trạng thái toàn bộ chuyến xe (Chờ bốc hàng, Đang tải hàng, Đang trung chuyển, Hoàn thành).
+   - Bộ lọc tìm kiếm nhanh theo mã chuyến xe, tuyến đường, thông tin tài xế, biển số xe.
+   - Thao tác hàng loạt: Xuất bến, Hủy chuyến, Gán xe & tài xế.
+   - Quy trình tạo chuyến xe qua 4 bước chuẩn hóa: *1. Thông tin cơ bản -> 2. Gán xe & Tài xế -> 3. Chọn tải & kiện -> 4. Xác nhận*.
 2. **Phân loại bao hàng (Transfer Order - TO):**
    - Khởi tạo mã bao hàng TO mới với điểm đến (Hub đích).
    - Quét mã vạch đơn hàng liên tục bằng camera hoặc đầu đọc chuyên dụng.
@@ -45,7 +48,7 @@ Hệ thống ứng dụng di động và máy chủ hỗ trợ bưu cục / trun
 
 ## 🛠️ Công Nghệ Sử Dụng
 
-- **Frontend Mobile:** Flutter (Dart), Material Design, `mobile_scanner`, `audioplayers`, `sqflite`, `http`.
+- **Frontend Mobile & Web:** Flutter (Dart), Material Design, `mobile_scanner`, `audioplayers`, `sqflite`, `http`.
 - **Backend API:** Node.js Express Server (`server_appQuetMa_nodeJS`), kiến trúc Router & Controllers.
 - **Cơ sở dữ liệu:** MySQL / MariaDB (`orders.sql`, `TO_orders.sql`, `users.sql`) & SQLite local database.
 - **Tiện ích kiểm thử:** Python (`random_SPX.py`).
@@ -57,7 +60,7 @@ Hệ thống ứng dụng di động và máy chủ hỗ trợ bưu cục / trun
 ```
 App_Web_Quet_Ma/
 ├── App_Web/
-│   └── App_Quet_Ma/               # Mã nguồn ứng dụng di động Flutter
+│   └── App_Quet_Ma/               # Mã nguồn ứng dụng Flutter
 │       ├── assets/                # Âm thanh phản hồi (beep/error), db offline, icon
 │       └── lib/
 │           ├── BILL/              # Màn hình hóa đơn bao hàng (BillScreen, BillTo)
