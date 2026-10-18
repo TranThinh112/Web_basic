@@ -69,9 +69,9 @@ Kho lưu trữ tổng hợp các dự án phần mềm đa nền tảng bao gồ
 - **Tính năng nổi bật:** Xác thực bảo mật với JWT Token và MongoDB Session, chuyển đổi giao diện Dark/Light mode, truyền nhận tin nhắn hai chiều siêu tốc qua SignalR Hub, tìm kiếm người dùng và kết bạn.
 - **Công nghệ:** ASP.NET Core MVC + Web API (.NET 8), SignalR Realtime Hub, MongoDB Atlas NoSQL, Docker, Railway.
 
-| Giao Diện Chat (Dark Mode) | Giao Diện Chat (Light Mode) | Trò Chuyện Trực Tiếp 1-1 |
-| :---: | :---: | :---: |
-| ![Chat Dark](BunnyChat/screenshots/chat_dark_mode.png) | ![Chat Light](BunnyChat/screenshots/chat_light_mode.png) | ![Chat 1-1](BunnyChat/screenshots/chat_conversation.png) |
+| Giao Diện Chat (Dark Mode) | Giao Diện Chat (Light Mode) | Trò Chuyện Trực Tiếp 1-1 | Trò Chuyện Nhóm (Group Chat) |
+| :---: | :---: | :---: | :---: |
+| ![Chat Dark](BunnyChat/screenshots/chat_dark_mode.png) | ![Chat Light](BunnyChat/screenshots/chat_light_mode.png) | ![Chat 1-1](BunnyChat/screenshots/chat_conversation.png) | ![Group Chat](BunnyChat/screenshots/group_chat.png) |
 
 ---
 

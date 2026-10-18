@@ -22,9 +22,17 @@ BunnyChat là hệ thống ứng dụng nhắn tin trực tuyến thời gian th
 | :---: | :---: |
 | ![Tìm kiếm](screenshots/search_user.png) | ![Kết bạn](screenshots/manage_friends.png) |
 
-| 9. Tạo Nhóm Chat Mới | 10. Sơ Đồ Cơ Sở Dữ Liệu (ERD) |
+| 9. Tạo Nhóm Chat Mới | |
 | :---: | :---: |
-| ![Tạo nhóm](screenshots/create_group.png) | ![Sơ đồ ERD](ERD.png) |
+| ![Tạo nhóm](screenshots/create_group.png) | |
+
+---
+
+## 📐 Kiến Trúc Hệ Thống & Sơ Đồ Dữ Liệu
+
+| Sơ Đồ Kiến Trúc Hệ Thống (System Graph) | Sơ Đồ Cơ Sở Dữ Liệu (ERD) |
+| :---: | :---: |
+| ![Kiến trúc hệ thống](screenshots/system_architecture.png) | ![Sơ đồ ERD](ERD.png) |
 
 ---
 
