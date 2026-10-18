@@ -1,132 +1,106 @@
-﻿# Tổng Hợp Dự Án Web & Mobile (Web_basic)
+# Tuyển Tập Các Dự Án Mã Nguồn Mở (Web, Mobile & Desktop Projects)
 
-Kho lưu trữ bao gồm các dự án thực hành và bài tập phát triển ứng dụng di động (Flutter) cùng với thiết kế giao diện web cơ bản (HTML/CSS).
-
----
-
-## 📂 Danh Sách Dự Án
-
-| Tên Thư Mục | Loại Dự Án | Công Nghệ Chính | Mô Tả Ngắn |
-| :--- | :--- | :--- | :--- |
-| [`hutech_campus_app`](#1-hutech-campus-app) | Mobile / Multi-platform | Flutter, Dart | Giới thiệu các cơ sở đào tạo của Đại học HUTECH |
-| [`mobile_Scanner_app`](#2-mobile-scanner-app) | Mobile App | Flutter, `mobile_scanner`, `audioplayers` | Quét mã QR, mã vạch với hiệu ứng laser và âm thanh |
-| [`showroom_web`](#3-showroom-web-gf-furniture) | Website | HTML5 / XHTML, CSS | Trang giới thiệu showroom thiết kế nội thất cao cấp |
+Kho lưu trữ tổng hợp các dự án phần mềm đa nền tảng bao gồm Ứng dụng Di động (Flutter), Ứng dụng Web (HTML5/CSS3/JS, ASP.NET Core, Python HTTP/REST), và Ứng dụng Máy tính Desktop (C# .NET Windows Forms).
 
 ---
 
-## 1. HUTECH Campus App (`hutech_campus_app`)
+## 📋 Danh Sách Tổng Hợp Các Dự Án
 
-Ứng dụng Flutter hiển thị danh sách và thông tin chi tiết về các cơ sở (campuses) của Trường Đại học Công nghệ TP.HCM (HUTECH).
-
-#### 📸 Hình ảnh giao diện:
-<p align="center">
-  <img src="./hutech_campus_app/screenshots/home_screen.png" width="260" alt="Home Screen" />
-  &nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="./hutech_campus_app/screenshots/detail_screen.png" width="260" alt="Detail Screen" />
-</p>
-
-### ✨ Tính Năng
-- **Danh sách cơ sở**: Hiển thị các cơ sở kèm màu sắc nhận diện riêng biệt (Saigon Campus, Ung Văn Khiêm Campus, Thu Duc Campus, Hitech Park Campus).
-- **Xem chi tiết cơ sở**: Điều hướng qua trang chi tiết hiển thị địa chỉ và hình ảnh phối cảnh của từng cơ sở qua kết nối mạng.
-- **Hỗ trợ đa nền tảng**: Android, iOS, Web, Windows, macOS, Linux.
-
-### 🛠 Cấu Trúc Mã Nguồn
-```text
-hutech_campus_app/
-├── lib/
-│   ├── models/
-│   │   └── campus.dart         # Định nghĩa model Campus và danh sách mẫu
-│   ├── screens/
-│   │   ├── home_screen.dart    # Màn hình danh sách cơ sở
-│   │   └── details_screen.dart # Màn hình chi tiết cơ sở
-│   └── main.dart               # Cấu hình routes và khởi chạy app
-└── pubspec.yaml                # Khai báo cấu hình và dependencies
-```
-
-### 🚀 Cách Chạy Dự Án
-```bash
-cd hutech_campus_app
-flutter pub get
-flutter run
-```
+| STT | Tên Thư Mục | Tên Dự Án | Nền Tảng / Công Nghệ | Mô Tả Tóm Tắt |
+| :---: | :--- | :--- | :--- | :--- |
+| 1 | [`hutech_campus_app`](hutech_campus_app/) | HUTECH Campus App | Flutter (Mobile) | Khám phá các cơ sở đào tạo trường ĐH Công nghệ TP.HCM kèm bản đồ dẫn đường |
+| 2 | [`mobile_Scanner_app`](mobile_Scanner_app/) | Mobile Scanner App | Flutter (Mobile) | Ứng dụng quét mã vạch và mã QR tốc độ cao, hỗ trợ âm thanh phản hồi |
+| 3 | [`showroom_web`](showroom_web/) | GF Furniture Showroom | HTML5 / CSS3 (Web) | Website giới thiệu showroom nội thất cao cấp với giao diện sang trọng |
+| 4 | [`App_Web_Quet_Ma`](App_Web_Quet_Ma/) | SPX Express Scanner | Flutter + Node.js + MySQL | Hệ thống phân loại bao hàng TO, quét mã vạch & tra cứu đơn hàng logistics |
+| 5 | [`BunnyChat`](BunnyChat/) | BunnyChat Platform | ASP.NET Core + SignalR + MongoDB | Ứng dụng trò chuyện trực tuyến realtime 1-1 và nhóm, Dark/Light mode |
+| 6 | [`dashboardTKT`](dashboardTKT/) | Tuyển Dụng TPD | Python + MongoDB + Telegram Bot | Bảng điều khiển quản lý tuyển dụng & bot tự động bóc tách ứng viên từ tin nhắn |
+| 7 | [`web_Desktop_Hospital`](web_Desktop_Hospital/) | Hospital Management (HMS) | C# .NET WinForms + SQL Server | Phần mềm desktop 3 lớp quản lý bệnh nhân, lịch hẹn, khám bệnh & kho dược |
 
 ---
 
-## 2. Mobile Scanner App (`mobile_Scanner_app`)
+## 🌟 Chi Tiết Từng Dự Án & Hình Ảnh Giao Diện (UI Preview)
 
-Ứng dụng quét mã thời gian thực trên nền tảng Flutter, hỗ trợ nhận diện nhanh các loại mã vạch thông dụng và mã QR.
+### 1. [HUTECH Campus App](hutech_campus_app/)
+- **Mô tả:** Ứng dụng di động hỗ trợ sinh viên và khách tham quan khám phá 4 cơ sở đào tạo chính của HUTECH (Trụ sở Điện Biên Phủ, Cơ sở Ung Văn Khiêm, Thu Duc Campus, Hiep Phuoc Campus).
+- **Tính năng nổi bật:** Danh sách cơ sở với hình ảnh sống động, xem chi tiết địa chỉ, số hotline, danh mục chuyên ngành đào tạo, tích hợp mở Google Maps dẫn đường trực tiếp.
+- **Công nghệ:** Flutter SDK, Dart, Material 3, `url_launcher`.
 
-#### 📸 Hình ảnh giao diện:
-<p align="center">
-  <img src="./mobile_Scanner_app/screenshots/scanner_screen.png" width="280" alt="Scanner Screen" />
-</p>
-
-### ✨ Tính Năng
-- **Quét đa định dạng**: Hỗ trợ QR Code, EAN-13, Code 128.
-- **Giao diện quét trực quan**: Khung ngắm bo góc nổi bật kèm tia laser đỏ chuyển động quét (`AnimationController`).
-- **Phản hồi âm thanh thông minh**:
-  - Âm báo **tít** (`beep.mp3`) khi quét thành công mã mới.
-  - Âm báo **è** (`error.mp3`) cảnh báo khi quét trùng mã vừa quét.
-- **Chống spam quét (Debounce)**: Khóa xử lý tạm thời (~0.9s) tránh gọi hàm lặp lại liên tục mà vẫn duy trì luồng camera mượt mà.
-- **Hiển thị thông tin**: Xem định dạng mã và nội dung dữ liệu vừa giải mã ở thanh dưới cùng.
-
-### 🛠 Cấu Trúc Mã Nguồn
-```text
-mobile_Scanner_app/
-├── assets/
-│   ├── beep.mp3                # Âm thanh khi quét mã hợp lệ
-│   └── error.mp3               # Âm thanh cảnh báo trùng mã
-├── lib/
-│   └── main.dart               # Toàn bộ logic camera, overlay painter, âm thanh và UI
-└── pubspec.yaml                # Thư viện: mobile_scanner, audioplayers
-```
-
-### 🚀 Cách Chạy Dự Án
-```bash
-cd mobile_Scanner_app
-flutter pub get
-flutter run
-```
-> *Lưu ý: Ứng dụng yêu cầu quyền truy cập Camera trên thiết bị thật hoặc máy ảo có hỗ trợ camera.*
+| Màn Hình Chính | Màn Hình Chi Tiết |
+| :---: | :---: |
+| ![Home Screen](hutech_campus_app/screenshots/home_screen.png) | ![Detail Screen](hutech_campus_app/screenshots/detail_screen.png) |
 
 ---
 
-## 3. Showroom Web - GF Furniture (`showroom_web`)
+### 2. [Mobile Scanner App](mobile_Scanner_app/)
+- **Mô tả:** Ứng dụng quét mã vạch (Barcode) và mã QR đa năng với hiệu năng cao và độ trễ thấp.
+- **Tính năng nổi bật:** Nhận diện đa định dạng (QR, EAN-13, Code 128, Code 39...), giao diện quét hiện đại với khung nhắm (scanner overlay), điều khiển bật/tắt đèn flash và lật camera, phát âm thanh bíp (`beep.mp3`) khi quét thành công.
+- **Công nghệ:** Flutter SDK, `mobile_scanner`, `audioplayers`.
 
-Trang web giới thiệu showroom và các mẫu thiết kế không gian nội thất của thương hiệu **GF Furniture / GF Interior Design**.
-
-#### 📸 Hình ảnh giao diện:
-<p align="center">
-  <img src="./showroom_web/screenshots/showroom_ui.png" width="750" alt="Showroom Web UI" />
-</p>
-
-### ✨ Tính Năng & Thành Phần Giao Diện
-- **Header & Navigation Bar**: Logo thương hiệu cùng thanh menu liên kết (Trang chủ, Giới thiệu, Dự án, Liên hệ).
-- **Banner Slider**: Trình diễn không gian trưng bày nội thất hiện đại.
-- **Danh mục Sidebar**: Menu phân loại theo không gian (Văn phòng, Phòng khách, Phòng ngủ, Phòng sách, Nhà vườn) và danh mục Nội thất cao cấp.
-- **Khu vực trưng bày sản phẩm (Content)**:
-  - **Mẫu thiết kế mới**: Các mẫu thiết kế phòng khách cao cấp cho căn hộ Penthouse (`TKPK 001`, `TKPK 002`, `TKPK 003`).
-  - **Nội thất cao cấp**: Dòng sản phẩm nội thất văn phòng và nhà ở cao cấp (`SFD0234`) kèm hình ảnh và nút xem chi tiết.
-- **Footer**: Thông tin liên hệ showroom tại 131 Ngô Gia Tự, P.4, Q.10, TP.HCM, số điện thoại và các icon liên kết mạng xã hội.
-- Kèm theo tài liệu báo cáo đồ án PDF.
-
-### 🛠 Cấu Trúc Mã Nguồn
-```text
-showroom_web/
-├── images/                     # Bộ sưu tập hình ảnh sản phẩm, banner, logo, icons
-├── index_showrom.html          # Cấu trúc trang web HTML
-├── index.css                   # Định kiểu giao diện CSS
-└── Trần Tăng Trường Thịnh_webshowroom.pdf # Tài liệu báo cáo
-```
-
-### 🚀 Cách Mở Website
-Mở trực tiếp file `index_showrom.html` bằng bất kỳ trình duyệt web nào (Chrome, Edge, Firefox,...) hoặc dùng Live Server trong VS Code:
-```bash
-cd showroom_web
-start index_showrom.html
-```
+| Giao Diện Quét Mã Barcode / QR |
+| :---: |
+| ![Scanner Screen](mobile_Scanner_app/screenshots/scanner_screen.png) |
 
 ---
 
-## 📌 Tác Giả / Sinh Viên Thực Hiện
-- Dự án học tập và thực hành phát triển Web & Ứng dụng di động.
+### 3. [GF Furniture Showroom Web](showroom_web/)
+- **Mô tả:** Website giới thiệu showroom nội thất cao cấp Grand Furniture (GF) mang phong cách tối giản, hiện đại và sang trọng.
+- **Tính năng nổi bật:** Header điều hướng cố định với hiệu ứng hover mượt mà, Banner Hero hình ảnh chất lượng cao, Bộ sưu tập sản phẩm danh mục nội thất, Chân trang liên hệ chuyên nghiệp.
+- **Công nghệ:** HTML5 thuần, CSS3 (Flexbox, CSS Grid, Custom Fonts, Media Queries Responsive).
+
+| Giao Diện Trang Chủ GF Furniture |
+| :---: |
+| ![Showroom UI](showroom_web/screenshots/showroom_ui.png) |
+
+---
+
+### 4. [SPX Express Scanner System](App_Web_Quet_Ma/)
+- **Mô tả:** Hệ thống quản lý và phân loại bao hàng vận chuyển (Transfer Order - TO) dành cho các trung tâm phân loại / bưu cục logistics SPX Express.
+- **Tính năng nổi bật:** Quét mã bưu kiện đưa vào bao hàng TO, đếm số lượng kiện tự động, kiểm tra trùng lặp mã, phát âm thanh cảnh báo (Beep/Error), in phiếu thông tin bao hàng (Bill TO), tra cứu chi tiết vận đơn.
+- **Công nghệ:** Flutter (Mobile App), Node.js Express (Backend Server), MySQL/MariaDB & SQLite (Offline Storage), Python (Mock Data Generator).
+
+| Menu Điều Hành Nghiệp Vụ | Phân Loại Bao Hàng (TO) | Danh Sách Bao Hàng Đã Đóng |
+| :---: | :---: | :---: |
+| ![Menu](App_Web_Quet_Ma/screenshots/home_menu.png) | ![Phân loại](App_Web_Quet_Ma/screenshots/phan_loai_bao.png) | ![Danh sách TO](App_Web_Quet_Ma/screenshots/danh_sach_to.png) |
+
+---
+
+### 5. [BunnyChat Realtime Chat](BunnyChat/)
+- **Mô tả:** Nền tảng nhắn tin trực tuyến thời gian thực hiện đại, cho phép người dùng kết nối, trò chuyện trực tiếp 1-1 và lập nhóm chat.
+- **Tính năng nổi bật:** Xác thực bảo mật với JWT Token và MongoDB Session, chuyển đổi giao diện Dark/Light mode, truyền nhận tin nhắn hai chiều siêu tốc qua SignalR Hub, tìm kiếm người dùng và kết bạn.
+- **Công nghệ:** ASP.NET Core MVC + Web API (.NET 8), SignalR Realtime Hub, MongoDB Atlas NoSQL, Docker, Railway.
+
+| Giao Diện Chat (Dark Mode) | Giao Diện Chat (Light Mode) | Trò Chuyện Trực Tiếp 1-1 |
+| :---: | :---: | :---: |
+| ![Chat Dark](BunnyChat/screenshots/chat_dark_mode.png) | ![Chat Light](BunnyChat/screenshots/chat_light_mode.png) | ![Chat 1-1](BunnyChat/screenshots/chat_conversation.png) |
+
+---
+
+### 6. [Tuyển Dụng TPD Dashboard](dashboardTKT/)
+- **Mô tả:** Bảng điều khiển quản lý hoạt động tuyển dụng nhân sự toàn diện, theo dõi tiến độ các đơn hàng tuyển dụng và mạng lưới cộng tác viên.
+- **Tính năng nổi bật:** Lọc và quản lý đơn tuyển dụng theo ngành nghề, theo dõi hồ sơ ứng viên qua từng vòng phỏng vấn, lưu trữ CV với bộ nhớ đệm nhị phân, tích hợp bot Telegram tự động trích xuất thông tin ứng viên từ tin nhắn nhóm và đồng bộ vào hệ thống.
+- **Công nghệ:** Python HTTP Server, MongoDB Atlas, Telegram Bot API, Single Page Application (HTML5/CSS3/JavaScript).
+
+| Bảng Điều Khiển Quản Lý Tuyển Dụng TPD |
+| :---: |
+| ![Dashboard Orders](dashboardTKT/screenshots/dashboard_orders.png) |
+
+---
+
+### 7. [Hospital Management System (HMS)](web_Desktop_Hospital/)
+- **Mô tả:** Phần mềm quản lý phòng khám và bệnh viện đa khoa trên nền tảng Desktop, vận hành theo mô hình kiến trúc 3 lớp (3-Tier Architecture) vững chắc.
+- **Tính năng nổi bật:** Đăng nhập an toàn phân quyền vai trò (Admin, Bác sĩ, Lễ tân, Dược sĩ), quản lý hồ sơ bệnh nhân, lập lịch hẹn khám bệnh, chẩn đoán lâm sàng, quản lý kho dược và xuất đơn thuốc, tính viện phí và xuất hóa đơn.
+- **Công nghệ:** C# .NET Framework, Windows Forms, Entity Framework 6, Microsoft SQL Server.
+
+| Giao Diện Đăng Nhập | Quản Lý Hồ Sơ Bệnh Nhân | Quản Lý Lịch Hẹn Khám |
+| :---: | :---: | :---: |
+| ![Đăng nhập](web_Desktop_Hospital/screenshots/login_form.png) | ![Bệnh nhân](web_Desktop_Hospital/screenshots/patient_list.png) | ![Lịch hẹn](web_Desktop_Hospital/screenshots/appointment_list.png) |
+
+---
+
+## 🛠️ Yêu Cầu Môi Trường Chung
+
+- **Flutter / Dart:** Flutter SDK 3.x+ (cho `hutech_campus_app`, `mobile_Scanner_app`, `App_Web_Quet_Ma`).
+- **Node.js:** Node.js 18+ (cho Backend `App_Web_Quet_Ma`).
+- **.NET SDK:** .NET 8.0+ SDK (cho `BunnyChat`), .NET Framework 4.8 / Visual Studio (cho `web_Desktop_Hospital`).
+- **Python:** Python 3.10+ (cho `dashboardTKT`).
+- **Cơ sở dữ liệu:** MongoDB Atlas, MySQL 8.0, Microsoft SQL Server.

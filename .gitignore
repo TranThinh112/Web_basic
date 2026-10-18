@@ -1,0 +1,32 @@
+# Build & Environment artifacts
+bin/
+obj/
+out/
+build/
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.pdb
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Flutter
+.dart_tool/
+.packages
+
+# Secrets
+.env
+*.env.local

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2A195D94-44DC-4C85-B68F-ECE4642C4691}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>HospitalManagement.BLL</RootNamespace>
+    <AssemblyName>HospitalManagement.BLL</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AppointmentBLL.cs" />
+    <Compile Include="ClinicSettingsBLL.cs" />
+    <Compile Include="DiseaseBLL.cs" />
+    <Compile Include="DoctorBLL.cs" />
+    <Compile Include="InvoiceBLL.cs" />
+    <Compile Include="MedicineBLL.cs" />
+    <Compile Include="MedicineSaleBLL.cs" />
+    <Compile Include="PatientBLL.cs" />
+    <Compile Include="PrescriptionBLL.cs" />
+    <Compile Include="UserBLL.cs" />
+    <Compile Include="VisitBLL.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DTO\HospitalManagement.DTO.csproj">
+      <Project>{A1B2C3D4-E5F6-7890-ABCD-EF0100000001}</Project>
+      <Name>HospitalManagement.DTO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DAL\HospitalManagement.DAL.csproj">
+      <Project>{A1B2C3D4-E5F6-7890-ABCD-DA1200000002}</Project>
+      <Name>HospitalManagement.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Utils\HospitalManagement.Utils.csproj">
+      <Project>{A1B2C3D4-E5F6-7890-ABCD-CAFE00000003}</Project>
+      <Name>HospitalManagement.Utils</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

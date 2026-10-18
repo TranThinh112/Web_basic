@@ -1,0 +1,366 @@
+﻿using System.Security.Cryptography.X509Certificates;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
+using MongoDB.Driver;
+using BunnyChat.Service;
+using BunnyChat.DTOs;
+using BunnyChat.Models;
+using BunnyChat.Helper;
+
+namespace BunnyChat.Controllers
+
+{
+    // [Authorize]
+    [ApiController]
+    [Route("/api/users/")]
+    public class UserController : ControllerBase
+    {
+        private readonly IMongoCollection<User> _usersCollection;
+
+        private readonly IMongoCollection<Session> _sessionCollection;
+
+
+        public UserController(MongoDbService mongoDbService)
+        {
+            _usersCollection = mongoDbService.Database.GetCollection<User>("users");
+            _sessionCollection = mongoDbService.Database.GetCollection<Session>("sessions");
+
+        }
+
+        // hàm tìm user theo id
+        private async Task<User?> FindUserById(String userId)
+        {
+            return await _usersCollection
+                    .Find(x => x.Id == userId)
+                    .FirstOrDefaultAsync();
+        }
+
+        //lấy UserId từ HttpContext.User sau khi JWT middleware verify token, được nhét vào Context.User
+        private string? GetUserId()
+        {
+            return User.FindFirst("userId")?.Value;
+        }
+
+        //API lay toan bo user
+        [AllowAnonymous]
+        [HttpGet]
+        // Lấy toàn bộ user, chủ yếu dùng để kiểm tra dữ liệu khi phát triển.
+        public async Task<IEnumerable<User>> Get() //IEnumerable: danh sach cac user, Task: async, ActionResult: tra ve 200, 404, 500, có thể là map or list
+        {
+            return await _usersCollection.Find(FilterDefinition<User>.Empty).ToListAsync();
+        }
+
+        //API láy dữ liệu user đang login
+        [Authorize]
+        [HttpGet("me")]
+        // Lấy thông tin tài khoản đang đăng nhập theo access token.
+        public async Task<IActionResult> GetMe()
+        {
+            try
+            {
+                var userId = User.FindFirst("userId")?.Value;
+
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return Unauthorized(ApiResponse.Fail("Token không hợp lệ"));
+                }
+
+                // đọc claim
+                // foreach (var claim in User.Claims)
+                // {
+                //     Console.WriteLine($"{claim.Type}: {claim.Value}");
+                // }
+
+                // Console.WriteLine($"JWT UserId = {userId}");
+
+                var session = await _sessionCollection
+                    .Find(x => x.UserId == userId)
+                    .FirstOrDefaultAsync();
+
+                if (session == null)
+                {
+                    return Unauthorized(ApiResponse.Fail("Phiên đăng nhập đã hết hạn"));
+                }
+
+
+                Console.WriteLine($"userID: {session.UserId}");
+
+
+                var user = await FindUserById(userId);
+
+                if (user == null)
+                {
+                    return NotFound(ApiResponse.Fail(
+                        message: "Người dùng không tồn tại"
+                    ));
+                }
+
+                Console.WriteLine(user == null ? "NULL" : user.Username);
+                var currentUser = user!;
+
+                return Ok(ApiResponse.Success(
+                    message: "Lấy thông tin thành công",
+                    data: new
+                    {
+                        id = currentUser.Id,
+                        firstName = currentUser.FirstName,
+                        lastName = currentUser.LastName,
+                        userName = currentUser.Username,
+                        displayname = currentUser.DisplayName,
+                        email = currentUser.Email,
+                        phone = currentUser.Phone,
+                        bio = currentUser.Bio,
+                        nickname = currentUser.Nickname,
+                        avatarUrl = currentUser.AvatarUrl,
+                        createdAt = currentUser.CreatedAt,
+                        updatedAt = currentUser.UpdatedAt
+                    }
+                ));
+            }
+
+            //trả về lỗi
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                Console.WriteLine("Lỗi khi lấy dữ liệu người dùng");
+                return StatusCode(500, ApiResponse.Fail(
+                    message: $"{ex.Message}"
+                ));
+            }
+        }
+
+//lấy profile user khi tìm kiếm
+        [Authorize]
+        [HttpGet("{id}/profile")]
+        // Lấy hồ sơ công khai của user để hiển thị trong modal profile.
+        public async Task<IActionResult> GetProfile(string id)
+        {
+            try
+            {
+                var user = await FindUserById(id);
+
+                if (user == null)
+                {
+                    return NotFound(ApiResponse.Fail("Người dùng không tồn tại"));
+                }
+
+                return Ok(ApiResponse.Success(
+                    message: "Lấy thông tin người dùng thành công",
+                    data: new
+                    {
+                        id = user.Id,
+                        userName = user.Username,
+                        displayname = user.DisplayName,
+                        phone = user.Phone,
+                        bio = user.Bio,
+                        nickname = user.Nickname,
+                        avatarUrl = user.AvatarUrl
+                    }
+                ));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse.Fail(ex.Message));
+            }
+        }
+
+        //API update Thong tin user đang login
+        [Authorize]
+        [HttpPatch("me")]
+        // Cập nhật thông tin cá nhân của user hiện tại.
+        public async Task<ActionResult> UpdateInformation(UserInformationDTORequest request)
+        {
+            try
+            {
+                // lấy userId từ JWT token
+                var userId = GetUserId();
+
+                if (string.IsNullOrWhiteSpace(userId))
+                {
+                    return Unauthorized(ApiResponse.Fail("Token khong hop le"));
+                }
+
+                // gọi hàm tìm user bằng id
+                var user = await FindUserById(userId);
+
+                if (user == null)
+                {
+                    return NotFound(ApiResponse.Fail(
+                         message: "Người dùng không tồn tại"
+                    ));
+                }
+                // gọi class NormalizeToInternational để hỗ trợ lưu Phone bỏ số 0 đầu và kèm mã vùng 
+                var normalizedPhone =
+                    PhoneHelper.NormalizeToInternational(request.Phone);
+
+                //kiểm tra sđt có trùng hay ko ?
+                if (!string.IsNullOrWhiteSpace(request.Phone))
+                {
+                    var duplicateUser = await _usersCollection
+                        .Find(u =>
+                            u.Phone == normalizedPhone &&
+                            u.Id != userId)
+                        .FirstOrDefaultAsync();
+
+                    if (duplicateUser != null)
+                    {
+                        return Conflict(ApiResponse.Fail(
+                            message: "Số điện thoại đã tồn tại"
+                        ));
+                    }
+                }
+
+                var firstName = request.FirstName ?? user.FirstName;
+                var lastName = request.LastName ?? user.LastName;
+                var nickname = request.Nickname ?? user.Nickname;
+                var bio = request.Bio ?? user.Bio;
+                var phone = normalizedPhone ?? user.Phone;
+                var avatar = request.AvatarUrl ?? user.AvatarUrl;
+
+                // tính toán displayname
+                var displayName =
+                    !string.IsNullOrWhiteSpace(nickname)
+                        ? $"{firstName} {lastName} {nickname}"
+                        : $"{firstName} {lastName}";
+
+                // gán searchName = displayName
+                var searchName = StringHelper
+                    .RemoveVietnameseDiacritics(displayName) //Bỏ dấu tiếng Việt
+                    .ToLower() //chuyển thành chữ thường
+                    .Trim(); //xóa khoảng trắng đầu và cuối
+
+                // updatedUser dữ liệu
+                var update = Builders<User>.Update
+                    .Set(x => x.FirstName, firstName)
+                    .Set(x => x.LastName, lastName)
+                    .Set(x => x.Nickname, nickname)
+                    .Set(x => x.Bio, bio)
+                    .Set(x => x.SearchName, searchName)
+                    .Set(x => x.Phone, phone)
+                    .Set(x => x.AvatarUrl, avatar)
+                    .Set(x => x.UpdatedAt, DateTime.UtcNow);
+
+                await _usersCollection.UpdateOneAsync(
+                    x => x.Id == userId,
+                    update
+                );
+
+                // update xong thì querry lại data để trả về data mới nhất
+                var updatedUser = await FindUserById(userId);
+                if (updatedUser == null)
+                {
+                    return NotFound(ApiResponse.Fail("Nguoi dung khong ton tai"));
+                }
+
+                return Ok(ApiResponse.Success(
+                    message: "Update thông tin thành công",
+                    new
+                    {
+                        id = updatedUser.Id,
+                        userName = updatedUser.Username,
+                        firstName = updatedUser.FirstName,
+                        lastName = updatedUser.LastName,
+                        displayname = updatedUser.DisplayName,
+                        email = updatedUser.Email,
+                        phone = updatedUser.Phone,
+                        nickname = updatedUser.Nickname,
+                        bio = updatedUser.Bio,
+                        avatarUrl = updatedUser.AvatarUrl,
+                        updateAt = updatedUser.UpdatedAt
+                    }
+                ));
+            }
+            catch
+            {
+                return StatusCode(500, ApiResponse.Fail(
+                    message: "Lỗi khi update"
+                ));
+            }
+        }
+
+        //API serach username, email người khác
+        [Authorize]
+        [HttpGet("search")]
+        // Tìm kiếm user theo username, email, họ tên hoặc searchName không dấu.
+        public async Task<IActionResult> Search(string? q)
+        {
+            try
+            {
+                //kiểm tra querry
+                if (string.IsNullOrWhiteSpace(q))
+                {
+                    return BadRequest(ApiResponse.Fail("Thiếu từ khóa tìm kiếm"));
+                }
+
+                var keyword = q.Trim();
+
+                var keywordNoAccent = StringHelper
+                    .RemoveVietnameseDiacritics(keyword) //Bỏ dấu tiếng Việt
+                        .ToLower() //chuyển thành chữ thường
+                        .Trim(); //xóa khoảng trắng đầu và cuối
+
+                //tách từng chữ  // "tran thinh"
+                    // => ["tran", "thinh"]
+                var words = keywordNoAccent.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+
+                // Tạo filter cho từng từ
+                    // SearchName LIKE '%tran%'
+                    // SearchName LIKE '%thinh%'
+                var wordFilters = words.Select(word =>
+                    Builders<User>.Filter.Regex(
+                        x => x.SearchName,
+                        new BsonRegularExpression(word, "i")
+                    )
+                );
+
+                var finalFilter = Builders<User>.Filter.Or(
+                    // tìm tương dối 
+                    Builders<User>.Filter.Regex(x => x.Username, new BsonRegularExpression(keyword, "i")),
+
+                    //tìm chắc chắn
+                    Builders<User>.Filter.Eq(x => x.Email, keyword),
+                    Builders<User>.Filter.Regex(x => x.FirstName, new BsonRegularExpression(keyword, "i")),
+                    Builders<User>.Filter.Regex(x => x.LastName, new BsonRegularExpression(keyword, "i")),
+
+                    // tìm theo searchName
+                    Builders<User>.Filter.And(wordFilters)
+                );
+
+                //querry database
+                var users = await _usersCollection.Find(finalFilter).ToListAsync();
+
+                if (!users.Any())
+                {
+                    return NotFound(ApiResponse.Fail("Không tìm thấy user"));
+                }
+
+                //trả dữ liệu nếu querry thành công
+                return Ok(ApiResponse.Success(
+                    message: "Tìm thấy user",
+                    data: users.Select(user => new
+                    {
+                        id = user.Id,
+                        userName = user.Username,
+                        displayname = user.DisplayName,
+                        // email = user.Email,
+                        // createdAt = user.CreatedAt,
+                        // updatedAt = user.UpdatedAt
+                    })
+                ));
+            }
+
+            //trả về lỗi
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi khi tìm kiếm");
+                return StatusCode(500, ApiResponse.Fail(
+                    message: $"{ex.Message}"
+                ));
+            }
+        }
+
+    }
+}
