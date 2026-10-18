@@ -4,6 +4,14 @@
 
 ---
 
+## 📸 Giao Diện Ứng Dụng (UI Screenshots)
+
+| Màn hình danh sách cơ sở (Home) | Màn hình chi tiết cơ sở (Detail) |
+| :---: | :---: |
+| <img src="./screenshots/home_screen.png" width="300" alt="Home Screen" /> | <img src="./screenshots/detail_screen.png" width="300" alt="Detail Screen" /> |
+
+---
+
 ## 📌 Tính Năng Nổi Bật
 
 - **Danh sách cơ sở trực quan**: Hiển thị danh sách các campus với bảng màu nhận diện thương hiệu riêng biệt.

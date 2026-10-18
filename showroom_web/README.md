@@ -4,6 +4,14 @@ Website giới thiệu showroom và các giải pháp thiết kế nội thất 
 
 ---
 
+## 📸 Giao Diện Trang Web (UI Screenshot)
+
+<p align="center">
+  <img src="./screenshots/showroom_ui.png" width="850" alt="Showroom UI" />
+</p>
+
+---
+
 ## 📌 Tổng Quan Dự Án
 
 Trang web được thiết kế với giao diện tĩnh chuẩn mực, giới thiệu các mẫu thiết kế không gian sống hiện đại (phòng khách, penthouse, văn phòng làm việc) và các sản phẩm nội thất cao cấp.

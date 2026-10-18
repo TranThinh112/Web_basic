@@ -4,6 +4,14 @@
 
 ---
 
+## 📸 Giao Diện Ứng Dụng (UI Screenshot)
+
+<p align="center">
+  <img src="./screenshots/scanner_screen.png" width="320" alt="Scanner Screen" />
+</p>
+
+---
+
 ## 📌 Tính Năng Nổi Bật
 
 - **Quét đa định dạng**: Nhận diện tức thì nhiều định dạng mã phổ biến:

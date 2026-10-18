@@ -18,6 +18,13 @@ Kho lưu trữ bao gồm các dự án thực hành và bài tập phát triển
 
 Ứng dụng Flutter hiển thị danh sách và thông tin chi tiết về các cơ sở (campuses) của Trường Đại học Công nghệ TP.HCM (HUTECH).
 
+#### 📸 Hình ảnh giao diện:
+<p align="center">
+  <img src="./hutech_campus_app/screenshots/home_screen.png" width="260" alt="Home Screen" />
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="./hutech_campus_app/screenshots/detail_screen.png" width="260" alt="Detail Screen" />
+</p>
+
 ### ✨ Tính Năng
 - **Danh sách cơ sở**: Hiển thị các cơ sở kèm màu sắc nhận diện riêng biệt (Saigon Campus, Ung Văn Khiêm Campus, Thu Duc Campus, Hitech Park Campus).
 - **Xem chi tiết cơ sở**: Điều hướng qua trang chi tiết hiển thị địa chỉ và hình ảnh phối cảnh của từng cơ sở qua kết nối mạng.
@@ -48,6 +55,11 @@ flutter run
 ## 2. Mobile Scanner App (`mobile_Scanner_app`)
 
 Ứng dụng quét mã thời gian thực trên nền tảng Flutter, hỗ trợ nhận diện nhanh các loại mã vạch thông dụng và mã QR.
+
+#### 📸 Hình ảnh giao diện:
+<p align="center">
+  <img src="./mobile_Scanner_app/screenshots/scanner_screen.png" width="280" alt="Scanner Screen" />
+</p>
 
 ### ✨ Tính Năng
 - **Quét đa định dạng**: Hỗ trợ QR Code, EAN-13, Code 128.
@@ -82,6 +94,11 @@ flutter run
 ## 3. Showroom Web - GF Furniture (`showroom_web`)
 
 Trang web giới thiệu showroom và các mẫu thiết kế không gian nội thất của thương hiệu **GF Furniture / GF Interior Design**.
+
+#### 📸 Hình ảnh giao diện:
+<p align="center">
+  <img src="./showroom_web/screenshots/showroom_ui.png" width="750" alt="Showroom Web UI" />
+</p>
 
 ### ✨ Tính Năng & Thành Phần Giao Diện
 - **Header & Navigation Bar**: Logo thương hiệu cùng thanh menu liên kết (Trang chủ, Giới thiệu, Dự án, Liên hệ).
