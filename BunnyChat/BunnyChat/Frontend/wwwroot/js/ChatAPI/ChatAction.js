@@ -652,8 +652,65 @@ async function submitGroupCreate(event) {
 }
 
 // Tạo phần tử UI cho một tin nhắn gồm avatar, tên, nội dung và thời gian.
+const MESSENGER_EMOJIS = ["👍", "❤️", "😂", "😮", "😢", "😡"];
+
+function renderReactionsBadge(container, reactions = [], currentUserId, messageId) {
+    container.replaceChildren();
+    if (!reactions || !reactions.length) {
+        container.style.display = "none";
+        return;
+    }
+
+    container.style.display = "inline-flex";
+    const counts = {};
+    let hasMyReaction = false;
+    reactions.forEach(r => {
+        if (!r.emoji) return;
+        counts[r.emoji] = (counts[r.emoji] || 0) + 1;
+        if (r.userId === currentUserId) hasMyReaction = true;
+    });
+
+    if (hasMyReaction) {
+        container.classList.add("active-user-reaction");
+    } else {
+        container.classList.remove("active-user-reaction");
+    }
+
+    // Top emojis (up to 3 distinct)
+    const distinctEmojis = Object.keys(counts);
+    distinctEmojis.slice(0, 3).forEach(emoji => {
+        const span = document.createElement("span");
+        span.textContent = emoji;
+        container.appendChild(span);
+    });
+
+    const total = reactions.length;
+    if (total > 1) {
+        const totalSpan = document.createElement("span");
+        totalSpan.className = "reaction-item-count";
+        totalSpan.textContent = total;
+        container.appendChild(totalSpan);
+    }
+}
+
+async function toggleMessageReaction(messageId, emoji) {
+    try {
+        const response = await apiFetch(`/api/chat/messages/${messageId}/reactions`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ emoji })
+        });
+        if (!response.ok) {
+            console.error("Lỗi khi thả cảm xúc");
+        }
+    } catch (err) {
+        console.error("Lỗi mạng khi thả cảm xúc", err);
+    }
+}
+
 function createMessage(message) {
     const currentUserId = itemId(state.currentUser);
+    const msgId = itemId(message);
     const senderId = message.senderId || message.SenderId || "";
     const isMine = senderId
         ? senderId === currentUserId
@@ -662,6 +719,7 @@ function createMessage(message) {
     const row = document.createElement("article");
     row.className = `message ${isMine ? "outgoing" : "incoming"}`;
     row.title = sender.displayName;
+    if (msgId) row.dataset.messageId = msgId;
 
     const body = document.createElement("span");
     body.className = "message-body";
@@ -670,15 +728,72 @@ function createMessage(message) {
     senderName.className = "message-sender";
     senderName.textContent = sender.displayName;
 
+    // Bubble bọc p và reactions
+    const bubbleWrapper = document.createElement("div");
+    bubbleWrapper.className = "message-bubble-wrapper";
+
     const bubble = document.createElement("p");
     bubble.textContent = message.content || message.text || "";
+
+    // Nút trigger reaction
+    const reactTriggerBtn = document.createElement("button");
+    reactTriggerBtn.type = "button";
+    reactTriggerBtn.className = "reaction-trigger-btn";
+    reactTriggerBtn.title = "Bày tỏ cảm xúc";
+    reactTriggerBtn.innerHTML = "😀";
+
+    // Picker popup
+    let pickerPopup = null;
+    reactTriggerBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (pickerPopup) {
+            pickerPopup.remove();
+            pickerPopup = null;
+            return;
+        }
+
+        // Close other open pickers
+        document.querySelectorAll(".reaction-picker-popup").forEach(p => p.remove());
+
+        pickerPopup = document.createElement("div");
+        pickerPopup.className = "reaction-picker-popup";
+        MESSENGER_EMOJIS.forEach(emoji => {
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "reaction-picker-emoji";
+            btn.textContent = emoji;
+            btn.title = emoji;
+            btn.addEventListener("click", async (ev) => {
+                ev.stopPropagation();
+                pickerPopup?.remove();
+                pickerPopup = null;
+                if (msgId) await toggleMessageReaction(msgId, emoji);
+            });
+            pickerPopup.appendChild(btn);
+        });
+
+        bubbleWrapper.appendChild(pickerPopup);
+    });
+
+    // Badge reactions
+    const reactionsBadge = document.createElement("div");
+    reactionsBadge.className = "message-reactions-badge";
+    renderReactionsBadge(reactionsBadge, message.reactions || [], currentUserId, msgId);
+
+    // Quick click badge to default like or show picker
+    reactionsBadge.addEventListener("click", (e) => {
+        e.stopPropagation();
+        reactTriggerBtn.click();
+    });
+
+    bubbleWrapper.append(bubble, reactTriggerBtn, reactionsBadge);
 
     const time = document.createElement("time");
     time.textContent = message.createdAt
         ? new Date(message.createdAt).toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })
         : "";
 
-    body.append(senderName, bubble, time);
+    body.append(senderName, bubbleWrapper, time);
     row.append(createMessageAvatar(sender), body);
     return row;
 }
@@ -822,6 +937,7 @@ async function selectConversation(item, card) {
         : "Tin nhắn riêng";
     renderAvatarInto(el("chatAvatar"), item);
 
+    if (searchInChatBtn) searchInChatBtn.disabled = false;
     groupInfoButton.disabled = item.type !== "group" && !directChatUserId(item, state.friends);
     groupInfoButton.setAttribute("aria-label", item.type === "group" ? "Thông tin nhóm" : "Xem profile");
     groupInfoButton.title = item.type === "group" ? "Thông tin nhóm" : "Xem profile";
@@ -1204,6 +1320,18 @@ async function connectRealtime() {
         if (payload?.conversation) upsertConversation(payload.conversation);
     });
 
+    state.connection.on("reaction-updated", payload => {
+        if (!payload || !payload.messageId) return;
+        const msgRow = messageArea.querySelector(`[data-message-id="${payload.messageId}"]`);
+        if (msgRow) {
+            const badge = msgRow.querySelector(".message-reactions-badge");
+            if (badge) {
+                const currentUserId = itemId(state.currentUser);
+                renderReactionsBadge(badge, payload.reactions || [], currentUserId, payload.messageId);
+            }
+        }
+    });
+
     state.connection.on("friend-request-created", request => {
         if (request && !state.friendRequests.received.some(item => itemId(item) === itemId(request))) {
             state.friendRequests.received.unshift(request);
@@ -1229,13 +1357,33 @@ async function connectRealtime() {
         renderFriendRequests();
     });
 
-    await state.connection.start();
-    state.conversations.forEach(conversation => joinConversation(itemId(conversation)));
+    state.connection.onreconnected(async () => {
+        state.joinedConversationIds.clear();
+        state.conversations.forEach(conversation => joinConversation(itemId(conversation)));
+        if (state.activeConversation) {
+            joinConversation(itemId(state.activeConversation));
+        }
+    });
+
+    try {
+        await state.connection.start();
+        state.conversations.forEach(conversation => joinConversation(itemId(conversation)));
+        if (state.activeConversation) {
+            joinConversation(itemId(state.activeConversation));
+        }
+    } catch (err) {
+        console.warn("SignalR connection start error:", err);
+    }
 }
 
 // Join SignalR group của conversation để nhận realtime message.
 function joinConversation(conversationId) {
-    if (!conversationId || !state.connection || state.connection.state !== signalR.HubConnectionState.Connected) return;
+    if (!conversationId || !state.connection) return;
+    if (state.connection.state !== signalR.HubConnectionState.Connected) {
+        // Neu chua connected, thu lai sau 500ms
+        setTimeout(() => joinConversation(conversationId), 500);
+        return;
+    }
     if (state.joinedConversationIds.has(conversationId)) return;
 
     state.joinedConversationIds.add(conversationId);
@@ -1527,6 +1675,185 @@ el("logoutBtn").addEventListener("click", async () => {
         location.href = "/";
     }
 });
+
+
+// ==================== TÌM KIẾM TIN NHẮN TRONG ĐOẠN CHAT & TOÀN BỘ ====================
+const searchInChatBtn = el("searchInChatBtn");
+const searchAllChatsBtn = el("searchAllChatsBtn");
+const inChatSearchBar = el("inChatSearchBar");
+const inChatSearchInput = el("inChatSearchInput");
+const closeInChatSearchBtn = el("closeInChatSearchBtn");
+
+const searchAllModal = el("searchAllModal");
+const searchAllInput = el("searchAllInput");
+const searchAllSubmitBtn = el("searchAllSubmitBtn");
+const searchAllResults = el("searchAllResults");
+
+// Đóng mở bảng reaction khi click bên ngoài
+document.addEventListener("click", () => {
+    document.querySelectorAll(".reaction-picker-popup").forEach(p => p.remove());
+});
+
+// 1. Tìm kiếm trong đoạn chat đang mở
+if (searchInChatBtn) {
+    searchInChatBtn.addEventListener("click", () => {
+        if (!state.activeConversation) return;
+        const isHidden = inChatSearchBar.hidden;
+        inChatSearchBar.hidden = !isHidden;
+        if (!inChatSearchBar.hidden) {
+            inChatSearchInput.value = "";
+            inChatSearchInput.focus();
+        } else {
+            resetInChatSearch();
+        }
+    });
+}
+
+if (closeInChatSearchBtn) {
+    closeInChatSearchBtn.addEventListener("click", () => {
+        inChatSearchBar.hidden = true;
+        resetInChatSearch();
+    });
+}
+
+function resetInChatSearch() {
+    inChatSearchInput.value = "";
+    messageArea.querySelectorAll(".message").forEach(row => {
+        row.classList.remove("search-hidden", "search-match");
+    });
+}
+
+if (inChatSearchInput) {
+    inChatSearchInput.addEventListener("input", () => {
+        const keyword = inChatSearchInput.value.trim().toLowerCase();
+        const rows = messageArea.querySelectorAll(".message");
+        if (!keyword) {
+            rows.forEach(r => r.classList.remove("search-hidden", "search-match"));
+            return;
+        }
+
+        let firstMatch = null;
+        rows.forEach(r => {
+            const text = (r.querySelector("p")?.textContent || "").toLowerCase();
+            if (text.includes(keyword)) {
+                r.classList.remove("search-hidden");
+                r.classList.add("search-match");
+                if (!firstMatch) firstMatch = r;
+            } else {
+                r.classList.add("search-hidden");
+                r.classList.remove("search-match");
+            }
+        });
+
+        if (firstMatch) {
+            firstMatch.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+    });
+}
+
+// 2. Tìm kiếm trong toàn bộ đoạn chat
+function openSearchAllModal() {
+    searchAllModal.classList.add("open");
+    searchAllModal.setAttribute("aria-hidden", "false");
+    searchAllInput.value = "";
+    searchAllResults.innerHTML = '<p class="search-empty-hint">Nhập từ khóa và nhấn tìm kiếm</p>';
+    setTimeout(() => searchAllInput.focus(), 80);
+}
+
+function closeSearchAllModal() {
+    searchAllModal.classList.remove("open");
+    searchAllModal.setAttribute("aria-hidden", "true");
+}
+
+if (searchAllChatsBtn) {
+    searchAllChatsBtn.addEventListener("click", openSearchAllModal);
+}
+
+document.querySelectorAll("[data-close-search-all]").forEach(btn => {
+    btn.addEventListener("click", closeSearchAllModal);
+});
+
+async function executeSearchAll() {
+    const query = searchAllInput.value.trim();
+    if (!query) {
+        searchAllResults.innerHTML = '<p class="search-empty-hint">Vui lòng nhập từ khóa tìm kiếm</p>';
+        return;
+    }
+
+    searchAllResults.innerHTML = '<p class="search-empty-hint">Đang tìm kiếm tin nhắn...</p>';
+
+    try {
+        const response = await apiFetch(`/api/chat/search-messages?query=${encodeURIComponent(query)}`);
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+            searchAllResults.innerHTML = `<p class="search-empty-hint">${result.message || "Lỗi tìm kiếm"}</p>`;
+            return;
+        }
+
+        const items = result.data || [];
+        if (!items.length) {
+            searchAllResults.innerHTML = `<p class="search-empty-hint">Không tìm thấy tin nhắn nào chứa "${query}"</p>`;
+            return;
+        }
+
+        searchAllResults.replaceChildren();
+        items.forEach(({ message, conversation }) => {
+            const card = document.createElement("div");
+            card.className = "search-result-item";
+
+            const convName = conversation?.name || "Cuộc trò chuyện";
+            const senderName = message?.senderName || "Người dùng";
+            const timeStr = message?.createdAt ? new Date(message.createdAt).toLocaleString("vi-VN") : "";
+            const rawContent = message?.content || "";
+
+            // Highlight từ khóa
+            const safeQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const highlighted = rawContent.replace(new RegExp(`(${safeQuery})`, "gi"), '<mark class="search-highlight">$1</mark>');
+
+            card.innerHTML = `
+                <div class="search-result-header">
+                    <strong>${convName} · ${senderName}</strong>
+                    <time>${timeStr}</time>
+                </div>
+                <div class="search-result-content">${highlighted}</div>
+            `;
+
+            card.addEventListener("click", async () => {
+                closeSearchAllModal();
+                if (conversation) {
+                    await selectConversation(conversation);
+                    // Sau khi tải tin nhắn, scroll tới tin nhắn này nếu có
+                    setTimeout(() => {
+                        const targetRow = messageArea.querySelector(`[data-message-id="${message.id}"]`);
+                        if (targetRow) {
+                            targetRow.classList.add("search-match");
+                            targetRow.scrollIntoView({ behavior: "smooth", block: "center" });
+                            setTimeout(() => targetRow.classList.remove("search-match"), 3000);
+                        }
+                    }, 400);
+                }
+            });
+
+            searchAllResults.appendChild(card);
+        });
+    } catch (err) {
+        searchAllResults.innerHTML = '<p class="search-empty-hint">Không thể kết nối đến máy chủ.</p>';
+    }
+}
+
+if (searchAllSubmitBtn) {
+    searchAllSubmitBtn.addEventListener("click", executeSearchAll);
+}
+
+if (searchAllInput) {
+    searchAllInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            executeSearchAll();
+        }
+    });
+}
 
 window.BunnyChatUI = {
     state,

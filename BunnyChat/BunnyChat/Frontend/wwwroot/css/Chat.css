@@ -836,3 +836,471 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
         padding-inline: 10px;
     }
 }
+/* Thao tác topbar */
+.topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+}
+
+/* Thanh tìm kiếm trong cuộc trò chuyện */
+.chat-search-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    animation: fadeInDown 0.2s ease-out;
+}
+
+.chat-search-bar .search-bar-icon {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: var(--muted);
+    stroke-width: 2;
+    flex-shrink: 0;
+}
+
+.chat-search-bar input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-size: 13px;
+}
+
+.search-bar-close {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-size: 20px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 4px;
+    transition: color 0.15s ease;
+}
+
+.search-bar-close:hover {
+    color: var(--text);
+}
+
+/* Highlight tin nhắn khi tìm kiếm */
+.message.search-match p {
+    outline: 2px solid var(--accent);
+    box-shadow: 0 0 12px rgba(147, 51, 234, 0.45);
+}
+
+.message.search-hidden {
+    display: none !important;
+}
+
+/* Modal tìm kiếm toàn bộ tin nhắn */
+.search-modal-card {
+    width: min(580px, calc(100% - 28px));
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.global-search-box {
+    width: 100%;
+}
+
+.search-message-results {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 50vh;
+    overflow-y: auto;
+    padding-right: 4px;
+    margin-top: 6px;
+}
+
+.search-empty-hint {
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    padding: 24px 0;
+}
+
+.search-result-item {
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.search-result-item:hover {
+    background: rgba(147, 51, 234, 0.12);
+    border-color: var(--accent);
+    transform: translateY(-1px);
+}
+
+.search-result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+}
+
+.search-result-header strong {
+    color: var(--accent-light, #a855f7);
+    font-weight: 700;
+}
+
+.search-result-header time {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.search-result-content {
+    font-size: 13px;
+    color: var(--text);
+    word-break: break-word;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.search-highlight {
+    background-color: rgba(234, 179, 8, 0.35);
+    color: #fef08a;
+    font-weight: bold;
+    border-radius: 3px;
+    padding: 0 2px;
+}
+
+/* === THẢ CẢM XÚC (MESSENGER REACTIONS) === */
+.message {
+    position: relative;
+}
+
+.message-bubble-wrapper {
+    position: relative;
+    display: inline-block;
+    max-width: 100%;
+}
+
+/* Nút trigger bảng icon reaction khi rê chuột */
+.reaction-trigger-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    z-index: 5;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.message.incoming .reaction-trigger-btn {
+    right: -32px;
+}
+
+.message.outgoing .reaction-trigger-btn {
+    left: -32px;
+}
+
+.message:hover .reaction-trigger-btn,
+.message-bubble-wrapper:hover .reaction-trigger-btn {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.reaction-trigger-btn:hover {
+    transform: translateY(-50%) scale(1.15);
+    background: var(--surface-strong);
+}
+
+/* Popup bảng biểu tượng cảm xúc messenger */
+.reaction-picker-popup {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 8px;
+    background: var(--surface-strong);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    z-index: 20;
+    animation: bounceIn 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.message.incoming .reaction-picker-popup {
+    left: 0;
+}
+
+.message.outgoing .reaction-picker-popup {
+    right: 0;
+}
+
+.reaction-picker-emoji {
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    line-height: 1;
+    padding: 4px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.reaction-picker-emoji:hover {
+    transform: scale(1.38) translateY(-4px);
+    background: rgba(255, 255, 255, 0.12);
+}
+
+/* Badge hiển thị reactions đã thả dưới bubble tin nhắn */
+.message-reactions-badge {
+    position: absolute;
+    bottom: -11px;
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2px 6px;
+    font-size: 11px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+    cursor: pointer;
+    z-index: 4;
+    transition: transform 0.15s ease;
+    user-select: none;
+}
+
+.message-reactions-badge:hover {
+    transform: scale(1.08);
+}
+
+.message.incoming .message-reactions-badge {
+    left: 10px;
+}
+
+.message.outgoing .message-reactions-badge {
+    right: 10px;
+}
+
+.message-reactions-badge.active-user-reaction {
+    border-color: var(--accent);
+    background: rgba(147, 51, 234, 0.2);
+}
+
+.reaction-item-count {
+    font-weight: 700;
+    color: var(--text);
+    margin-left: 2px;
+    font-size: 10px;
+}
+
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bounceIn {
+    from { opacity: 0; transform: scale(0.7); }
+    to { opacity: 1; transform: scale(1); }
+}
+/* ==========================================================================
+   MOBILE & TABLET RESPONSIVE ENHANCEMENTS (BUNNYCHAT)
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    /* 1. Tối ưu Topbar trên Mobile để hiển thị đầy đủ icon */
+    .chat-topbar {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 6px !important;
+        min-height: 64px !important;
+        padding: max(6px, env(safe-area-inset-top)) 10px 6px !important;
+    }
+
+    .sidebar-toggle {
+        flex: 0 0 34px !important;
+        width: 34px !important;
+        height: 34px !important;
+    }
+
+    .chat-avatar {
+        flex: 0 0 34px !important;
+        width: 34px !important;
+        height: 34px !important;
+        font-size: 13px !important;
+    }
+
+    .chat-heading {
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+        margin-left: 2px !important;
+    }
+
+    .chat-heading strong {
+        font-size: 14px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        display: block !important;
+    }
+
+    .chat-heading small {
+        font-size: 11px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        display: block !important;
+    }
+
+    .topbar-actions {
+        display: flex !important;
+        align-items: center !important;
+        gap: 5px !important;
+        margin-left: auto !important;
+        flex-shrink: 0 !important;
+    }
+
+    .topbar-actions .info-button {
+        width: 32px !important;
+        height: 32px !important;
+        padding: 0 !important;
+        border-radius: 10px !important;
+    }
+
+    .topbar-actions .info-button svg {
+        width: 16px !important;
+        height: 16px !important;
+    }
+
+    /* 2. Thanh tìm kiếm trong chat co giãn tốt trên mobile */
+    .chat-search-bar {
+        padding: 6px 12px !important;
+        gap: 8px !important;
+    }
+
+    .chat-search-bar input {
+        font-size: 13px !important;
+    }
+
+    /* 3. Tối ưu Bubble tin nhắn & Nút Reaction trên Mobile */
+    .message {
+        max-width: 86% !important;
+    }
+
+    /* Trên mobile (cảm ứng không hover được), nút trigger reaction luôn hiển thị mờ mờ để chạm được */
+    .reaction-trigger-btn {
+        opacity: 0.8 !important;
+        pointer-events: auto !important;
+        width: 24px !important;
+        height: 24px !important;
+        font-size: 11px !important;
+    }
+
+    .message.incoming .reaction-trigger-btn {
+        right: -28px !important;
+    }
+
+    .message.outgoing .reaction-trigger-btn {
+        left: -28px !important;
+    }
+
+    .reaction-picker-popup {
+        padding: 4px 6px !important;
+        gap: 2px !important;
+    }
+
+    .reaction-picker-emoji {
+        font-size: 18px !important;
+        padding: 3px !important;
+    }
+
+    /* 4. Khung soạn tin nhắn (Composer) sát đáy an toàn (safe-area) */
+    .message-composer {
+        min-height: 56px !important;
+        padding: 6px 10px calc(6px + env(safe-area-inset-bottom)) !important;
+        grid-template-columns: minmax(0, 1fr) 42px !important;
+        gap: 6px !important;
+    }
+
+    .message-composer input {
+        font-size: 14px !important;
+        padding: 8px 12px !important;
+    }
+
+    .send-button {
+        width: 40px !important;
+        height: 40px !important;
+        border-radius: 12px !important;
+    }
+
+    /* 5. Modal Search Toàn Cục & Modal Bạn Bè trên Mobile */
+    .search-modal-card,
+    .friend-modal-card {
+        width: 94vw !important;
+        max-width: 94vw !important;
+        max-height: 85dvh !important;
+        border-radius: 18px !important;
+        padding: 16px 14px !important;
+    }
+
+    .search-message-results {
+        max-height: 55dvh !important;
+    }
+
+    .search-result-item {
+        padding: 8px 10px !important;
+    }
+}
+
+/* Màn hình siêu nhỏ (iPhone SE, màn < 380px) */
+@media (max-width: 380px) {
+    .chat-topbar {
+        padding-inline: 6px !important;
+        gap: 4px !important;
+    }
+
+    .chat-heading strong {
+        font-size: 13px !important;
+    }
+
+    .topbar-actions .info-button {
+        width: 28px !important;
+        height: 28px !important;
+    }
+
+    .topbar-actions .info-button svg {
+        width: 14px !important;
+        height: 14px !important;
+    }
+
+    .message {
+        max-width: 90% !important;
+    }
+}

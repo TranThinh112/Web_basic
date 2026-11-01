@@ -2,18 +2,24 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
-app.use(cors());
+
+// Cho phép CORS từ mọi domain (để Web Frontend gọi được vào)
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
 app.use(express.json());
 
-//api de nguyen
+// Endpoint kiểm tra server online
 app.get("/", (req, res) => {
-  res.send("API is running 🚀");
+  res.json({
+    status: "online",
+    message: "SPX Express Backend API is running 🚀",
+    timestamp: new Date().toISOString()
+  });
 });
-
-const INSTANCE_ID = Math.random().toString(36).substring(2, 8);
-
-console.log("INSTANCE:", INSTANCE_ID);
-
 
 const ordersRouter = require("./routers/orders/index_Orders");
 app.use('/orders', ordersRouter);
@@ -23,36 +29,14 @@ app.use('/TO', TO_ordersRouter);
 
 const usersRouter = require("./routers/users/index_Users");
 app.use('/', usersRouter);
-//// tets sql 
-// ❌ API login dễ dính SQLi
-// app.get("/test", (req, res) => {
-//   const username = req.query.username;
-//   const password = req.query.password;
-
-//   // ❌ NỐI CHUỖI (NGUY HIỂM)
-//   const sql = `SELECT * FROM users 
-//                WHERE username = '${username}' 
-//                AND password = '${password}'`;
-
-//   db.query(sql, (err, result) => {
-//     if (err) return res.status(500).json(err);
-//     res.json(result);
-//   });
-// });
-
-
 
 app.use((req, res, next) => {
   console.log("👉", req.method, req.url);
   next();
 });
 
-////////////////////////////////////////////////////////// PORT Railway //////////////////////////////////////////////////////////////
-// cahy server local
-app.listen(process.env.PORT || 3000, () => {
-  console.log("Server running");
+// Port linh hoạt: Railway tự cấp process.env.PORT
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 Server SPX Express running on port ${PORT}`);
 });
-//chay server onl
-// app.listen(process.env.PORT || 8080, () => {
-//   console.log("Server running");
-// });

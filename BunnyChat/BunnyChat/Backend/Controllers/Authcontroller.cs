@@ -291,6 +291,108 @@ namespace BunnyChat.Controllers
             }
         }
 
+        // B1: Xác thực tài khoản bằng Username / Email / Số điện thoại
+        [HttpPost("forgot/verify")]
+        public async Task<IActionResult> VerifyForgotAccount([FromBody] VerifyForgotDTORequest request)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(request?.Identifier))
+                {
+                    return BadRequest(ApiResponse.Fail("Vui lòng nhập Username, Email hoặc Số điện thoại"));
+                }
+
+                var key = request.Identifier.Trim();
+
+                // Tìm user theo username, email hoặc phone
+                var user = await _usersCollection.Find(u =>
+                    u.Username == key ||
+                    u.Email == key ||
+                    u.Phone == key
+                ).FirstOrDefaultAsync();
+
+                if (user == null)
+                {
+                    return NotFound(ApiResponse.Fail("Không tìm thấy tài khoản phù hợp với thông tin đã nhập"));
+                }
+
+                // Trả về thông tin cơ bản để client xác nhận
+                return Ok(ApiResponse.Success("Tìm thấy tài khoản", new
+                {
+                    username = user.Username,
+                    displayName = user.DisplayName,
+                    email = string.IsNullOrEmpty(user.Email) ? "" : MaskEmail(user.Email)
+                }));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse.Fail($"Lỗi hệ thống: {ex.Message}"));
+            }
+        }
+
+        // B2: Đặt lại mật khẩu mới cho tài khoản
+        [HttpPost("forgot/reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTORequest request)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(request?.Identifier))
+                {
+                    return BadRequest(ApiResponse.Fail("Thiếu thông tin xác thực tài khoản"));
+                }
+
+                if (string.IsNullOrWhiteSpace(request.NewPassword) || request.NewPassword.Length < 6)
+                {
+                    return BadRequest(ApiResponse.Fail("Mật khẩu mới phải có ít nhất 6 ký tự"));
+                }
+
+                var key = request.Identifier.Trim();
+
+                var user = await _usersCollection.Find(u =>
+                    u.Username == key ||
+                    u.Email == key ||
+                    u.Phone == key
+                ).FirstOrDefaultAsync();
+
+                if (user == null)
+                {
+                    return NotFound(ApiResponse.Fail("Tài khoản không tồn tại"));
+                }
+
+                // Hash mật khẩu mới bằng BCrypt
+                var newHashedPassword = BCrypt.Net.BCrypt.HashPassword(request.NewPassword, 10);
+
+                var update = Builders<User>.Update
+                    .Set(u => u.HashPassword, newHashedPassword)
+                    .Set(u => u.UpdatedAt, DateTime.UtcNow);
+
+                await _usersCollection.UpdateOneAsync(u => u.Id == user.Id, update);
+
+                // Thu hồi/xóa toàn bộ refresh token sessions cũ của tài khoản này để bảo mật
+                await _sessionCollection.DeleteManyAsync(s => s.UserId == user.Id);
+
+                return Ok(ApiResponse.Success("Đặt lại mật khẩu thành công! Bạn có thể đăng nhập ngay bây giờ.", new
+                {
+                    username = user.Username
+                }));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse.Fail($"Lỗi hệ thống: {ex.Message}"));
+            }
+        }
+
+        // Helper che giấu bớt ký tự email
+        private static string MaskEmail(string email)
+        {
+            var parts = email.Split('@');
+            if (parts.Length != 2) return email;
+            var name = parts[0];
+            var domain = parts[1];
+            if (name.Length <= 2) return $"{name[0]}*@{domain}";
+            return $"{name.Substring(0, 2)}***@{domain}";
+        }
+
 
     }
 }

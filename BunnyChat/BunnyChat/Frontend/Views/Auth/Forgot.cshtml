@@ -1,42 +1,357 @@
 @{
     Layout = "~/Frontend/Views/Shared/AuthLayout.cshtml";
-    ViewData["Title"] = "Forgot";
+    ViewData["Title"] = "Quên mật khẩu";
 }
 
-<head>
-    <link rel="stylesheet" href="~/css/main.css" asp-append-version="true" />
+<style>
+    /* Card quên mật khẩu: kích thước gọn gàng 460px chuẩn card form, nền kính mờ sang trọng */
+    .forgot-card-custom {
+        width: min(480px, 92vw) !important;
+        max-width: 480px !important;
+        min-height: auto !important;
+        height: auto !important;
+        margin: auto !important;
+        padding: 38px 36px 36px !important;
+        border-radius: 28px !important;
+        background: rgba(255, 255, 255, 0.42) !important;
+        backdrop-filter: blur(24px) !important;
+        -webkit-backdrop-filter: blur(24px) !important;
+        border: 1.5px solid rgba(255, 255, 255, 0.7) !important;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+        position: relative !important;
+    }
 
-     
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    .forgot-content-wrap {
+        width: 100% !important;
+        max-width: 390px !important;
+        margin: 0 auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }
 
-    @* //icon boostrap  *@
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-</head>
+    .forgot-content-wrap .logo {
+        margin-bottom: 12px !important;
+    }
+
+    .forgot-content-wrap .logo img {
+        width: 150px !important;
+        height: auto !important;
+    }
+
+    /* Thanh tiến trình 2 bước */
+    .stepper-bar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .step-node {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+        font-weight: 700;
+        color: #64748b;
+        transition: all 0.3s ease;
+    }
+
+    .step-circle {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: rgba(148, 163, 184, 0.25);
+        border: 1.5px solid #94a3b8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 800;
+        color: #475569;
+        transition: all 0.3s ease;
+    }
+
+    .step-node.active {
+        color: #5b21b6;
+    }
+
+    .step-node.active .step-circle {
+        background: #7c3aed;
+        border-color: #7c3aed;
+        color: #ffffff;
+        box-shadow: 0 2px 8px rgba(124, 58, 237, 0.35);
+    }
+
+    .step-line {
+        flex: 1;
+        max-width: 48px;
+        height: 2px;
+        background: #cbd5e1;
+        border-radius: 2px;
+        transition: background 0.3s ease;
+    }
+
+    .step-line.passed {
+        background: #7c3aed;
+    }
+
+    /* Tiêu đề chính */
+    .forgot-card-custom .auth-title {
+        color: #1e1b4b !important;
+        font-size: 26px !important;
+        font-weight: 800 !important;
+        margin-bottom: 6px !important;
+        text-align: center !important;
+    }
+
+    /* Dòng mô tả căn giữa, không có viền hộp thừa, màu tím than đậm sắc nét */
+    .forgot-card-custom .auth-subtitle {
+        color: #312e81 !important;
+        font-size: 13.5px !important;
+        font-weight: 600 !important;
+        line-height: 1.45 !important;
+        text-align: center !important;
+        margin: 0 auto 20px !important;
+        background: transparent !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    .forgot-card-custom .auth-form {
+        width: 100% !important;
+        flex-direction: column !important;
+        gap: 15px !important;
+    }
+
+    #step1Form {
+        display: flex;
+    }
+
+    #step2Form {
+        display: none;
+    }
+
+    .forgot-card-custom .input-box {
+        margin-bottom: 0 !important;
+    }
+
+    /* Ô input: nền trắng rõ ràng, viền mịn */
+    .forgot-card-custom .input-box input {
+        width: 100% !important;
+        height: 52px !important;
+        background: #ffffff !important;
+        border: 1.5px solid #cbd5e1 !important;
+        border-radius: 14px !important;
+        padding: 0 18px !important;
+        font-size: 15px !important;
+        color: #0f172a !important;
+        font-weight: 600 !important;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+    }
+
+    .forgot-card-custom .input-box input:focus {
+        border-color: #7c3aed !important;
+        box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.18) !important;
+    }
+
+    .forgot-card-custom .input-box label {
+        color: #64748b !important;
+        font-weight: 600 !important;
+        font-size: 14px !important;
+    }
+
+    /* Huy hiệu tài khoản đã tìm thấy */
+    .account-confirmed-badge {
+        display: flex !important;
+        align-items: center !important;
+        gap: 12px !important;
+        padding: 12px 16px !important;
+        background: rgba(255, 255, 255, 0.8) !important;
+        border: 1.5px solid #ddd6fe !important;
+        border-radius: 14px !important;
+        margin-bottom: 4px !important;
+        box-shadow: 0 2px 8px rgba(124, 58, 237, 0.08) !important;
+    }
+
+    .account-confirmed-badge i {
+        font-size: 26px !important;
+        color: #7c3aed !important;
+    }
+
+    .account-confirmed-badge strong {
+        display: block !important;
+        font-size: 15px !important;
+        color: #1e1b4b !important;
+        font-weight: 700 !important;
+    }
+
+    .account-confirmed-badge small {
+        display: block !important;
+        font-size: 12px !important;
+        color: #6b7280 !important;
+    }
+
+    /* Nút bấm chính: kích thước vừa vặn, bo góc 14px */
+    .forgot-card-custom .auth-btn {
+        width: 100% !important;
+        height: 50px !important;
+        border-radius: 14px !important;
+        background: linear-gradient(135deg, #7c3aed, #9333ea) !important;
+        color: #ffffff !important;
+        font-size: 16px !important;
+        font-weight: 700 !important;
+        margin-top: 8px !important;
+        box-shadow: 0 8px 20px rgba(124, 58, 237, 0.35) !important;
+        border: none !important;
+        cursor: pointer !important;
+        transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+    }
+
+    .forgot-card-custom .auth-btn:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 12px 26px rgba(124, 58, 237, 0.45) !important;
+    }
+
+    /* Link quay lại đăng nhập */
+    .forgot-card-custom .auth-link {
+        margin-top: 14px !important;
+        text-align: center !important;
+    }
+
+    .forgot-card-custom .auth-link a {
+        color: #5b21b6 !important;
+        font-weight: 700 !important;
+        font-size: 14px !important;
+        text-decoration: underline !important;
+        text-underline-offset: 3px !important;
+        transition: color 0.2s ease !important;
+    }
+
+    .forgot-card-custom .auth-link a:hover {
+        color: #3b0764 !important;
+    }
+
+    /* Nút mũi tên quay lại góc trên */
+    .forgot-card-custom .icon-btn {
+        position: absolute !important;
+        top: 20px !important;
+        left: 20px !important;
+        width: 38px !important;
+        height: 38px !important;
+        border-radius: 50% !important;
+        background: rgba(255, 255, 255, 0.75) !important;
+        border: 1px solid rgba(255, 255, 255, 0.8) !important;
+        color: #334155 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 18px !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease !important;
+    }
+
+    .forgot-card-custom .icon-btn:hover {
+        background: #7c3aed !important;
+        color: #ffffff !important;
+        border-color: #7c3aed !important;
+        transform: scale(1.08) !important;
+    }
+</style>
 
 <div class="auth-page">
-        
-    <div class="forgot-card">
+    <div class="auth-card forgot-card-custom">
+        <button class="icon-btn" onclick="window.location.href = '/'" title="Quay lại đăng nhập" aria-label="Quay lại">
+            <i class="bi bi-box-arrow-left"></i>
+        </button>
 
-            <button class="icon-btn" onclick="window.location.href = '/'">
-                <i class="bi bi-box-arrow-left"></i>
-            </button>
-    
+        <div class="forgot-content-wrap">
+            <div class="logo">
+                <img src="/images/Logo.png" alt="BunnyChat Logo" />
+            </div>
 
-            <div class="forgot-container forgot-form">
+            <!-- Thanh 2 Bước rõ ràng -->
+            <div class="stepper-bar">
+                <div class="step-node active" id="stepNode1">
+                    <span class="step-circle">1</span>
+                    <span>Tìm tài khoản</span>
+                </div>
+                <div class="step-line" id="stepLine"></div>
+                <div class="step-node" id="stepNode2">
+                    <span class="step-circle">2</span>
+                    <span>Đổi mật khẩu</span>
+                </div>
+            </div>
 
+            <h1 class="auth-title" id="stepTitle">Tìm Tài Khoản</h1>
+            <p class="auth-subtitle" id="stepSubtitle">Nhập Username, Email hoặc SĐT đã đăng ký để kiểm tra</p>
 
-                <div class="logo">
-                    <img src="~/images/Logo.png" />
+            <div class="alert-box" id="alertBox" style="display: none;"></div>
+
+            <!-- BƯỚC 1: XÁC THỰC TÀI KHOẢN -->
+            <form class="auth-form" id="step1Form" onsubmit="handleVerifyAccount(event)">
+                <div class="input-box">
+                    <input id="identifierInput" name="Identifier" type="text" placeholder=" " required autocomplete="off" />
+                    <label for="identifierInput">Username, Email hoặc Số điện thoại</label>
                 </div>
 
-                <h1 class="auth-title">Forgot Pasword</h1>
+                <button type="submit" class="auth-btn" id="verifyBtn">
+                    <span>Tiếp tục</span>
+                </button>
 
-                <form class="auth-form" menthod ="post" asp-controller="Auth" asp-action="Forgot">
-                    <input name="UserName" type="text" placeholder="Username/ Email/ Phone">
-                    <button type="submit" class="auth-btn"> Tiếp tục</button>
-                </form>
+                <div class="auth-link">
+                    <a href="/">Quay lại trang Đăng nhập</a>
+                </div>
+            </form>
+
+            <!-- BƯỚC 2: NHẬP MẬT KHẨU MỚI -->
+            <form class="auth-form" id="step2Form" style="display: none;" onsubmit="handleResetPassword(event)">
+                <div class="account-confirmed-badge" id="accountBadge">
+                    <i class="bi bi-person-check-fill"></i>
+                    <div>
+                        <strong id="badgeDisplayName">Họ và Tên</strong>
+                        <small id="badgeUsername">&#64;username</small>
+                    </div>
+                </div>
+
+                <div class="input-box">
+                    <input id="newPasswordInput" name="NewPassword" type="password" placeholder=" " required minlength="6" autocomplete="new-password" />
+                    <label for="newPasswordInput">Mật khẩu mới (tối thiểu 6 ký tự)</label>
+                </div>
+
+                <div class="input-box">
+                    <input id="confirmPasswordInput" name="ConfirmPassword" type="password" placeholder=" " required minlength="6" autocomplete="new-password" />
+                    <label for="confirmPasswordInput">Xác nhận mật khẩu mới</label>
+                </div>
+
+                <button type="submit" class="auth-btn" id="resetBtn">
+                    <span>Xác nhận đổi mật khẩu</span>
+                </button>
+
+                <div class="auth-link">
+                    <a href="javascript:void(0)" onclick="backToStep1()">← Nhập lại thông tin khác</a>
+                </div>
+            </form>
+
+            <!-- BƯỚC 3: THÀNH CÔNG -->
+            <div id="stepSuccess" style="display: none; text-align: center; padding: 10px 0 6px; width: 100%;">
+                <div class="success-icon-badge" style="width: 76px; height: 76px; border-radius: 50%; background: #ecfdf5; border: 2px solid #10b981; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.25);">
+                    <i class="bi bi-check-lg" style="font-size: 42px; color: #059669; font-weight: 900; line-height: 1;"></i>
+                </div>
+                <h3 style="font-weight: 800; font-size: 24px; margin: 0 0 10px; color: #065f46; letter-spacing: -0.3px;">Đổi mật khẩu thành công!</h3>
+                <p style="color: #1f2937; font-weight: 600; font-size: 14.5px; line-height: 1.5; margin: 0 auto 26px; max-width: 320px;">Bạn có thể đăng nhập ngay bằng mật khẩu mới vừa thiết lập.</p>
+                <a href="/" class="auth-btn d-inline-flex align-items-center justify-content-center text-decoration-none" style="width: 100%; height: 52px; font-size: 16px; font-weight: 700; letter-spacing: 0.3px;">
+                    Đăng nhập ngay
+                </a>
             </div>
-        
-        
+        </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/js/Auth/Forgot.js" asp-append-version="true"></script>
+}

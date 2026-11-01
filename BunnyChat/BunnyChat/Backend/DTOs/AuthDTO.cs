@@ -32,7 +32,21 @@ namespace BunnyChat.DTOs
 
         [Required]
         public string PassWord {get; set; }  = "";
-    
     }
 
+    public class VerifyForgotDTORequest
+    {
+        [Required]
+        public string Identifier { get; set; } = "";
+    }
+
+    public class ResetPasswordDTORequest
+    {
+        [Required]
+        public string Identifier { get; set; } = "";
+
+        [Required]
+        [StringLength(100, MinimumLength = 6)]
+        public string NewPassword { get; set; } = "";
+    }
 }

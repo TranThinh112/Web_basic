@@ -113,6 +113,7 @@ namespace BunnyChat.Controllers
                 senderAvatarUrl = sender?.AvatarUrl,
                 content = message.Content,
                 imgUrl = message.ImgUrl,
+                reactions = message.Reactions ?? new List<MessageReaction>(),
                 isMine = message.SenderId == currentUserId,
                 createdAt = message.CreatedAt,
                 updatedAt = message.UpdatedAt
@@ -514,7 +515,8 @@ namespace BunnyChat.Controllers
                 //format lại message
                 var messageData = await FormatMessage(message, currentUserId);
 
-                //gửi signalR
+                // Broadcast tin nhan realtime
+                // 1. Gui toi conversation group (danh cho nhung ai dang mo khung chat conversation nay)
                 await _chatHub.Clients
                     .Group(ChatHub.ConversationGroup(conversationId))
                     .SendAsync("new-message", new
@@ -523,6 +525,20 @@ namespace BunnyChat.Controllers
                         conversation = await FormatConversation(conversation, currentUserId),
                         unreadCounts = conversation.UnreadCounts
                     });
+
+                // 2. Gui toi user group cua tat ca thanh vien trong cuoc tro chuyen de cap nhat danh sach chat / preview ngay lap tuc
+                var participantIds = ConversationHelper.GetParticipantIds(conversation);
+                foreach (var memberId in participantIds)
+                {
+                    await _chatHub.Clients
+                        .Group(ChatHub.UserGroup(memberId))
+                        .SendAsync("new-message", new
+                        {
+                            message = messageData,
+                            conversation = await FormatConversation(conversation, memberId),
+                            unreadCounts = conversation.UnreadCounts
+                        });
+                }
 
                 return StatusCode(201, ApiResponse.Success(
                     "Gửi tin nhắn thành công",
@@ -593,6 +609,162 @@ namespace BunnyChat.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine("Lá»—i khi Ä‘Ã¡nh dáº¥u Ä‘Ã£ xem");
+                return StatusCode(500, ApiResponse.Fail(ex.Message));
+            }
+        }
+
+        // Tim kiem tin nhan trong 1 conversation hoac tat ca conversation cua user
+        [HttpGet("search-messages")]
+        public async Task<IActionResult> SearchMessages([FromQuery] string query, [FromQuery] string? conversationId = null)
+        {
+            try
+            {
+                var currentUserId = GetUserId();
+                if (string.IsNullOrWhiteSpace(query))
+                    return BadRequest(ApiResponse.Fail("Từ khóa tìm kiếm không được để trống"));
+
+                query = query.Trim();
+
+                if (!string.IsNullOrWhiteSpace(conversationId))
+                {
+                    var conversation = await FindConversationById(conversationId);
+                    if (conversation == null)
+                        return NotFound(ApiResponse.Fail("Cuộc trò chuyện không tồn tại"));
+
+                    if (!ConversationHelper.IsParticipant(conversation, currentUserId))
+                        return Forbid();
+
+                    var filter = Builders<Message>.Filter.And(
+                        Builders<Message>.Filter.Eq(m => m.ConversationId, conversationId),
+                        Builders<Message>.Filter.Regex(m => m.Content, new BsonRegularExpression(System.Text.RegularExpressions.Regex.Escape(query), "i"))
+                    );
+
+                    var matchedMessages = await _messageCollection.Find(filter)
+                        .SortByDescending(m => m.CreatedAt)
+                        .Limit(50)
+                        .ToListAsync();
+
+                    var results = new List<object>();
+                    foreach (var msg in matchedMessages)
+                    {
+                        var formattedMsg = await FormatMessage(msg, currentUserId);
+                        results.Add(new
+                        {
+                            message = formattedMsg,
+                            conversation = await FormatConversation(conversation, currentUserId)
+                        });
+                    }
+
+                    return Ok(ApiResponse.Success("Tìm kiếm thành công", results));
+                }
+                else
+                {
+                    var myConversations = await _conversationCollection.Find(c =>
+                        c.Participants.Any(p => p.UserId == currentUserId)
+                    ).ToListAsync();
+
+                    var conversationIds = myConversations.Select(c => c.Id).Where(id => !string.IsNullOrEmpty(id)).ToList();
+                    if (!conversationIds.Any())
+                        return Ok(ApiResponse.Success("Không có tin nhắn phù hợp", new List<object>()));
+
+                    var filter = Builders<Message>.Filter.And(
+                        Builders<Message>.Filter.In(m => m.ConversationId, conversationIds),
+                        Builders<Message>.Filter.Regex(m => m.Content, new BsonRegularExpression(System.Text.RegularExpressions.Regex.Escape(query), "i"))
+                    );
+
+                    var matchedMessages = await _messageCollection.Find(filter)
+                        .SortByDescending(m => m.CreatedAt)
+                        .Limit(50)
+                        .ToListAsync();
+
+                    var convDict = myConversations.ToDictionary(c => c.Id!);
+                    var results = new List<object>();
+
+                    foreach (var msg in matchedMessages)
+                    {
+                        if (convDict.TryGetValue(msg.ConversationId, out var conv))
+                        {
+                            var formattedMsg = await FormatMessage(msg, currentUserId);
+                            results.Add(new
+                            {
+                                message = formattedMsg,
+                                conversation = await FormatConversation(conv, currentUserId)
+                            });
+                        }
+                    }
+
+                    return Ok(ApiResponse.Success("Tìm kiếm thành công", results));
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse.Fail(ex.Message));
+            }
+        }
+
+        // Tha hoac go reaction vao tin nhan (Messenger style)
+        [HttpPost("messages/{messageId}/reactions")]
+        public async Task<IActionResult> ToggleReaction(string messageId, [FromBody] ToggleReactionDTORequest request)
+        {
+            try
+            {
+                var currentUserId = GetUserId();
+                if (string.IsNullOrWhiteSpace(request?.Emoji))
+                    return BadRequest(ApiResponse.Fail("Emoji không hợp lệ"));
+
+                var message = await _messageCollection.Find(m => m.Id == messageId).FirstOrDefaultAsync();
+                if (message == null)
+                    return NotFound(ApiResponse.Fail("Tin nhắn không tồn tại"));
+
+                var conversation = await FindConversationById(message.ConversationId);
+                if (conversation == null || !ConversationHelper.IsParticipant(conversation, currentUserId))
+                    return Forbid();
+
+                if (message.Reactions == null)
+                    message.Reactions = new List<MessageReaction>();
+
+                var existingReaction = message.Reactions.FirstOrDefault(r => r.UserId == currentUserId);
+                if (existingReaction != null)
+                {
+                    if (existingReaction.Emoji == request.Emoji)
+                    {
+                        message.Reactions.Remove(existingReaction);
+                    }
+                    else
+                    {
+                        existingReaction.Emoji = request.Emoji;
+                        existingReaction.CreatedAt = DateTime.UtcNow;
+                    }
+                }
+                else
+                {
+                    message.Reactions.Add(new MessageReaction
+                    {
+                        UserId = currentUserId,
+                        Emoji = request.Emoji,
+                        CreatedAt = DateTime.UtcNow
+                    });
+                }
+
+                await _messageCollection.ReplaceOneAsync(m => m.Id == message.Id, message);
+
+                await _chatHub.Clients
+                    .Group(ChatHub.ConversationGroup(message.ConversationId))
+                    .SendAsync("reaction-updated", new
+                    {
+                        messageId = message.Id,
+                        conversationId = message.ConversationId,
+                        reactions = message.Reactions
+                    });
+
+                return Ok(ApiResponse.Success("Thao tác reaction thành công", new
+                {
+                    messageId = message.Id,
+                    reactions = message.Reactions
+                }));
+            }
+            catch (Exception ex)
+            {
                 return StatusCode(500, ApiResponse.Fail(ex.Message));
             }
         }

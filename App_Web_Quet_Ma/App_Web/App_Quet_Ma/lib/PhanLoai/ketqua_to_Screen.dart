@@ -1,272 +1,239 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import '../models/to_model.dart';
 import '../PhanLoai/create_TO/create_to_screen.dart';
 import '../BILL/BillTo.dart';
-import '../PhanLoai/PhanLoaiScreen.dart';
 import '../data/api_service.dart';
+import '../models/appbar_logo.dart';
 
-//ko witget
 class TOResultScreen extends StatelessWidget {
   final TOModel to;
-  final Map<String, dynamic> user; //truyen user
+  final Map<String, dynamic> user;
 
   const TOResultScreen({super.key, required this.to, required this.user});
 
   @override
   Widget build(BuildContext context) {
-    final ScrollController listScrollController = ScrollController();
     final textColor = Theme.of(context).textTheme.bodyMedium?.color;
     final style = TextStyle(
-        fontSize: 16, fontWeight: FontWeight.bold, color: textColor);
+        fontSize: 15, fontWeight: FontWeight.bold, color: textColor);
+
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
-          buildHeader(context),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              children: [
-                Container(
-                child: Column(
-                  children: [
-                    const SizedBox (height: 40),
-                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('TO ID: ${to.maTO}',style: style),
-                          Text('Số lượng: ${to.soLuongDonHang}/${TOModel.maxGoiHang}',style: style),
-                        ],
-                      ),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Station: ${to.diaDiemGiaoHang}',style: style),
-                      Text(
-                          'Khối lượng: ${to.totalWeight.toStringAsFixed(2)}/${TOModel.maxWeight} kg',style: style,
-                      ),
-                    ],
-                  ),
-                   Row(children: [Text('Packer: ${to.packer}', style: style)]),
-              ],
-            ),
-            ),
-             SizedBox(height: 20),
-             Row(
-               children: [
-                 SizedBox(width: 10),
-                 SizedBox(
-                   height: 30,
-                   width: 100,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white70,
-                        shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        )
-                      ),
-                      onPressed: () async {
-                        await ApiService.reopenTO(to.maTO);
-
-                        Navigator.pop(context, true);
-                      },
-                    child: const Text("ReOpen",
-                      style: TextStyle(
-                        fontSize: 12, color: Colors.black, fontWeight: FontWeight.bold
-                      ),
-                      ),
-                    ),
-                 ),
-                 SizedBox(width: 20),
-                 SizedBox(
-                   height: 30,
-                   width: 100,
-                   child: ElevatedButton(
-                     style: ElevatedButton.styleFrom(
-                       backgroundColor: Colors.white70,
-                           shape: RoundedRectangleBorder(
-                             borderRadius: BorderRadius.circular(10),
-                           )
+          HeaderWidget(
+            title: 'Chi Tiết Bao Hàng',
+            onBack: () => Navigator.pop(context),
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.05),
+                          blurRadius: 10,
+                          offset: const Offset(0, 3),
                         ),
-                       onPressed: () {
-                            Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context)=> BillTO(TO: to),
-                            ),
-                        );
-                       },
-                       child: const Text("View",
-                       style: TextStyle(
-                           fontSize: 12, color: Colors.black, fontWeight:  FontWeight.bold
-                         ),
-                       )
-                   ),
-                 ),
-                 SizedBox(width: 20),
-                 SizedBox(
-                   height: 30,
-                   width: 100,
-                   child: ElevatedButton(
-                     style: ElevatedButton.styleFrom(
-                       backgroundColor: Colors.orange,
-                       shape: RoundedRectangleBorder(
-                         borderRadius: BorderRadiusGeometry.circular(10),
-                       )
-                     ),
-                       onPressed: (){
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_)=> CreateTOScreen(user: user),
-                            ),
-                                (route) => route.isFirst,
-                        );
-                       },
-                       child: const Text("Tạo mới",
-                         style: TextStyle(
-                           fontWeight: FontWeight.bold, color: Colors.black, fontSize: 12
-                         ),
-                       )
-                   ),
-                 )
-               ],
-             ),
-
-             SizedBox(height: 40),
-             Center(
-               child: ConstrainedBox(
-                 constraints: const BoxConstraints(maxWidth: 360),
-                 child: Container(
-                   height: 260,
-                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                   decoration: BoxDecoration(
-                     color: Colors.grey[50],
-                     borderRadius: BorderRadius.circular(12),
-                     border: Border.all(color: Colors.grey[300]!),
-                     boxShadow: [
-                       BoxShadow(
-                         color: Colors.grey.withValues(alpha: 0.08),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 6),
-                Container(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              child: Row(
-              children: const [
-                  Expanded(
-                    flex: 3,
-                    child: Text('Mã đơn',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12))),
-                  Expanded(
-                    flex: 2,
-                    child: Text('Khối lượng',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12))
+                      ],
                     ),
-                  ],
-                ),
-              ),
-                SizedBox(height: 10),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: to.danhSachGoiHang.length,
-                    itemBuilder: (_, index) {
-                      final item = to.danhSachGoiHang[index];
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 6),
-                        child: Row(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Expanded(
-                              flex: 4,
-                              child: Text(item['orderId']),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: Text(
-                                "${item['soKi']} kg",
-                                textAlign: TextAlign.center,
-                              ),
+                            Text('TO ID: ${to.maTO}', style: style),
+                            Text('Số lượng: ${to.soLuongDonHang}/${TOModel.maxGoiHang}', style: style),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Station: ${to.diaDiemGiaoHang}', style: style),
+                            Text(
+                              'Khối lượng: ${to.totalWeight.toStringAsFixed(2)}/${TOModel.maxWeight} kg',
+                              style: style,
                             ),
                           ],
                         ),
-                      );
-                    },
+                        const SizedBox(height: 8),
+                        Text('Packer: ${to.packer}', style: style),
+                      ],
+                    ),
                   ),
-                ),
-            ],
-          ),
-        ),
-      ),
-    ),
-          ],
-        ),
-      ),
-        ),
-      ]
-    ),
-    );
-  }
-  Widget buildHeader(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: Colors.orange[600],
-        borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(24),
-          bottomRight: Radius.circular(24),
-        ),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            child: Row(
-              children: [
-                TextButton.icon(
-                  onPressed: () {
-                    //pushandremove: di trang moi va xoa het duong di
-                    Navigator.popUntil(context, (route) => route.isFirst);
-                  },
-                  icon: const Icon(Icons.arrow_back, color: Colors.white),
-                  label: const Text('Quay lại',
-                      style: TextStyle(color: Colors.white, fontSize: 16)),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 16),
-            child: Column(
-              children: const [
-                Icon(Icons.inventory_2, size: 50, color: Colors.white),
-                SizedBox(height: 8),
-                Text('SPX Express',
-                    style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white)),
-              ],
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          onPressed: () async {
+                            await ApiService.reopenTO(to.maTO);
+                            if (context.mounted) {
+                              Navigator.pop(context, true);
+                            }
+                          },
+                          child: const Text(
+                            "Mở lại (ReOpen)",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BillTO(TO: to),
+                              ),
+                            );
+                          },
+                          child: const Text(
+                            "In Phiếu (View)",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.orange,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          onPressed: () {
+                            // Tạo TO mới: thay thế màn hình kết quả này bằng màn hình tạo TO mới
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => CreateTOScreen(user: user),
+                              ),
+                            );
+                          },
+                          child: const Text(
+                            "TO Mới",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Container(
+                    height: 320,
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.05),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: Colors.orange.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Row(
+                            children: [
+                              Expanded(
+                                flex: 4,
+                                child: Text('Mã đơn hàng',
+                                    style: TextStyle(
+                                        color: Colors.orange,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 13)),
+                              ),
+                              Expanded(
+                                flex: 2,
+                                child: Text('Khối lượng',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.orange,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 13)),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Expanded(
+                          child: to.danhSachGoiHang.isEmpty
+                              ? const Center(child: Text("Bao hàng chưa có kiện nào"))
+                              : ListView.separated(
+                                  itemCount: to.danhSachGoiHang.length,
+                                  separatorBuilder: (_, __) => Divider(
+                                    height: 1,
+                                    color: Colors.grey.withValues(alpha: 0.2),
+                                  ),
+                                  itemBuilder: (_, index) {
+                                    final item = to.danhSachGoiHang[index];
+                                    final orderId = item['orderId'] ?? item['id'] ?? '';
+                                    final kg = item['soKi'] ?? item['weight'] ?? 0;
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            flex: 4,
+                                            child: SelectableText(
+                                              orderId.toString(),
+                                              style: const TextStyle(fontWeight: FontWeight.w500),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            flex: 2,
+                                            child: Text(
+                                              "$kg kg",
+                                              textAlign: TextAlign.center,
+                                              style: const TextStyle(fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -274,4 +241,3 @@ class TOResultScreen extends StatelessWidget {
     );
   }
 }
-//apbar

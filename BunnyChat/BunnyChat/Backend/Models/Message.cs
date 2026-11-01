@@ -3,6 +3,16 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace BunnyChat.Models
 {
+    public class MessageReaction
+    {
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string UserId { get; set; } = string.Empty;
+
+        public string Emoji { get; set; } = string.Empty;
+
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    }
+
     public class Message
     {
         [BsonId]
@@ -22,6 +32,9 @@ namespace BunnyChat.Models
 
         // Ảnh đính kèm
         public string? ImgUrl { get; set; }
+
+        // Danh sách reaction thả cảm xúc
+        public List<MessageReaction> Reactions { get; set; } = new();
 
         public DateTime CreatedAt { get; set; }
             = DateTime.UtcNow;

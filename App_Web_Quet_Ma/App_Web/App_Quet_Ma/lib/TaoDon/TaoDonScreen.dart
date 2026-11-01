@@ -226,7 +226,7 @@ class _TaoDonScreenState extends State<TaoDonScreen> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              HeaderWidget(),
+              HeaderWidget(title: "Tạo Bưu Kiện", onBack: () => Navigator.pop(context)),
                   SizedBox(width: 10,),
                   Padding(
                       padding:  const EdgeInsets.symmetric(horizontal: 25, vertical: 30),

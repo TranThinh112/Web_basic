@@ -1,7 +1,6 @@
 import 'package:appqr1/Login/LoginScreen.dart';
 import 'package:flutter/material.dart';
 import '../main.dart';
-import '../Login/LoginScreen.dart';
 
 class SettingsScreen extends StatefulWidget {
   final Map<String, dynamic> user;
@@ -13,9 +12,6 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  // bool isDarkMode = false;
-  String language = "Tiếng Việt";
-
   @override
   Widget build(BuildContext context) {
     final isDarkMode = MyApp.of(context)?.isDarkMode ?? false;
@@ -23,6 +19,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       appBar: AppBar(
         title: const Text("Cài đặt"),
         backgroundColor: Colors.orange[700],
+        foregroundColor: Colors.white,
       ),
       body: ListView(
         children: [
@@ -68,10 +65,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
             leading: const Icon(Icons.logout, color: Colors.red),
             title: const Text("Đăng xuất", style: TextStyle(color: Colors.red)),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => LoginPage(),
+              showDialog(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: const Text("Xác nhận"),
+                  content: const Text("Bạn có chắc chắn muốn đăng xuất không?"),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(ctx),
+                      child: const Text("Hủy"),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                      onPressed: () {
+                        Navigator.pop(ctx);
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LoginPage(),
+                          ),
+                          (route) => false,
+                        );
+                      },
+                      child: const Text("Đăng xuất", style: TextStyle(color: Colors.white)),
+                    ),
+                  ],
                 ),
               );
             },
@@ -92,20 +110,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
             secondary: isDarkMode
                 ? const Icon(Icons.light_mode)
                 : const Icon(Icons.dark_mode),
-
             title: Text(isDarkMode ? "Light Mode" : "Dark Mode"),
             value: isDarkMode,
-//bat tat nut -> goi ve myapp cap nhat trang thai
             onChanged: (value) {
               MyApp.of(context)?.toggleTheme(value);
               setState(() {});
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.language),
-            title: const Text("Ngôn ngữ \nTiếng Việt"),
-            // subtitle: Text(language),
-             // Text("Tiếng Việt"),
+          const ListTile(
+            leading: Icon(Icons.language),
+            title: Text("Ngôn ngữ"),
+            subtitle: Text("Tiếng Việt"),
           ),
         ],
       ),
