@@ -39,17 +39,11 @@ export default function DanhSachTOView() {
     fetchTOs();
   }, []);
 
-  // Nút ReOpen đối với bao đã Packed (hoặc Complete)
+  // Nút ReOpen đối với bao đã Packed (hoặc Complete): vào thẳng không hiện confirm alert
   const handleReopen = async (maTO: string) => {
-    if (confirm(`Bạn có chắc muốn ReOpen mở lại bao [${maTO}] để tiếp tục quét thêm hoặc xóa đơn?`)) {
-      const ok = await api.reopenTO(maTO);
-      if (ok) {
-        // Chuyển hướng trực tiếp tới trang quét mã chỉ định danh TO đó
-        router.push(`/TOmanagement/sorting/${encodeURIComponent(maTO)}`);
-      } else {
-        alert("Lỗi khi mở lại bao hàng, vui lòng thử lại!");
-      }
-    }
+    // Gọi reopen ngầm và điều hướng trực tiếp vào trang quét mã của TO
+    api.reopenTO(maTO).catch(() => {});
+    router.push(`/TOmanagement/sorting/${encodeURIComponent(maTO)}`);
   };
 
   // Nút mở lại trang quét mã đối với bao đang ở trạng thái Packing
@@ -61,6 +55,33 @@ export default function DanhSachTOView() {
     if (confirm(`Xác nhận xóa mã bao ${maTO}?`)) {
       const ok = await api.deleteTO(maTO);
       if (ok) fetchTOs();
+    }
+  };
+
+  // Hàm format thời gian chi tiết chuẩn múi giờ Việt Nam (Asia/Ho_Chi_Minh - GMT+7)
+  // Hàm format thời gian chi tiết chuẩn giờ Việt Nam
+  const formatDateTimeFull = (isoString?: string | null) => {
+    if (!isoString) return "---";
+    try {
+      const str = String(isoString).trim();
+      // Nếu chuỗi chứa ngày và giờ dạng YYYY-MM-DDTHH:mm:ss hoặc YYYY-MM-DD HH:mm:ss
+      const match = str.match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}:\d{2}:\d{2})/);
+      if (match) {
+        const [, yyyy, mm, dd, timePart] = match;
+        return `${timePart} ${dd}/${mm}/${yyyy}`;
+      }
+
+      const d = new Date(str);
+      if (isNaN(d.getTime())) return str;
+      const hh = String(d.getHours()).padStart(2, "0");
+      const mm = String(d.getMinutes()).padStart(2, "0");
+      const ss = String(d.getSeconds()).padStart(2, "0");
+      const dd = String(d.getDate()).padStart(2, "0");
+      const MM = String(d.getMonth() + 1).padStart(2, "0");
+      const yyyy = d.getFullYear();
+      return `${hh}:${mm}:${ss} ${dd}/${MM}/${yyyy}`;
+    } catch {
+      return String(isoString);
     }
   };
 
@@ -201,10 +222,13 @@ export default function DanhSachTOView() {
                       </td>
 
                       <td className="px-4 py-3 text-slate-500">{item.packer}</td>
-                      <td className="px-4 py-3 text-[11px] text-slate-400">
-                        {item.ngayTao
-                          ? new Date(item.ngayTao).toLocaleDateString("vi-VN")
-                          : "---"}
+                      <td className="px-4 py-3 font-mono text-[11px] text-slate-600">
+                        <div>
+                          <span className="font-semibold text-slate-800">{formatDateTimeFull(isPacked && item.completeTime ? item.completeTime : item.ngayTao)}</span>
+                          {isPacked && item.completeTime && (
+                            <span className="block text-[10px] text-emerald-600 font-sans font-medium">(Hoàn tất)</span>
+                          )}
+                        </div>
                       </td>
 
                       {/* Thao tác */}

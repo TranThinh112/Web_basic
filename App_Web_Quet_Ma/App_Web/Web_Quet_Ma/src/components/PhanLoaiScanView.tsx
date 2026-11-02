@@ -98,12 +98,42 @@ export default function PhanLoaiScanView({ initialMaTO }: { initialMaTO?: string
   useEffect(() => {
     if (initialMaTO) {
       // Nếu có mã TO từ router params (VD: /TOmanagement/sorting/TO261102M3CIE)
+      // CHỈ ĐỌC TỪ BẢNG TO_orders
       api.getOneTO(initialMaTO).then((found) => {
         if (found) {
-          setCurrentTO({
+          let listInTO: any[] = [];
+          try {
+            const raw = found.danhSachGoiHang;
+            listInTO = Array.isArray(raw)
+              ? raw
+              : JSON.parse(typeof raw === "string" ? raw : "[]");
+          } catch {
+            listInTO = [];
+          }
+
+          // Neu diaDiemGiaoHang la SOC hoac rong ma danh sach da co don, lay dia diem tu don dau tien (VD: HCM, CT)
+          const firstOrderDest = listInTO.length > 0 ? (listInTO[0].noiNhan || listInTO[0].destination) : "";
+          const resolvedHub = (found.diaDiemGiaoHang && found.diaDiemGiaoHang !== "SOC") 
+            ? found.diaDiemGiaoHang 
+            : (firstOrderDest || found.diaDiemGiaoHang || "");
+
+          const resolvedTO = {
             ...found,
-            trangThai: found.trangThai === "Complete" || found.trangThai === "Packed" ? "Packing" : found.trangThai,
-          });
+            diaDiemGiaoHang: resolvedHub,
+            danhSachGoiHang: listInTO,
+            trangThai:
+              found.trangThai === "Complete" || found.trangThai === "Packed"
+                ? "Packing"
+                : found.trangThai,
+          };
+
+          setCurrentTO(resolvedTO);
+
+          // Dong bo nguoc lai ve server neu diaDiemGiaoHang truoc do la SOC hoac chua cap nhat
+          if (found.diaDiemGiaoHang !== resolvedHub && resolvedHub) {
+            api.updateTO(resolvedTO).catch(() => {});
+          }
+
           setScanMessage({
             text: `Đang mở lại bao hàng [${initialMaTO}] để quét tiếp.`,
             type: "info",
@@ -137,22 +167,35 @@ export default function PhanLoaiScanView({ initialMaTO }: { initialMaTO?: string
     return () => window.removeEventListener("keydown", handleGlobalKeyDown);
   }, []);
 
-  // Format thời gian hiển thị gọn gàng
+  // Format thời gian hiển thị chuẩn múi giờ Việt Nam (Asia/Ho_Chi_Minh - GMT+7)
+  // Format thời gian hiển thị chuẩn giờ Việt Nam
   const formatTime = (isoString?: string) => {
     if (!isoString) {
       const now = new Date();
-      return `${String(now.getHours()).padStart(2, "0")}:${String(
-        now.getMinutes()
-      ).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}`;
+      return `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}`;
     }
     try {
-      const d = new Date(isoString);
-      if (isNaN(d.getTime())) return isoString;
-      return `${String(d.getHours()).padStart(2, "0")}:${String(
-        d.getMinutes()
-      ).padStart(2, "0")}:${String(d.getSeconds()).padStart(2, "0")}`;
+      const str = String(isoString).trim();
+
+      // Nếu chuỗi ISO có dạng YYYY-MM-DDTHH:mm:ss hoặc YYYY-MM-DD HH:mm:ss
+      // Backend đã lưu giờ Việt Nam trực tiếp vào TIMESTAMP/JSON (VD: 2026-11-02 23:42:53 hoặc 2026-11-02T23:42:53.000Z)
+      // Nếu new Date() cộng thêm +7 tiếng nữa sẽ bị lệch 7 tiếng sang sáng hôm sau (06:42:53)
+      // Vì vậy trích xuất trực tiếp giờ:phút:giây gốc từ chuỗi đã lưu
+      const match = str.match(/[T ](\d{2}:\d{2}:\d{2})/);
+      if (match) {
+        return match[1];
+      }
+
+      // Nếu chỉ có giờ:phút:giây
+      if (/^\d{2}:\d{2}:\d{2}$/.test(str)) {
+        return str;
+      }
+
+      const d = new Date(str);
+      if (isNaN(d.getTime())) return str;
+      return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}:${String(d.getSeconds()).padStart(2, "0")}`;
     } catch {
-      return isoString;
+      return String(isoString);
     }
   };
 
@@ -218,36 +261,46 @@ export default function PhanLoaiScanView({ initialMaTO }: { initialMaTO?: string
       const currentTimeStr = new Date().toISOString();
 
       if (res.success) {
-        // Cập nhật state tức thì
-        const orderWeight = Number(res.order?.soKi || 0.5);
-        const orderDest = res.order?.noiNhan || activeTO.diaDiemGiaoHang || "SOC";
+        // Lấy chi tiết đơn hàng (nơi nhận, số kí) từ kết quả scan hoặc truy vấn đơn
+        let orderDest = res.order?.noiNhan;
+        let orderWeight = Number(res.order?.soKi || (res as any).addedWeight || 0);
+
+        if (!orderDest || orderWeight <= 0) {
+          const detail = await api.getOrderById(cleanCode);
+          if (detail) {
+            orderDest = detail.noiNhan || orderDest;
+            orderWeight = Number(detail.soKi) || orderWeight || 0.5;
+          }
+        }
+
+        const finalDest = orderDest || activeTO.diaDiemGiaoHang || "";
+        const finalWeight = orderWeight > 0 ? orderWeight : 0.5;
 
         const newItem: ScannedItem = {
           orderId: cleanCode,
-          soKi: orderWeight,
-          noiNhan: orderDest,
+          soKi: finalWeight,
+          noiNhan: finalDest,
           thoiGianScan: currentTimeStr,
         };
 
         const updatedList = [newItem, ...currentList];
         const newTotalWeight = Number(
-          (Number(activeTO.totalWeight || 0) + orderWeight).toFixed(2)
+          (Number(activeTO.totalWeight || 0) + finalWeight).toFixed(2)
         );
 
+        // Nếu bao chưa có điểm đến, hoặc đơn đầu tiên gán Hub, cập nhật chính xác nơi đến của đơn (VD: HCM, CT...)
         const updatedTOState: TOOrder = {
           ...activeTO,
           trangThai: "Packing",
-          diaDiemGiaoHang: activeTO.diaDiemGiaoHang || orderDest,
+          diaDiemGiaoHang: (activeTO.diaDiemGiaoHang && activeTO.diaDiemGiaoHang !== "SOC") ? activeTO.diaDiemGiaoHang : finalDest,
           danhSachGoiHang: updatedList,
           totalWeight: newTotalWeight,
         };
 
         setCurrentTO(updatedTOState);
 
-        // Đảm bảo đồng bộ trạng thái Packing về server TO nếu chưa cập nhật
-        if (activeTO.trangThai !== "Packing") {
-          api.updateTO(updatedTOState).catch(() => {});
-        }
+        // Lưu trực tiếp danh sách kiện, số kí và điểm đến vào bảng TO_orders trên database
+        await api.updateTO(updatedTOState);
 
         sounds.playSuccess();
         setScanMessage({
@@ -313,18 +366,14 @@ export default function PhanLoaiScanView({ initialMaTO }: { initialMaTO?: string
         diaDiemGiaoHang: filtered.length === 0 ? "" : currentTO.diaDiemGiaoHang,
       };
 
+      // Lưu cập nhật danh sách mới vào TO_orders
+      await api.updateTO(nextTO);
       setCurrentTO(nextTO);
       sounds.playSuccess();
       setScanMessage({
         text: `Đã xóa đơn [${pkgCode}] khỏi bao hàng`,
         type: "info",
       });
-
-      // Tải lại dữ liệu chuẩn từ server
-      const updated = await api.getOneTO(currentTO.maTO);
-      if (updated) {
-        setCurrentTO(updated);
-      }
     } catch {
       sounds.playError();
       setScanMessage({ text: "Lỗi khi xóa đơn khỏi bao", type: "error" });

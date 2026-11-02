@@ -19,17 +19,19 @@ router.post("/", (req, res) => {
   const safeList = Array.isArray(danhSachGoiHang)
     ? danhSachGoiHang
     : [];
+  const SL = safeList.length;
   db.query(
     `INSERT INTO TO_orders 
-    (maTO, danhSachGoiHang, diaDiemGiaoHang, trangThai, packer, totalWeight, ngayTao, completeTime)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    (maTO, danhSachGoiHang, diaDiemGiaoHang, trangThai, packer, totalWeight, SL, ngayTao, completeTime)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       maTO,
-      JSON.stringify(safeList), // 🔥 convert list → string
+      JSON.stringify(safeList),
       diaDiemGiaoHang,
       trangThai,
       packer,
       totalWeight,
+      SL,
       ngayTao,
       completeTime
     ],
@@ -57,12 +59,14 @@ router.put("/:maTO", (req, res) => {
   ? danhSachGoiHang
   : [];
 
+  const SL = safeList.length;
   db.query(
     `UPDATE TO_orders SET 
       danhSachGoiHang=?,
       diaDiemGiaoHang=?,
       trangThai=?,
       totalWeight=?,
+      SL=?,
       completeTime=?
      WHERE maTO=?`,
     [
@@ -70,9 +74,9 @@ router.put("/:maTO", (req, res) => {
       diaDiemGiaoHang,
       trangThai,
       totalWeight,
+      SL,
       completeTime,
       maTO
-
     ],
     (err) => {
       if (err) return res.status(500).json(err);

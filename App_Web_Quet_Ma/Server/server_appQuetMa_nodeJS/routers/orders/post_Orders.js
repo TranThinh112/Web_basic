@@ -123,8 +123,12 @@ router.post('/scan/:id', (req, res) => {
                   res.json({
                     success: true,
                     instance: INSTANCE_ID,
-                    addedWeight: soKi
-                    //  bỏ list → nhẹ hơn
+                    addedWeight: soKi,
+                    order: {
+                      id: id,
+                      soKi: soKi,
+                      noiNhan: rows[0].noiNhan
+                    }
                   });
                 }
               );
