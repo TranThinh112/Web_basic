@@ -1,10 +1,52 @@
-# Hệ Thống Quản Lý & Phân Loại Bưu Kiện (SPX Express System)
+﻿# Hệ Thống Quản Lý & Phân Loại Bưu Kiện (SPX Express System)
 
 Hệ thống quản lý, điều phối và phân loại bưu kiện chuyên dụng cho bưu cục và trung tâm phân loại (Hub / Sorting Center) theo quy trình logistics tiêu chuẩn SPX Express. 
 
 Hệ thống bao gồm đầy đủ **Ứng dụng di động (Mobile App Flutter)**, **Cổng quản trị web (Web Portal Next.js)** và **Máy chủ dịch vụ (Backend API Node.js)** kết nối cơ sở dữ liệu tập trung.
 
 ---
+
+
+---
+
+## 🌐 Đường Dẫn Trực Tuyến & Thử Nghiệm Hệ Thống (Live Deployment)
+
+| Dịch vụ | Nền tảng | URL Trực tuyến |
+| :--- | :--- | :--- |
+| **SPX Web Portal** | Next.js 14 / Railway | **https://webbasic-production-c870.up.railway.app** |
+| **SPX Backend API** | Node.js Express / Railway | **https://webbasic-production-47cd.up.railway.app** |
+
+---
+
+## 📦 Danh Sách Mã Đơn Mẫu & Phiếu In Vận Đơn (Dùng Test Scan / Tra Cứu)
+
+Dưới đây là các mã đơn mẫu có sẵn trên hệ thống, kèm hình ảnh phiếu bưu kiện (Barcode + QR Code sắc nét) để quét thử nghiệm tính năng **Quét Camera**, **Súng Barcode Scanner**, **Phân loại vào bao TO** và **Tra cứu hàng loạt**:
+
+| Mã vận đơn (Tracking ID) | Nơi gửi | Nơi nhận (Hub đích) | Khối lượng | Trạng thái mẫu | Phiếu in mẫu |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **`SPXVN06721210393`** | HN | **CT** (Cần Thơ) | 2.64 kg | Inbound | [Xem phiếu](public/sample_bills/SPXVN06721210393.jpg) |
+| **`SPXVN06620767933`** | HN | **DN** (Đà Nẵng) | 2.31 kg | Inbound | [Xem phiếu](public/sample_bills/SPXVN06620767933.jpg) |
+| **`SPXVN06733932163`** | DN | **MT** (Miền Trung) | 0.34 kg | Outbound | [Xem phiếu](public/sample_bills/SPXVN06733932163.jpg) |
+| **`SPXVN06715297463`** | DN | **HN** (Hà Nội) | 2.72 kg | Outbound | [Xem phiếu](public/sample_bills/SPXVN06715297463.jpg) |
+| **`SPXVN06687683833`** | HN | **MT** (Miền Trung) | 1.63 kg | Outbound | [Xem phiếu](public/sample_bills/SPXVN06687683833.jpg) |
+| **`SPXVN06679685553`** | MT | **CT** (Cần Thơ) | 2.96 kg | Inbound | [Xem phiếu](public/sample_bills/SPXVN06679685553.jpg) |
+| **`SPXVN06670867033`** | MT | **HCM** (TP.HCM) | 0.43 kg | Outbound | [Xem phiếu](public/sample_bills/SPXVN06670867033.jpg) |
+
+### 🖼️ Hình Ảnh Phiếu Vận Đơn Mẫu Trực Quan (Scan Test)
+
+<p align="center">
+  <img src="public/sample_bills/SPXVN06721210393.jpg" width="280" alt="Bill SPXVN06721210393" />
+  <img src="public/sample_bills/SPXVN06620767933.jpg" width="280" alt="Bill SPXVN06620767933" />
+  <img src="public/sample_bills/SPXVN06733932163.jpg" width="280" alt="Bill SPXVN06733932163" />
+</p>
+<p align="center">
+  <img src="public/sample_bills/SPXVN06715297463.jpg" width="280" alt="Bill SPXVN06715297463" />
+  <img src="public/sample_bills/SPXVN06687683833.jpg" width="280" alt="Bill SPXVN06687683833" />
+  <img src="public/sample_bills/SPXVN06679685553.jpg" width="280" alt="Bill SPXVN06679685553" />
+</p>
+<p align="center">
+  <img src="public/sample_bills/SPXVN06670867033.jpg" width="280" alt="Bill SPXVN06670867033" />
+</p>
 
 ## 📸 Giao Diện Hệ Thống (UI Screenshots)
 
