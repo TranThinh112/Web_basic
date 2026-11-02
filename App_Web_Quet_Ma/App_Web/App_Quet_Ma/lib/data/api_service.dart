@@ -5,7 +5,7 @@ import '../models/to_model.dart';
 import '../models/Oders_model.dart';
 class ApiService {
 //http
-  static const String baseUrl = "https://server-production-7598.up.railway.app";
+  static const String baseUrl = "https://webbasic-production-47cd.up.railway.app";
 
   /// lấy tất cả orders để đếm SL
   static Future<List<dynamic>> getOrders() async {

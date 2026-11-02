@@ -1,5 +1,5 @@
-"use client";
-import DanhSachTOView from "@/components/DanhSachTOView";
-export default function TransferOrdersPage() {
-  return <DanhSachTOView />;
+import { redirect } from "next/navigation";
+
+export default function OldTransferOrdersPage() {
+  redirect("/TOmanagement/listTO");
 }

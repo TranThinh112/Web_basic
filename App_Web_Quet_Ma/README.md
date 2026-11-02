@@ -34,28 +34,66 @@ Hệ thống bao gồm đầy đủ **Ứng dụng di động (Mobile App Flutte
   - Chuẩn hóa thanh điều hướng `HeaderWidget` hiển thị tiêu đề ngữ cảnh rõ ràng và nút quay lại an toàn với `Navigator.canPop`.
   - Cơ chế `pushReplacement` khi hoàn tất đóng bao (`CreateTOScreen` ➔ `TOResultScreen`) hoặc tạo mới TO, loại bỏ triệt để hiện tượng kẹt trang cũ hay các trang bị chồng đè lên nhau.
   - Đăng xuất an toàn dọn sạch stack với xác nhận người dùng.
-- **Tính năng đầy đủ:** Quét gom bao TO, kiểm tra trạng thái TO, tra cứu đơn hàng, tạo đơn bưu kiện mới, xem/chia sẻ phiếu in niêm phong (Bill TO, Bill đơn), chế độ Dark Mode / Light Mode.
+- **Chụp ảnh & Chia sẻ phiếu in (Export / Share Bill):** Sử dụng `RenderRepaintBoundary` kết xuất toàn bộ phiếu vận đơn và phiếu bao TO thành file ảnh PNG chất lượng cao (3x resolution) và chia sẻ tức thì qua Zalo, Drive, Gmail hoặc máy in di động thông qua `share_plus`.
+- **Nhận diện kiện hàng Giá Trị Cao (GTC):** Tự động phân tích giá trị đơn bưu kiện; các đơn trên 3.000.000 VNĐ sẽ được tự động đóng dấu huy hiệu đen cảnh báo **"GTC"** nổi bật trên nhãn bưu kiện.
+- **Hỗ trợ nhập liệu thông minh:**
+  - Tự động trích xuất vùng miền / Hub đích từ địa chỉ người gửi và người nhận.
+  - Tự động format tiền tệ Việt Nam (`100.000 VND`) và trọng lượng số thập phân (tự điền `0.x` khi gõ bắt đầu bằng dấu chấm `.`).
+- **Tính năng đầy đủ:** Quét gom bao TO, kiểm tra trạng thái TO, tra cứu đơn hàng, tạo đơn bưu kiện mới, xem/in phiếu niêm phong, chế độ Dark Mode / Light Mode, đổi mật khẩu & quên mật khẩu.
 
 ### 2. Cổng Quản Trị Web Portal (`App_Web/Web_Quet_Ma` - Next.js & React)
 Dành cho máy tính văn phòng, trạm máy bàn phân loại (Desktop) hoặc máy tính bảng tại Hub:
-- **Công nghệ hiện đại:** Xây dựng trên Next.js 16 (App Router), React 19, TypeScript và Tailwind CSS v4.
-- **Điều phối & Quản lý chuyến xe trung chuyển:** Theo dõi trực quan trạng thái xe (*Chờ bốc hàng ➔ Đang tải hàng ➔ Đang trung chuyển ➔ Hoàn thành*). Hỗ trợ Wizard tạo chuyến 4 bước chuẩn hóa.
+- **Công nghệ hiện đại:** Xây dựng trên Next.js 16 (App Router), React 19, TypeScript và Tailwind CSS v4. Hỗ trợ đầy đủ Dark Mode / Light Mode.
+- **Điều phối & Quản lý chuyến xe trung chuyển:** 
+  - Theo dõi trực quan trạng thái xe (*Chờ bốc hàng ➔ Đang tải hàng ➔ Đang trung chuyển ➔ Hoàn thành*).
+  - Wizard tạo chuyến xe chuẩn hóa 4 bước (*1. Thông tin chuyến ➔ 2. Chọn loại xe & tài xế ➔ 3. Gán tải bưu kiện/bao hàng ➔ 4. Xác nhận xuất bến*).
+  - Quản lý đội xe trung chuyển đa tải trọng (1.5 tấn, 3.5 tấn, 8 tấn, 15 tấn container).
 - **Trạm quét mã phân loại (TO Station):**
   - Tích hợp linh hoạt cả súng bắn mã vạch phần cứng (nhận diện tự động qua phím Enter) lẫn quét trực tiếp qua Webcam/Camera máy tính (`html5-qrcode`).
   - Âm thanh phản hồi trực tiếp bằng Web Audio API không phụ thuộc file ngoài.
   - Hiệu ứng hoàn tất đóng bao sinh động (Confetti) và hỗ trợ in ấn phiếu TO (Print View) trực tiếp từ trình duyệt.
-- **Tra cứu và quản lý:** Bảng danh sách bao hàng, mở lại bao (Reopen), tra cứu hành trình vận đơn và tạo đơn hàng mẫu.
-- **Cấu hình trạm làm việc:** Dễ dàng đổi URL Backend linh hoạt giữa Localhost và Cloud Railway.
+- **Tra cứu vận đơn nâng cao:** Hỗ trợ tra cứu hàng loạt đa định dạng (dấu cách, phẩy, xuống dòng), xác thực định dạng SPX, kiểm tra tồn tại database nghiêm ngặt (chỉ trả về khi tất cả mã hợp lệ và có trong DB), bảng kết quả trực quan tích hợp popup xem Bill/tem vận đơn khổ lớn (hỗ trợ phím ESC).
+- **Tạo đơn thông minh:** Tự động sinh mã chuẩn SPX, tự động phân tích địa chỉ để định tuyến Hub gửi/nhận (HN, HCM, DN, CT, MT) theo thuật toán logic, ẩn form sau khi tạo và cung cấp nút copy mã & xem bill nhanh.
+- **Cấu hình trạm làm việc:** Dễ dàng đổi URL Backend linh hoạt giữa Localhost và Cloud Railway trực tiếp trên giao diện Settings.
+- **Xác thực & Khôi phục tài khoản:** Màn hình đăng nhập bảo mật kèm modal "Quên mật khẩu" hỗ trợ reset trực tiếp về mật khẩu mặc định qua API.
 
 ### 3. Máy Chủ Backend API (`Server/server_appQuetMa_nodeJS` - Express)
 Cung cấp toàn bộ RESTful API dùng chung cho cả App Mobile và Web:
-- **Người dùng (`/`):** Đăng nhập tài khoản nhân viên bưu cục, xác thực, khôi phục mật khẩu.
-- **Bưu kiện (`/orders`):** Tạo bưu kiện, tra cứu chi tiết, lấy danh sách phân trang (Pagination 10 đơn/trang), tìm kiếm theo từ khóa/mã đơn, quét đơn vào bao TO (`/orders/scan/:id`), xóa đơn khỏi bao (`/orders/remove/:id`).
-- **Bao hàng Transfer Order (`/TO`):** Tạo bao mới, lấy danh sách, kiểm tra chi tiết bao, cập nhật khối lượng/số lượng kiện, đóng bao (`complete`), mở lại bao (`reopen`) và xóa bao.
+- **Người dùng (`/`):** 
+  - `GET /login/users/:username/:password` & `GET /login/users/:username`: Đăng nhập, xác thực thông tin nhân viên bưu cục.
+  - `PUT /repass/users/:username`: Khôi phục / đặt lại mật khẩu cho tài khoản.
+- **Bưu kiện (`/orders`):**
+  - `GET /orders/getIn4`: Tra cứu chi tiết theo ID bưu kiện, lấy danh sách phân trang (Pagination 10 đơn/trang), lọc theo trạng thái (`Inbound`, `Outbound`), tìm kiếm theo từ khóa.
+  - `POST /orders`: Tạo đơn bưu kiện mới vào hệ thống.
+  - `POST /orders/scan/:id`: Quét nạp bưu kiện vào bao hàng TO, tự động cộng dồn khối lượng và cập nhật trạng thái đơn thành `Inbound`.
+  - `POST /orders/remove/:id`: Xóa bưu kiện khỏi bao TO, tự động trừ khối lượng và hoàn trả trạng thái ban đầu của kiện hàng.
+- **Bao hàng Transfer Order (`/TO`):**
+  - `GET /TO`: Lấy toàn bộ danh sách bao hàng hoặc lọc theo trạng thái.
+  - `GET /TO?maTO=...`: Truy xuất thông tin chi tiết và danh sách tất cả kiện hàng nằm trong bao.
+  - `POST /TO`: Khởi tạo bao hàng TO mới với điểm đến (Hub đích).
+  - `PUT /TO/:maTO`: Đóng niêm phong bao hàng, cập nhật trạng thái hoàn thành (`Packed`).
+  - `PUT /TO/:maTO/reopen`: Mở lại bao hàng đã niêm phong để tiếp tục nạp thêm hoặc sửa đổi bưu kiện.
+  - `DELETE /TO/:maTO`: Xóa bao hàng khỏi hệ thống.
+- **Cấu hình môi trường:** Tự động lắng nghe cổng cấu hình qua biến môi trường `process.env.PORT` (hỗ trợ triển khai Railway, Render, VPS) hoặc mặc định `3000`.
 
 ### 4. Cơ Sở Dữ Liệu (`Database/`)
-- Lưu trữ tập trung bằng MySQL/MariaDB (`orders.sql`, `TO_orders.sql`, `users.sql`).
+- Lưu trữ tập trung bằng MySQL/MariaDB với 3 schema bảng chuẩn:
+  - `users.sql`: Bảng tài khoản nhân viên, mật khẩu và thời gian tạo.
+  - `orders.sql`: Bảng bưu kiện, thông tin người gửi/nhận, địa chỉ, giá trị, khối lượng, mã bao TO liên kết, trạng thái vận chuyển.
+  - `TO_orders.sql`: Bảng quản lý bao hàng trung chuyển, trạm đích, packer phụ trách, khối lượng tổng và mốc thời gian niêm phong.
 - Hỗ trợ lưu trữ offline SQLite cục bộ (`orders_db.db`) trên ứng dụng di động khi mất kết nối mạng.
+
+---
+
+## 🔑 Tài Khoản Thử Nghiệm Mẫu (Demo Credentials)
+
+Bạn có thể sử dụng các tài khoản có sẵn trong cơ sở dữ liệu mẫu để đăng nhập và trải nghiệm:
+
+| Tài khoản (Username) | Mật khẩu (Password) | Vai trò / Ghi chú |
+| :--- | :--- | :--- |
+| **admin** | `123456` | Quản trị viên / Toàn quyền hệ thống |
+| **Tu** | `123456` | Nhân viên bưu cục (Operator) |
+| **a** | `123456` | Tài khoản kiểm thử nhanh |
 
 ---
 
@@ -63,11 +101,11 @@ Cung cấp toàn bộ RESTful API dùng chung cho cả App Mobile và Web:
 
 | Thành phần | Công nghệ chính |
 | :--- | :--- |
-| **Mobile App** | Flutter (Dart 3), Material Design, `mobile_scanner`, `audioplayers`, `sqflite`, `http`, `shared_preferences` |
-| **Web Portal** | Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4, `html5-qrcode`, `lucide-react`, Web Audio API |
+| **Mobile App** | Flutter (Dart 3), Material Design, `mobile_scanner`, `audioplayers`, `share_plus`, `path_provider`, `sqflite`, `http`, `shared_preferences` |
+| **Web Portal** | Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4, `html5-qrcode`, `lucide-react`, `canvas-confetti`, Web Audio API |
 | **Backend API** | Node.js, Express.js (v5), MySQL2, CORS |
 | **Database** | MySQL / MariaDB, SQLite offline cache |
-| **Testing Tools**| Python 3 (`random_SPX.py` sinh mã vận đơn kiểm thử ngẫu nhiên) |
+| **Testing Tools**| Python 3 (`random_SPX.py` sinh mã vận đơn kiểm thử ngẫu nhiên dạng `SPX...`) |
 
 ---
 
@@ -79,25 +117,25 @@ App_Web_Quet_Ma/
 │   ├── App_Quet_Ma/               # Mã nguồn ứng dụng Flutter (Mobile Android/iOS)
 │   │   ├── assets/                # Âm thanh phản hồi (beep/error), SQLite db, icon
 │   │   └── lib/
-│   │       ├── BILL/              # Màn hình hóa đơn bao hàng (BillScreen, BillTo)
+│   │       ├── BILL/              # Màn hình hóa đơn & chia sẻ phiếu bưu kiện (BillScreen, BillTo)
 │   │       ├── data/              # Service gọi API Backend (api_service.dart)
-│   │       ├── Login/             # Giao diện đăng nhập hệ thống
+│   │       ├── Login/             # Giao diện đăng nhập & quên mật khẩu
 │   │       ├── models/            # Model dữ liệu (Orders, TO, AppBar header logo)
 │   │       ├── PhanLoai/          # Phân loại bao hàng (Create TO, Scan TO, Danh sách TO)
-│   │       ├── QuanLy/            # Module quản lý đơn hàng
-│   │       ├── Setting/           # Cấu hình giao diện và tài khoản
-│   │       ├── TaoDon/            # Tạo đơn bưu kiện mới
+│   │       ├── QuanLy/            # Module quản lý đơn hàng & xuất bến
+│   │       ├── Setting/           # Cấu hình giao diện, dark/light theme và tài khoản
+│   │       ├── TaoDon/            # Tạo đơn bưu kiện mới (tự trích xuất Hub, format tiền/ký)
 │   │       ├── TraCuu/            # Tra cứu thông tin vận đơn
 │   │       └── main.dart          # Entry point của ứng dụng Mobile
 │   └── Web_Quet_Ma/               # Mã nguồn cổng quản trị Web Portal (Next.js & React)
 │       ├── public/                # Tài nguyên tĩnh
 │       └── src/
 │           ├── app/               # Định tuyến trang (Dashboard, Sorting, Orders, Tracking...)
-│           ├── components/        # UI components (Header, Sidebar, CameraScanner, Modals...)
-│           ├── context/           # State quản trị và cấu hình
+│           ├── components/        # UI components (Header, Sidebar, CameraScanner, BillModal, TripWizard...)
+│           ├── context/           # State quản trị chuyến xe, theme và cấu hình trạm
 │           ├── lib/               # Service gọi API và Web Audio
 │           └── types/             # Định nghĩa kiểu dữ liệu TypeScript
-├── Database/                      # Kịch bản cơ sở dữ liệu MySQL (orders.sql, TO_orders.sql...)
+├── Database/                      # Kịch bản cơ sở dữ liệu MySQL (orders.sql, TO_orders.sql, users.sql)
 ├── Server/
 │   └── server_appQuetMa_nodeJS/   # Máy chủ Backend Node.js Express
 │       ├── routers/               # Định tuyến API (orders, TO_Orders, users)
@@ -118,7 +156,7 @@ cd Server/server_appQuetMa_nodeJS
 npm install
 npm start
 ```
-*Server chạy mặc định tại:* `http://localhost:3000`
+*Server chạy mặc định tại:* `http://localhost:3000` (hoặc cổng được chỉ định qua biến môi trường `PORT`).
 
 ### 2. Khởi chạy Cổng Web Portal (Next.js)
 ```bash
@@ -126,7 +164,7 @@ cd App_Web/Web_Quet_Ma
 npm install
 npm run dev
 ```
-*Truy cập giao diện Web tại:* `http://localhost:3001` (hoặc cổng được hiển thị trong terminal)
+*Truy cập giao diện Web tại:* `http://localhost:3001` (hoặc cổng được hiển thị trong terminal).
 
 ### 3. Khởi chạy Ứng dụng Di Động (Flutter)
 ```bash

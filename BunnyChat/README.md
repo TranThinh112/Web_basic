@@ -22,9 +22,9 @@ BunnyChat là hệ thống ứng dụng nhắn tin trực tuyến thời gian th
 | :---: | :---: |
 | ![Tìm kiếm](screenshots/search_user.png) | ![Kết bạn](screenshots/manage_friends.png) |
 
-| 9. Tạo Nhóm Chat Mới | |
+| 9. Tạo Nhóm Chat Mới | 10. Trò Chuyện Realtime Giữa 2 Người Dùng |
 | :---: | :---: |
-| ![Tạo nhóm](screenshots/create_group.png) | |
+| ![Tạo nhóm](screenshots/create_group.png) | ![Trò chuyện realtime 2 người](screenshots/realtime_two_users_chat.png)<br>*(Cuộc trò chuyện trực tiếp 1-1 giữa 2 tài khoản: gửi nhận tin nhắn thời gian thực qua SignalR và tương tác thả cảm xúc)* |
 
 ---
 
@@ -56,25 +56,48 @@ Mô hình kiến trúc tổng quan của hệ thống Bunny Chat được thiế
 
 ## 🚀 Tính Năng Chính
 
-1. **Xác thực & Bảo mật phiên (Authentication & Session Security):**
+1. **Xác thực, Bảo mật & Khôi phục tài khoản (Auth & Recovery):**
    - Đăng ký, đăng nhập tài khoản với mã hóa mật khẩu an toàn.
+   - **Khôi phục mật khẩu 2 bước (Forgot Password):**
+     - *Bước 1 - Xác minh danh tính:* Kiểm tra trùng khớp Username / Email và Số điện thoại đã đăng ký tài khoản (`POST /api/auth/forgot/verify`).
+     - *Bước 2 - Đặt lại mật khẩu:* Thiết lập mật khẩu mới trực tiếp mà không cần thoát khỏi ngữ cảnh đăng nhập (`POST /api/auth/forgot/reset-password`).
+     - Hỗ trợ modal popup khôi phục mật khẩu mượt mà ngay tại trang đăng nhập và có trang fallback `/Forgot` riêng biệt.
    - Cơ chế xác thực kép: Middleware xác thực JWT Access Token kết hợp kiểm tra trạng thái Session trong MongoDB.
    - Tự động thu hồi phiên đăng nhập khi người dùng đăng xuất hoặc hết hạn.
 2. **Giao diện hiện đại & Chủ đề (Theme Support):**
    - Hỗ trợ chuyển đổi nhanh giữa **Dark Mode** và **Light Mode**.
    - Thiết kế giao diện phản hồi mượt mà, tối ưu trên nhiều kích thước màn hình.
-3. **Nhắn tin thời gian thực (Realtime Messaging with SignalR):**
-   - Chat trực tiếp 1-1 giữa 2 người dùng với độ trễ tối thiểu.
+3. **Nhắn tin thời gian thực & Tương tác phong phú (Realtime Messaging & Interactions):**
+   - Chat trực tiếp 1-1 giữa 2 người dùng với độ trễ tối thiểu qua SignalR kết hợp Optimistic UI (hiển thị tin nhắn ngay khi gõ gửi).
+   - **Phân trang tin nhắn cuộn ngược thông minh (Cursor-based Infinite Scroll):**
+     - Phân trang theo con trỏ thời gian (`GET /api/chat/{conversationId}/messages?limit=50&cursor=...`) giúp tối ưu hiệu năng MongoDB và bộ nhớ trình duyệt.
+     - Khi cuộn lên đầu đoạn chat, tin nhắn cũ hơn tự động tải và chèn vào đầu danh sách mượt mà mà không làm nhảy vị trí đọc hiện tại.
+   - **Đánh dấu đã đọc thời gian thực (Read Receipts / Seen Status):**
+     - Tự động phát hiện và đánh dấu đã xem khi người dùng đang mở hoặc chuyển sang khung chat tương ứng.
+     - Phát sự kiện realtime `read-message` qua SignalR để cập nhật trạng thái đọc và xóa số đếm chưa đọc (unread count) tức thì.
+   - **Thả cảm xúc tin nhắn chuẩn phong cách Messenger (Reactions):**
+     - Hỗ trợ bày tỏ cảm xúc bằng bộ 6 biểu tượng (👍, ❤️, 😂, 😮, 😢, 😡) với popup hiệu ứng pop-up/hover nhạy bén.
+     - Huy hiệu reaction hiển thị tách bạch ở góc bong bóng tin nhắn kèm số lượng, hỗ trợ hủy hoặc đổi cảm xúc nhanh và đồng bộ realtime lập tức cho các bên tham gia.
+   - **Tìm kiếm tin nhắn đa năng (Message Search):**
+     - *Tìm kiếm trong cuộc trò chuyện:* Lọc nhanh tin nhắn trong đoạn chat hiện tại và cuộn highlight tới vị trí tin nhắn.
+     - *Tìm kiếm toàn cục (Global Message Search):* Tra cứu từ khóa xuyên suốt tất cả các cuộc trò chuyện và nhóm chat, nhấp vào kết quả để chuyển ngay đến đúng ngữ cảnh hội thoại.
    - Trạng thái tin nhắn tức thời, hiển thị thời gian gửi và lịch sử trò chuyện.
 4. **Chat nhóm (Group Chat):**
    - Khởi tạo phòng chat nhóm, tùy chỉnh tên nhóm và ảnh đại diện.
    - Thêm/xóa thành viên trong nhóm, xem danh sách người tham gia.
    - Phát tin nhắn realtime đến tất cả thành viên trong nhóm qua SignalR Groups.
-5. **Mạng lưới bạn bè (Friend System):**
-   - Tìm kiếm người dùng theo tên hoặc email.
-   - Gửi lời mời kết bạn, chấp nhận hoặc từ chối yêu cầu kết bạn.
-   - Quản lý danh sách bạn bè đã kết nối và trạng thái online/offline.
-6. **Sẵn sàng triển khai Container & Đám mây:**
+5. **Mạng lưới bạn bè & Thông báo tức thì (Friend Network & Notifications):**
+   - Tìm kiếm người dùng theo tên, email hoặc username.
+   - **Chuông thông báo & Đồng bộ kết bạn thời gian thực (Realtime Notifications):**
+     - Huy hiệu chuông thông báo (Notification Badge) hiển thị số lượng lời mời kết bạn chưa xử lý theo thời gian thực.
+     - Đồng bộ sự kiện `friend-request-created`, `friend-request-accepted`, `friend-request-declined` qua SignalR ngay tức khắc giữa hai người dùng.
+   - Gửi lời mời kết bạn (kèm tin nhắn chào hỏi), chấp nhận hoặc hủy yêu cầu kết bạn linh hoạt.
+   - Quản lý danh sách bạn bè đã kết nối, xem trạng thái trực tuyến.
+6. **Quản lý Hồ sơ & Cài đặt tài khoản (Profile & Account Settings):**
+   - **Hồ sơ cá nhân (/me):** Tự do cập nhật họ, tên, nickname, số điện thoại liên hệ qua API `PUT /api/user/information`.
+   - **Tùy biến thương hiệu cá nhân:** Hỗ trợ tính năng phối màu ngẫu nhiên cho logo/thương hiệu BunnyChat của riêng tài khoản.
+   - **Xem trang cá nhân thành viên:** Hỗ trợ modal xem thông tin công khai (`GET /api/user/{id}/profile`) của bạn bè và các thành viên trong nhóm trực tiếp từ khung chat.
+7. **Sẵn sàng triển khai Container & Đám mây:**
    - Đã cấu hình sẵn `Dockerfile`, `railway.json`, `nixpacks.toml` để triển khai tức thì lên Railway.
 
 ---

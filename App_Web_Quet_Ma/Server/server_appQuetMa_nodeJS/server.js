@@ -3,7 +3,6 @@ const cors = require("cors");
 
 const app = express();
 
-// Cho phép CORS từ mọi domain (để Web Frontend gọi được vào)
 app.use(cors({
   origin: "*",
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -12,7 +11,6 @@ app.use(cors({
 
 app.use(express.json());
 
-// Endpoint kiểm tra server online
 app.get("/", (req, res) => {
   res.json({
     status: "online",
@@ -35,8 +33,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// Port linh hoạt: Railway tự cấp process.env.PORT
-const PORT = process.env.PORT || 3000;
+// Chạy port 5000 ở local (tránh đụng cổng 3000 của app khác) hoặc PORT do Railway cấp
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Server SPX Express running on port ${PORT}`);
 });

@@ -21,10 +21,16 @@ router.get('/getIn4', (req, res) => {
     values.push(id);
   }
 
-  /// 🔹 lọc theo trạng thái
+  /// 🔹 lọc theo trạng thái (hỗ trợ cả các đơn cũ trạng thái NULL chưa vào bao)
   if (trangThai) {
-    conditions.push("LOWER(trangThai) = LOWER(?)");
-    values.push(trangThai);
+    if (trangThai.toLowerCase() === 'outbound') {
+      conditions.push("(LOWER(trangThai) = 'outbound' OR (trangThai IS NULL AND (maTO IS NULL OR maTO = '')))");
+    } else if (trangThai.toLowerCase() === 'inbound') {
+      conditions.push("(LOWER(trangThai) = 'inbound' OR (maTO IS NOT NULL AND maTO != ''))");
+    } else {
+      conditions.push("LOWER(trangThai) = LOWER(?)");
+      values.push(trangThai);
+    }
   }
 
   /// 🔹 search
@@ -45,7 +51,7 @@ router.get('/getIn4', (req, res) => {
   const inboundSql = `
     SELECT COUNT(*) as inbound 
     FROM orders 
-    WHERE LOWER(trangThai) = 'inbound'`;
+    WHERE LOWER(trangThai) = 'inbound' OR (maTO IS NOT NULL AND maTO != '')`;
 
   /// data
   const dataSql = `

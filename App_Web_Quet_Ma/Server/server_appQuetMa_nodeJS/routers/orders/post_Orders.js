@@ -272,21 +272,18 @@ router.post('/remove/:id', (req, res) => {
   );
 });
 //tao order moi tu form
-router.post("/",(req,res)=> {
-  const {id, nguoiGui, nguoiNhan, diaChiGui, diaChiNhan, noiGui, noiNhan, sanPham, soKi, giaTien } = req.body;
-
-const thoiGianTao = new Date();
+router.post("/", (req, res) => {
+  const { id, nguoiGui, nguoiNhan, diaChiGui, diaChiNhan, noiGui, noiNhan, sanPham, soKi, giaTien, trangThai } = req.body;
+  const thoiGianTao = new Date();
+  const status = trangThai || 'Outbound';
   db.query(
-    'INSERT INTO orders(id, nguoiGui, nguoiNhan, diaChiGui, diaChiNhan, noiGui, noiNhan, sanPham, soKi, giaTien, thoiGianTao) VALUES(?,?,?,?,?,?,?,?,?,?,?)',
-
-    [id, nguoiGui, nguoiNhan, diaChiGui, diaChiNhan, noiGui, noiNhan, sanPham, soKi, giaTien, thoiGianTao],
-    (err, result) =>{
-     if (err){
-      console.log("DB error:", err);
-      return res.status(500).json({ error: err.message});
-     }
-     console.log("DB error:", err);
-     //tra về toàn bọ data sau khi tạo
+    'INSERT INTO orders(id, nguoiGui, nguoiNhan, diaChiGui, diaChiNhan, noiGui, noiNhan, sanPham, soKi, giaTien, trangThai, thoiGianTao) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)',
+    [id, nguoiGui, nguoiNhan, diaChiGui, diaChiNhan, noiGui, noiNhan, sanPham, soKi, giaTien, status, thoiGianTao],
+    (err, result) => {
+      if (err) {
+        console.log("DB error:", err);
+        return res.status(500).json({ error: err.message });
+      }
       return res.json({
         id,
         nguoiGui,
@@ -298,10 +295,11 @@ const thoiGianTao = new Date();
         sanPham,
         soKi,
         giaTien,
-        thoiGianTao
+        trangThai: status,
+        thoiGianTao,
       });
     }
-  )
-})
+  );
+});
 
 module.exports = router;

@@ -5,7 +5,8 @@ const getBaseUrl = () => {
     const saved = localStorage.getItem("spx_backend_url");
     if (saved) return saved.replace(/\/$/, "");
   }
-  return process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+  // Mặc định kết nối thẳng tới Railway Backend đã deploy
+  return process.env.NEXT_PUBLIC_API_URL || "https://webbasic-production-47cd.up.railway.app";
 };
 
 export const api = {
@@ -54,7 +55,7 @@ export const api = {
       }
       return { success: false, message: data.message || "Lỗi xử lý quét đơn" };
     } catch (err: unknown) {
-      return { success: false, message: err instanceof Error ? err.message : "Mất kết nối server" };
+      return { success: false, message: err instanceof Error ? err.message : "Mất kết nối máy chủ Railway" };
     }
   },
 

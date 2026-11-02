@@ -99,10 +99,8 @@ namespace BunnyChat.Controllers
         }
 
         // Format message kèm thông tin người gửi để frontend hiển thị avatar cạnh tin nhắn.
-        private async Task<object> FormatMessage(Message message, string currentUserId)
+        private object FormatMessage(Message message, string currentUserId, User? sender)
         {
-            var sender = await FindUserById(message.SenderId);
-
             return new
             {
                 id = message.Id,
@@ -118,6 +116,12 @@ namespace BunnyChat.Controllers
                 createdAt = message.CreatedAt,
                 updatedAt = message.UpdatedAt
             };
+        }
+
+        private async Task<object> FormatMessage(Message message, string currentUserId)
+        {
+            var sender = await FindUserById(message.SenderId);
+            return FormatMessage(message, currentUserId, sender);
         }
 
         // Tạo direct chat hoặc group chat mới.
@@ -443,13 +447,18 @@ namespace BunnyChat.Controllers
                     messages.RemoveAt(messages.Count - 1);
                 }
 
-                var data = new List<object>();
+                // Batch fetch thông tin sender một lần cho tất cả tin nhắn (khắc phục triệt để N+1 query)
+                var senderIds = messages.Select(m => m.SenderId).Where(id => !string.IsNullOrEmpty(id)).Distinct().ToList();
+                var senders = await _userCollection.Find(u => senderIds.Contains(u.Id!)).ToListAsync();
+                var senderDict = senders.ToDictionary(u => u.Id!);
+
+                var data = new List<object>(messages.Count);
 
                 //đảo thứ tự cũ lên mới xuống
                 foreach (var message in messages.OrderBy(x => x.CreatedAt))
                 {
-                    //format cho từng message
-                    data.Add(await FormatMessage(message, currentUserId));
+                    senderDict.TryGetValue(message.SenderId, out var sender);
+                    data.Add(FormatMessage(message, currentUserId, sender));
                 }
 
                 return Ok(ApiResponse.Success(

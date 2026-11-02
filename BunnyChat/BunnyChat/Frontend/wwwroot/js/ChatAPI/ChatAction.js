@@ -240,6 +240,7 @@ const state = {
 
     // Danh sách message id đã render để tránh hiện trùng tin nhắn realtime.
     renderedMessageIds: new Set(),
+    messageCache: new Map(),
 
     // Cursor trang tin nhắn cũ tiếp theo, dùng khi scroll lên để load thêm.
     messageNextCursor: null,
@@ -742,17 +743,10 @@ function createMessage(message) {
     reactTriggerBtn.title = "Bày tỏ cảm xúc";
     reactTriggerBtn.innerHTML = "😀";
 
-    // Picker popup
+    // Picker popup (hỗ trợ cả click lẫn hover như Messenger)
     let pickerPopup = null;
-    reactTriggerBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        if (pickerPopup) {
-            pickerPopup.remove();
-            pickerPopup = null;
-            return;
-        }
-
-        // Close other open pickers
+    function openReactionPicker() {
+        if (pickerPopup) return;
         document.querySelectorAll(".reaction-picker-popup").forEach(p => p.remove());
 
         pickerPopup = document.createElement("div");
@@ -773,7 +767,36 @@ function createMessage(message) {
         });
 
         bubbleWrapper.appendChild(pickerPopup);
+    }
+
+    reactTriggerBtn.addEventListener("mouseenter", openReactionPicker);
+    reactTriggerBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (pickerPopup) {
+            pickerPopup.remove();
+            pickerPopup = null;
+        } else {
+            openReactionPicker();
+        }
     });
+
+    let hideTimer = null;
+    function scheduleClosePicker() {
+        clearTimeout(hideTimer);
+        hideTimer = setTimeout(() => {
+            if (pickerPopup) {
+                pickerPopup.remove();
+                pickerPopup = null;
+            }
+        }, 300);
+    }
+
+    function cancelClosePicker() {
+        clearTimeout(hideTimer);
+    }
+
+    bubbleWrapper.addEventListener("mouseenter", cancelClosePicker);
+    bubbleWrapper.addEventListener("mouseleave", scheduleClosePicker);
 
     // Badge reactions
     const reactionsBadge = document.createElement("div");
@@ -805,17 +828,23 @@ function isNearMessageBottom() {
 
 // Render toàn bộ tin nhắn của cuộc trò chuyện đang được chọn.
 function renderMessages(messages = []) {
-    messageArea.replaceChildren();
     state.renderedMessageIds.clear();
-
     const sortedMessages = sortMessagesByTime(messages);
+
+    if (!sortedMessages.length) {
+        setEmpty(messageArea, "Chưa có tin nhắn.");
+        return;
+    }
+
+    // Tối ưu render hàng loạt bằng DocumentFragment (giảm tối đa reflow/repaint DOM)
+    const fragment = document.createDocumentFragment();
     sortedMessages.forEach(message => {
         const id = itemId(message);
         if (id) state.renderedMessageIds.add(id);
-        messageArea.appendChild(createMessage(message));
+        fragment.appendChild(createMessage(message));
     });
-    if (!sortedMessages.length) setEmpty(messageArea, "Chưa có tin nhắn.");
 
+    messageArea.replaceChildren(fragment);
     messageArea.scrollTop = messageArea.scrollHeight;
 }
 
@@ -949,17 +978,29 @@ async function selectConversation(item, card) {
     state.messageNextCursor = null;
     state.loadingOlderMessages = false;
 
-    setEmpty(messageArea, "Đang tải tin nhắn...");
-    joinConversation(itemId(item));
+    const convId = itemId(item);
+    joinConversation(convId);
+
+    // Hiển thị tin nhắn từ cache ngay lập tức nếu đã từng mở (0ms delay)
+    if (state.messageCache && state.messageCache.has(convId)) {
+        renderMessages(state.messageCache.get(convId));
+    } else {
+        setEmpty(messageArea, "Đang tải tin nhắn...");
+    }
 
     try {
-        const data = await fetchData(API.messages(itemId(item)));
+        const data = await fetchData(API.messages(convId));
         const page = readMessagePage(data);
         state.messageNextCursor = page.nextCursor;
-        renderMessages(page.messages);
-        markActiveConversationAsSeen();
+        if (state.messageCache) state.messageCache.set(convId, page.messages);
+        if (itemId(state.activeConversation) === convId) {
+            renderMessages(page.messages);
+            markActiveConversationAsSeen();
+        }
     } catch {
-        setEmpty(messageArea, "Chưa thể tải tin nhắn từ máy chủ.");
+        if (!state.messageCache || !state.messageCache.has(convId)) {
+            setEmpty(messageArea, "Chưa thể tải tin nhắn từ máy chủ.");
+        }
     }
 }
 
@@ -1442,8 +1483,22 @@ messageForm.addEventListener("submit", async event => {
 
     messageInput.value = "";
 
+    const activeConversationId = itemId(state.activeConversation);
+    const tempId = "temp-" + Date.now();
+    const optimisticMsg = {
+        id: tempId,
+        conversationId: activeConversationId,
+        senderId: itemId(state.currentUser),
+        content,
+        createdAt: new Date().toISOString(),
+        isMine: true
+    };
+
+    // Optimistic UI: Hiển thị ngay lập tức lên khung chat không cần chờ server response
+    updateConversationPreviewFromMessage(optimisticMsg);
+    appendRealtimeMessage(optimisticMsg);
+
     try {
-        const activeConversationId = itemId(state.activeConversation);
         const message = await fetchData(API.sendMessage(activeConversationId), {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -1455,9 +1510,13 @@ messageForm.addEventListener("submit", async event => {
             conversationId: messageConversationId(message) || activeConversationId
         };
 
+        const tempRow = messageArea.querySelector(`[data-message-id="${tempId}"]`);
+        if (tempRow) tempRow.dataset.messageId = itemId(normalizedMessage);
+
         updateConversationPreviewFromMessage(normalizedMessage);
-        appendRealtimeMessage(normalizedMessage);
     } catch {
+        const tempRow = messageArea.querySelector(`[data-message-id="${tempId}"]`);
+        tempRow?.remove();
         messageInput.value = content;
     }
 });

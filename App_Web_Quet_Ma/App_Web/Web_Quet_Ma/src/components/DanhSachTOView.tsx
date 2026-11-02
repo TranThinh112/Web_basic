@@ -1,12 +1,22 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
-import { Package, Search, Printer, RotateCcw, Trash2, RefreshCw } from "lucide-react";
+import { useRouter } from "next/navigation";
+import {
+  Package,
+  Search,
+  Printer,
+  RotateCcw,
+  Trash2,
+  Scan,
+  RefreshCw,
+} from "lucide-react";
 import { api } from "@/lib/api";
 import { TOOrder } from "@/types";
 import BillModal from "@/components/BillModal";
 
 export default function DanhSachTOView() {
+  const router = useRouter();
   const [listTO, setListTO] = useState<TOOrder[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -29,11 +39,22 @@ export default function DanhSachTOView() {
     fetchTOs();
   }, []);
 
+  // Nút ReOpen đối với bao đã Packed (hoặc Complete)
   const handleReopen = async (maTO: string) => {
-    if (confirm(`Mở lại bao ${maTO} để tiếp tục gom kiện?`)) {
+    if (confirm(`Bạn có chắc muốn ReOpen mở lại bao [${maTO}] để tiếp tục quét thêm hoặc xóa đơn?`)) {
       const ok = await api.reopenTO(maTO);
-      if (ok) fetchTOs();
+      if (ok) {
+        // Chuyển hướng trực tiếp tới trang quét mã chỉ định danh TO đó
+        router.push(`/TOmanagement/sorting/${encodeURIComponent(maTO)}`);
+      } else {
+        alert("Lỗi khi mở lại bao hàng, vui lòng thử lại!");
+      }
     }
+  };
+
+  // Nút mở lại trang quét mã đối với bao đang ở trạng thái Packing
+  const handleContinuePacking = (maTO: string) => {
+    router.push(`/TOmanagement/sorting/${encodeURIComponent(maTO)}`);
   };
 
   const handleDelete = async (maTO: string) => {
@@ -43,42 +64,46 @@ export default function DanhSachTOView() {
     }
   };
 
-  const filtered = listTO.filter((item) => {
-    const matchStatus = statusFilter === "ALL" || item.trangThai === statusFilter;
-    const matchSearch =
-      item.maTO.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.diaDiemGiaoHang.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.packer.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchStatus && matchSearch;
-  });
+  const filtered = listTO
+    .filter((item) => {
+      const isPacked = item.trangThai === "Packed" || item.trangThai === "Complete";
+      const itemStatus = isPacked ? "Packed" : "Packing";
+      const matchStatus = statusFilter === "ALL" || itemStatus === statusFilter;
+
+      const matchSearch =
+        item.maTO.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (item.diaDiemGiaoHang || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (item.packer || "").toLowerCase().includes(searchTerm.toLowerCase());
+      return matchStatus && matchSearch;
+    })
+    .sort((a, b) => {
+      const isPackedA = a.trangThai === "Packed" || a.trangThai === "Complete";
+      const isPackedB = b.trangThai === "Packed" || b.trangThai === "Complete";
+
+      // Lấy mốc thời gian so sánh theo từng loại TO
+      // Packed: lấy thời gian completeTime (nếu không có thì dùng ngayTao)
+      // Packing: lấy thời gian ngayTao
+      const getTimeOfItem = (item: typeof a, isPacked: boolean) => {
+        if (isPacked) {
+          const t = item.completeTime ? new Date(item.completeTime).getTime() : 0;
+          return t > 0 ? t : (item.ngayTao ? new Date(item.ngayTao).getTime() : 0);
+        }
+        return item.ngayTao ? new Date(item.ngayTao).getTime() : 0;
+      };
+
+      const timeA = getTimeOfItem(a, isPackedA);
+      const timeB = getTimeOfItem(b, isPackedB);
+
+      // Sort từ trên xuống (Mới nhất nằm ở dòng đầu tiên của bảng)
+      return timeB - timeA;
+    });
 
   return (
-    <div className="space-y-5">
-      {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-5 rounded-xl border border-slate-200">
-        <div>
-          <h2 className="text-base font-semibold text-slate-900 flex items-center gap-2">
-            <Package className="w-5 h-5 text-slate-700" />
-            Danh sách bao hàng (Transfer Orders)
-          </h2>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Quản lý toàn bộ danh sách bao hàng TO tạo tại trạm Hub
-          </p>
-        </div>
-
-        <button
-          onClick={fetchTOs}
-          className="px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-medium rounded-lg transition flex items-center gap-1.5 self-start sm:self-auto"
-        >
-          <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
-          Làm mới
-        </button>
-      </div>
-
-      {/* Filter & Search */}
+    <div className="space-y-4">
+      {/* Top Filter */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-1.5">
-          {["ALL", "Packing", "Complete"].map((st) => (
+          {["ALL", "Packing", "Packed"].map((st) => (
             <button
               key={st}
               onClick={() => setStatusFilter(st)}
@@ -88,7 +113,7 @@ export default function DanhSachTOView() {
                   : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
               }`}
             >
-              {st === "ALL" ? "Tất cả" : st === "Packing" ? "Đang gom" : "Đã đóng bao"}
+              {st === "ALL" ? "Tất cả" : st}
             </button>
           ))}
         </div>
@@ -106,7 +131,7 @@ export default function DanhSachTOView() {
       </div>
 
       {/* Table TO */}
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
@@ -130,47 +155,99 @@ export default function DanhSachTOView() {
                 </tr>
               ) : (
                 filtered.map((item) => {
-                  const pkgs: string[] = Array.isArray(item.danhSachGoiHang)
+                  const pkgs: any[] = Array.isArray(item.danhSachGoiHang)
                     ? item.danhSachGoiHang
-                    : JSON.parse(typeof item.danhSachGoiHang === "string" ? item.danhSachGoiHang : "[]");
+                    : JSON.parse(
+                        typeof item.danhSachGoiHang === "string"
+                          ? item.danhSachGoiHang
+                          : "[]"
+                      );
+
+                  const isPacked =
+                    item.trangThai === "Complete" || item.trangThai === "Packed";
 
                   return (
-                    <tr key={item.maTO} className="hover:bg-slate-50/70">
-                      <td className="px-4 py-3 font-mono font-semibold text-slate-900">{item.maTO}</td>
-                      <td className="px-4 py-3 font-medium text-slate-800">{item.diaDiemGiaoHang}</td>
-                      <td className="px-4 py-3 text-center">{pkgs.length}</td>
-                      <td className="px-4 py-3 text-right font-mono">{Number(item.totalWeight || 0).toFixed(2)}</td>
+                    <tr key={item.maTO} className="hover:bg-slate-50/70 transition">
+                      {/* Mã bao: click để chuyển thẳng tới router của bao */}
+                      <td className="px-4 py-3 font-mono font-bold text-slate-900">
+                        <button
+                          onClick={() => handleContinuePacking(item.maTO)}
+                          title="Mở màn hình quét mã của TO này"
+                          className="hover:text-orange-600 hover:underline flex items-center gap-1.5"
+                        >
+                          {item.maTO}
+                        </button>
+                      </td>
+
+                      <td className="px-4 py-3 font-medium text-slate-800">
+                        {item.diaDiemGiaoHang || "---"}
+                      </td>
+                      <td className="px-4 py-3 text-center font-bold">{pkgs.length}</td>
+                      <td className="px-4 py-3 text-right font-mono">
+                        {Number(item.totalWeight || 0).toFixed(2)}
+                      </td>
+
+                      {/* Trạng thái: Packing đỏ, Packed xanh lá */}
                       <td className="px-4 py-3">
-                        <span className="text-[11px] bg-slate-100 border border-slate-200 text-slate-700 px-2 py-0.5 rounded">
-                          {item.trangThai === "Complete" ? "Đã đóng bao" : "Đang gom hàng"}
+                        <span
+                          className={`text-[11px] px-2.5 py-0.5 rounded-full font-bold border ${
+                            isPacked
+                              ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                              : "bg-rose-50 text-rose-700 border-rose-200"
+                          }`}
+                        >
+                          {isPacked ? "Packed" : "Packing"}
                         </span>
                       </td>
+
                       <td className="px-4 py-3 text-slate-500">{item.packer}</td>
                       <td className="px-4 py-3 text-[11px] text-slate-400">
-                        {item.ngayTao ? new Date(item.ngayTao).toLocaleDateString("vi-VN") : "---"}
+                        {item.ngayTao
+                          ? new Date(item.ngayTao).toLocaleDateString("vi-VN")
+                          : "---"}
                       </td>
+
+                      {/* Thao tác */}
                       <td className="px-4 py-3 text-right">
-                        <div className="flex items-center justify-end gap-1">
+                        <div className="flex items-center justify-end gap-1.5">
+                          {/* Nút ReOpen đối với bao đã Packed */}
+                          {isPacked && (
+                            <button
+                              onClick={() => handleReopen(item.maTO)}
+                              title="ReOpen: Mở lại bao để tiếp tục thêm / xóa đơn"
+                              className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200 transition flex items-center gap-1"
+                            >
+                              <RotateCcw className="w-3 h-3 text-amber-700" />
+                              <span>ReOpen</span>
+                            </button>
+                          )}
+
+                          {/* Nút mở lại trang quét mã đối với bao đang Packing */}
+                          {!isPacked && (
+                            <button
+                              onClick={() => handleContinuePacking(item.maTO)}
+                              title="Mở trang quét mã đơn cho bao này"
+                              className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-orange-50 text-orange-700 hover:bg-orange-100 border border-orange-200 transition flex items-center gap-1"
+                            >
+                              <Scan className="w-3 h-3 text-orange-600" />
+                              <span>Quét tiếp</span>
+                            </button>
+                          )}
+
+                          {/* In phiếu Bill */}
                           <button
                             onClick={() => setSelectedTOForBill(item)}
-                            title="In phiếu Bill"
-                            className="p-1 rounded text-slate-500 hover:text-slate-900 hover:bg-slate-100"
+                            title="In phiếu Bill TO"
+                            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 border border-transparent hover:border-slate-200 transition"
                           >
                             <Printer className="w-4 h-4" />
                           </button>
-                          {item.trangThai === "Complete" && (
-                            <button
-                              onClick={() => handleReopen(item.maTO)}
-                              title="Mở lại bao"
-                              className="p-1 rounded text-slate-500 hover:text-slate-900 hover:bg-slate-100"
-                            >
-                              <RotateCcw className="w-4 h-4" />
-                            </button>
-                          )}
+
+                          {/* Xóa bao */}
                           <button
                             onClick={() => handleDelete(item.maTO)}
                             title="Xóa bao"
-                            className="p-1 rounded text-slate-400 hover:text-slate-700 hover:bg-slate-100"
+                            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 border border-transparent hover:border-rose-200 transition"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -186,7 +263,10 @@ export default function DanhSachTOView() {
       </div>
 
       {selectedTOForBill && (
-        <BillModal to={selectedTOForBill} onClose={() => setSelectedTOForBill(null)} />
+        <BillModal
+          to={selectedTOForBill}
+          onClose={() => setSelectedTOForBill(null)}
+        />
       )}
     </div>
   );

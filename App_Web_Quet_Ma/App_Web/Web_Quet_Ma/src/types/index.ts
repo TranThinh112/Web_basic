@@ -1,14 +1,18 @@
 export interface Order {
   id: string; // SPXVN...
+  noiGui?: string;
   noiNhan?: string;
   nguoiGui?: string;
   nguoiNhan?: string;
-  sdtNhan?: string;
-  diaChi?: string;
+  diaChiGui?: string;
+  diaChiNhan?: string;
+  sanPham?: string;
   soKi?: number;
+  giaTien?: number;
   cod?: number;
   trangThai: 'Inbound' | 'Outbound' | 'Delivered' | string;
   maTO?: string | null;
+  thoiGianTao?: string | null;
   thoiGianDongBao?: string | null;
   createdAt?: string;
 }
@@ -16,9 +20,9 @@ export interface Order {
 export interface TOOrder {
   id?: string;
   maTO: string;
-  danhSachGoiHang: string[] | string;
+  danhSachGoiHang: any[] | string;
   diaDiemGiaoHang: string;
-  trangThai: 'Packing' | 'Complete' | 'Shipping' | string;
+  trangThai: 'Packing' | 'Packed' | 'Complete' | 'Shipping' | string;
   packer: string;
   ngayTao: string;
   completeTime?: string | null;
@@ -45,3 +49,4 @@ export interface ChuyenXe {
   soLuongKien: number;
   dsMaTO: string[];
 }
+

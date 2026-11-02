@@ -1,3 +1,4 @@
+[hidden] { display: none !important; }
 /* Biến màu mặc định cho dark theme của toàn bộ trang chat. */
 :root {
     --bg: #14121a;
@@ -226,10 +227,10 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
 .profile-card button, .sidebar-toggle { border: 0; background: transparent; }
 
 /* Khung chat chính: topbar, vùng tin nhắn, ô nhập tin nhắn. */
-.chat-main { min-width: 0; min-height: 0; height: 100dvh; overflow: hidden; display: grid; grid-template-rows: 70px minmax(0, 1fr) 58px; }
+.chat-main { min-width: 0; min-height: 0; height: 100dvh; overflow: hidden; display: flex; flex-direction: column; position: relative; }
 
 /* Header của cuộc trò chuyện đang mở. */
-.chat-topbar { display: flex; align-items: center; gap: 12px; padding: 0 18px; border-width: 0 0 1px; }
+.chat-topbar { flex: 0 0 70px; min-height: 70px; display: flex; align-items: center; gap: 12px; padding: 0 18px; border-width: 0 0 1px; }
 
 /* Avatar trên header chat. */
 .chat-avatar { width: 42px; height: 42px; }
@@ -240,7 +241,7 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
 .chat-heading small { color: var(--muted); font-size: 11px; }
 
 /* Vùng tin nhắn có scrollbar riêng, tin cũ nằm trên và có thể scroll lên đọc. */
-.message-area { min-height: 0; height: 100%; overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; gap: 10px; padding: 20px; scrollbar-width: thin; scrollbar-color: var(--accent) transparent; }
+.message-area { flex: 1 1 0; min-height: 0; height: auto; overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; gap: 10px; padding: 20px; scrollbar-width: thin; scrollbar-color: var(--accent) transparent; }
 
 /* Một dòng tin nhắn gồm avatar, tên người gửi, bubble và thời gian. */
 .message { width: fit-content; max-width: min(76%, 620px); display: flex; align-items: flex-end; gap: 8px; }
@@ -272,7 +273,7 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
 .message.outgoing p { border: 0; border-radius: 14px 5px 14px 14px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: white; }
 
 /* Thanh nhập tin nhắn ở cuối màn hình. */
-.message-composer { min-height: 58px; display: flex; gap: 8px; padding: 8px 14px; border-width: 1px 0 0; }
+.message-composer { flex: 0 0 auto; min-height: 58px; display: flex; gap: 8px; padding: 8px 14px; border-width: 1px 0 0; margin-top: auto; }
 .message-composer input { min-width: 0; flex: 1; border: 0; outline: 0; background: transparent; }
 .send-button { width: 42px; }
 .message-composer :disabled { opacity: .45; cursor: not-allowed; }
@@ -440,7 +441,7 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
     .notification-bell { z-index: 9; top: auto; left: 14px; bottom: calc(74px + env(safe-area-inset-bottom)); width: 34px; height: 34px; }
 
     /* Khung chat mobile tăng chiều cao topbar/composer cho dễ bấm. */
-    .chat-main { height: 100dvh; grid-template-rows: 76px minmax(0, 1fr) 62px; }
+    .chat-main { height: 100dvh; display: flex; flex-direction: column; }
     .chat-topbar { min-width: 0; gap: 8px; padding: 0 12px; }
     .sidebar-toggle, .info-button { flex: 0 0 36px; width: 36px; height: 36px; display: grid; place-items: center; border-radius: 12px; }
     .chat-avatar { flex: 0 0 38px; width: 38px; height: 38px; }
@@ -456,7 +457,7 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
 
 /* Responsive màn rất nhỏ: thu nhỏ avatar, nút và khoảng cách để không đè nhau. */
 @media (max-width: 420px) {
-    .chat-main { grid-template-rows: 70px minmax(0, 1fr) 60px; }
+    .chat-main { display: flex; flex-direction: column; }
     .chat-topbar { gap: 7px; padding: 0 9px; }
     .sidebar-toggle, .info-button { flex-basis: 32px; width: 32px; height: 32px; }
     .chat-avatar { flex-basis: 34px; width: 34px; height: 34px; font-size: 12px; }
@@ -584,9 +585,7 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
         padding: 10px 0 0;
     }
 
-    .chat-main {
-        grid-template-rows: minmax(70px, auto) minmax(0, 1fr) minmax(64px, auto);
-    }
+    .chat-main { display: flex; flex-direction: column; }
 
     .chat-topbar {
         min-height: 70px;
@@ -845,7 +844,7 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
 }
 
 /* Thanh tìm kiếm trong cuộc trò chuyện */
-.chat-search-bar {
+.chat-search-bar { flex: 0 0 auto; 
     display: flex;
     align-items: center;
     gap: 10px;
@@ -987,8 +986,15 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
 
 .message-bubble-wrapper {
     position: relative;
-    display: inline-block;
+    display: inline-flex;
+    flex-direction: column;
     max-width: 100%;
+    margin-bottom: 2px;
+}
+
+/* Khi có thả cảm xúc, tạo khoảng cách dưới đáy để badge không đè giờ gửi (time) */
+.message-bubble-wrapper:has(.message-reactions-badge:not(:empty)) {
+    margin-bottom: 14px;
 }
 
 /* Nút trigger bảng icon reaction khi rê chuột */
@@ -1021,8 +1027,19 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
     left: -32px;
 }
 
+/* Vùng đệm trong suốt để rê chuột từ tin nhắn sang icon không bị đứt quãng */
+.reaction-trigger-btn::before {
+    content: "";
+    position: absolute;
+    inset: -12px -16px;
+    z-index: -1;
+}
+
 .message:hover .reaction-trigger-btn,
-.message-bubble-wrapper:hover .reaction-trigger-btn {
+.message-body:hover .reaction-trigger-btn,
+.message-bubble-wrapper:hover .reaction-trigger-btn,
+.reaction-trigger-btn:hover,
+.message:has(.reaction-picker-popup) .reaction-trigger-btn {
     opacity: 1;
     pointer-events: auto;
 }
@@ -1077,40 +1094,57 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
     background: rgba(255, 255, 255, 0.12);
 }
 
-/* Badge hiển thị reactions đã thả dưới bubble tin nhắn */
+/* Badge hiển thị reactions đã thả chuẩn phong cách Messenger */
 .message-reactions-badge {
     position: absolute;
-    bottom: -11px;
+    bottom: -10px;
     display: inline-flex;
     align-items: center;
-    gap: 2px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
+    gap: 3px;
+    background: #1e1b24;
+    border: 1.5px solid rgba(255, 255, 255, 0.18);
+    border-radius: 14px;
     padding: 2px 6px;
-    font-size: 11px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+    font-size: 13px;
+    line-height: 1;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.45);
     cursor: pointer;
-    z-index: 4;
-    transition: transform 0.15s ease;
+    z-index: 10;
+    transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.15s ease;
     user-select: none;
 }
 
+[data-theme="light"] .message-reactions-badge {
+    background: #ffffff;
+    border-color: rgba(0, 0, 0, 0.12);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+}
+
 .message-reactions-badge:hover {
-    transform: scale(1.08);
+    transform: scale(1.15);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
 }
 
+/* Với tin nhắn đến (incoming): badge nằm lệch sang góc phải của bong bóng */
 .message.incoming .message-reactions-badge {
-    left: 10px;
+    right: 4px;
+    left: auto;
 }
 
+/* Với tin nhắn gửi đi (outgoing): badge nằm lệch sang góc trái của bong bóng */
 .message.outgoing .message-reactions-badge {
-    right: 10px;
+    left: 4px;
+    right: auto;
 }
 
 .message-reactions-badge.active-user-reaction {
     border-color: var(--accent);
-    background: rgba(147, 51, 234, 0.2);
+    background: #281c3a;
+}
+
+[data-theme="light"] .message-reactions-badge.active-user-reaction {
+    border-color: var(--accent);
+    background: #f5edfc;
 }
 
 .reaction-item-count {

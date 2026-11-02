@@ -1,5 +1,5 @@
-"use client";
-import PhanLoaiScanView from "@/components/PhanLoaiScanView";
-export default function SortingPage() {
-  return <PhanLoaiScanView />;
+import { redirect } from "next/navigation";
+
+export default function OldSortingPage() {
+  redirect("/TOmanagement/sorting");
 }
