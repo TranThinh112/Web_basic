@@ -6,6 +6,47 @@ Hệ thống Web điều phối & phân loại bưu kiện SPX Express dành cho
 
 ---
 
+## 🌐 Đường Dẫn Truy Cập Hệ Thống (Live Deployment)
+
+| Dịch vụ | Nền tảng | URL Trực tuyến |
+| :--- | :--- | :--- |
+| **SPX Web Portal** | Next.js 14 / Railway | **https://webbasic-production-c870.up.railway.app** |
+| **Backend API** | Node.js Express / Railway | **https://webbasic-production-47cd.up.railway.app** |
+
+---
+
+## 📦 Danh Sách Mã Đơn Mẫu & Phiếu In Vận Đơn (Dùng Để Test Hệ Thống)
+
+Người dùng có thể sử dụng các mã vận đơn mẫu và hình ảnh phiếu in dưới đây để thử nghiệm các tính năng **Quét mã vạch (Barcode/QR)**, **Phân loại vào bao TO**, **Tra cứu đơn hàng** và **Kiểm tra luồng Inbound / Outbound**:
+
+| Mã vận đơn (Tracking ID) | Nơi gửi | Nơi nhận (Hub đích) | Khối lượng | Trạng thái mẫu | Phiếu in mẫu |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **`SPXVN06721210393`** | HN | **CT** (Cần Thơ) | 2.64 kg | Inbound | [Xem phiếu](public/sample_bills/SPXVN06721210393.jpg) |
+| **`SPXVN06620767933`** | HN | **DN** (Đà Nẵng) | 2.31 kg | Inbound | [Xem phiếu](public/sample_bills/SPXVN06620767933.jpg) |
+| **`SPXVN06733932163`** | DN | **MT** (Miền Trung) | 0.34 kg | Outbound | [Xem phiếu](public/sample_bills/SPXVN06733932163.jpg) |
+| **`SPXVN06715297463`** | DN | **HN** (Hà Nội) | 2.72 kg | Outbound | [Xem phiếu](public/sample_bills/SPXVN06715297463.jpg) |
+| **`SPXVN06687683833`** | HN | **MT** (Miền Trung) | 1.63 kg | Outbound | [Xem phiếu](public/sample_bills/SPXVN06687683833.jpg) |
+| **`SPXVN06679685553`** | MT | **CT** (Cần Thơ) | 2.96 kg | Inbound | [Xem phiếu](public/sample_bills/SPXVN06679685553.jpg) |
+| **`SPXVN06670867033`** | MT | **HCM** (TP.HCM) | 0.43 kg | Outbound | [Xem phiếu](public/sample_bills/SPXVN06670867033.jpg) |
+
+### 🖼️ Hình Ảnh Phiếu Vận Đơn Mẫu Trực Quan (Scan Test)
+
+<p align="center">
+  <img src="public/sample_bills/SPXVN06721210393.jpg" width="280" alt="Bill SPXVN06721210393" />
+  <img src="public/sample_bills/SPXVN06620767933.jpg" width="280" alt="Bill SPXVN06620767933" />
+  <img src="public/sample_bills/SPXVN06733932163.jpg" width="280" alt="Bill SPXVN06733932163" />
+</p>
+<p align="center">
+  <img src="public/sample_bills/SPXVN06715297463.jpg" width="280" alt="Bill SPXVN06715297463" />
+  <img src="public/sample_bills/SPXVN06687683833.jpg" width="280" alt="Bill SPXVN06687683833" />
+  <img src="public/sample_bills/SPXVN06679685553.jpg" width="280" alt="Bill SPXVN06679685553" />
+</p>
+<p align="center">
+  <img src="public/sample_bills/SPXVN06670867033.jpg" width="280" alt="Bill SPXVN06670867033" />
+</p>
+
+---
+
 ## 🚀 Các Tính Năng Đã Triển Khai & Cập Nhật Mới Nhất
 
 ### 1. Quản lý Điều phối & Menu Điều hướng (TO Management & Orders Router)
@@ -90,56 +131,3 @@ Mở trình duyệt tại: `http://localhost:3000`
   ```env
   NEXT_PUBLIC_API_URL=https://webbasic-production-47cd.up.railway.app
   ```
-
-
----
-
-## 📌 LỊCH SỬ CẬP NHẬT & TỐI ƯU HÓA HỆ THỐNG WEB (CHANGELOG)
-
-### 1. Tái cấu trúc Menu & Điều hướng TO Management
-- **Gộp Menu Dropdown:** Gộp 2 màn hình *Phân loại* và *Danh sách bao hàng* vào mục menu chính **`TO management`**. Khi click sẽ xổ ra 2 mục con:
-  - `/TOmanagement/sorting`: Trạm phân loại & quét TO.
-  - `/TOmanagement/listTO`: Quản lý danh sách toàn bộ bao hàng.
-- **Màn hình Landing tại `/TOmanagement/sorting`:**
-  - Không tự động sinh bao và không vào thẳng màn quét mã ngay từ đầu.
-  - Hiển thị giao diện thẻ chào đón nổi bật với nút **"Tạo bao mới ngay"**, nút truy cập nhanh danh sách bao hàng, và danh sách các bao đang dở dang (`Packing`) để nhân viên bấm vào quét tiếp.
-  - Khi bấm **"Tạo bao mới ngay"**: hệ thống sinh mã TO chuẩn (`TOyyMMddXXXXX`), lưu vào database với trạng thái `Packing` và tự động điều hướng sang router động:
-    ```
-    /TOmanagement/sorting/[maTO]
-    ```
-
-### 2. Thiết kế lại Trạm Quét Mã Phân Loại (`PhanLoaiScanView.tsx`)
-- **Bố cục giao diện 2 phần trực quan:**
-  - **Phía trên (Scan Area):** Ô nhập liệu hỗ trợ đồng thời cả súng bắn mã vạch (bắt sự kiện `Enter`) và nhập tay, nút bật/tắt camera quét mã, mã TO, trạng thái badge, điểm đến Sorting Hub.
-  - **Phía dưới (DataTable):** Bảng hiển thị danh sách toàn bộ kiện hàng trong bao gồm các cột:
-    1. `#` (STT)
-    2. `Mã đơn` (VD: `SPXVN06679685553`)
-    3. `Sorting (Nơi đến)` (VD: `HCM`, `CT`, `HN`...)
-    4. `Khối lượng` (kg)
-    5. `Thời gian scan vào TO` (Giờ:Phút:Giây)
-    6. `Xóa` (Nút đỏ dấu `X` cuối hàng để gỡ đơn khỏi bao)
-- **Chuẩn hóa hiển thị trạng thái (Status Badges):**
-  - **`Packing`**: Hiển thị chữ màu đỏ trên nền hồng nhạt (`bg-rose-50 text-rose-700 border-rose-200`).
-  - **`Packed`**: Hiển thị chữ màu xanh lá trên nền xanh nhạt (`bg-emerald-50 text-emerald-700 border-emerald-200`).
-  - Bỏ toàn bộ các hậu tố mở ngoặc dài dòng, chỉ giữ chuẩn gọn gàng `Packing` / `Packed`.
-- **Loại bỏ các thành phần mẫu thừa:** Đã gỡ bỏ nút *+ Sinh mã mẫu SPXVN* và dòng chú thích dài dòng theo đúng yêu cầu.
-
-### 3. Đồng bộ hóa chuẩn xác dữ liệu với bảng `TO_orders` (Database)
-- **Tập trung hóa vào bảng `TO_orders`:**
-  - Khi quét đơn hoặc xóa đơn, toàn bộ mảng `danhSachGoiHang`, số lượng `SL`, khối lượng `totalWeight`, trạng thái `Packing` và điểm đến `diaDiemGiaoHang` đều được lưu ngay lập tức vào database qua `PUT /TO/:maTO`.
-  - Khắc phục triệt để lỗi khi thoát ra ngoài rồi vào lại bị mất danh sách kiện trong bảng bên dưới.
-- **Sửa lỗi điểm đến hiển thị "SOC":**
-  - API `POST /orders/scan/:id` được bổ sung trả về thông tin `noiNhan` của đơn vừa quét.
-  - Khi quét đơn đầu tiên vào bao, hệ thống tự động gán chính xác `diaDiemGiaoHang` của bao theo điểm đến của đơn (VD: `HCM`, `CT`...) thay vì fallback nhầm thành `SOC`.
-
-### 4. Nâng cấp Danh Sách Bao Hàng (`DanhSachTOView.tsx`)
-- **Nút Thao Tác Chuyên Biệt Theo Trạng Thái:**
-  - Đối với bao **`Packed`**: Hiển thị nút **`ReOpen`**. Khi click sẽ mở lại bao và chuyển thẳng vào router `/TOmanagement/sorting/[maTO]` ngay lập tức (không hiển thị popup alert/confirm làm gián đoạn).
-  - Đối với bao **`Packing`**: Hiển thị nút **`Quét tiếp`** để điều hướng trực tiếp tới router của bao đó.
-- **Sắp xếp thứ tự danh sách (Sort Descending):**
-  - Sắp xếp từ trên xuống dưới (mới nhất luôn nằm ở dòng đầu tiên của bảng).
-  - Đối với bao `Packed`: sắp xếp theo thời gian hoàn tất mới nhất (`completeTime`).
-  - Đối với bao `Packing`: sắp xếp theo thời gian khởi tạo mới nhất (`ngayTao`).
-- **Hiển thị Thời Gian Đầy Đủ Giờ Việt Nam:**
-  - Cột thời gian hiển thị chi tiết cả Giờ : Phút : Giây Ngày/Tháng/Năm (`HH:mm:ss dd/MM/yyyy`).
-  - Chuẩn hóa theo đúng múi giờ Việt Nam (`Asia/Ho_Chi_Minh` - GMT+7), xử lý triệt để lỗi lệch giờ UTC +7.
