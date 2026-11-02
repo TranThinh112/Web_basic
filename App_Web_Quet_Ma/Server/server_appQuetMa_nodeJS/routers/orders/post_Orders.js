@@ -1,4 +1,4 @@
-const db = require("../../db");
+﻿const db = require("../../db");
 const express = require('express');
 const router = express.Router();
 const INSTANCE_ID = Math.random().toString(36).substring(2, 8);
@@ -271,35 +271,97 @@ router.post('/remove/:id', (req, res) => {
     }
   );
 });
-//tao order moi tu form
+// Hàm sinh mã SPX đúng chuẩn SPXVN{yearCode}{8 số ngẫu nhiên}{monthCode}
+function generateUniqueSPXCode() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const yearCodeNum = year % 10 === 0 ? year % 100 : year % 10;
+  const yearCode = String(yearCodeNum).padStart(2, "0");
+
+  const month = now.getMonth() + 1;
+  let monthCode = String(month);
+  if (month === 10) monthCode = "A";
+  if (month === 11) monthCode = "B";
+  if (month === 12) monthCode = "C";
+
+  let rand = "";
+  for (let i = 0; i < 8; i++) {
+    rand += Math.floor(Math.random() * 10).toString();
+  }
+  return 'SPXVN' + yearCode + rand + monthCode;
+}
+
+// Hàm insert đơn hàng có cơ chế auto-retry chống trùng mã id
+function insertOrderWithRetry(orderData, maxRetries, callback) {
+  let attempts = 0;
+
+  function tryInsert(currentId) {
+    attempts++;
+    const sql = 'INSERT INTO orders(id, nguoiGui, nguoiNhan, diaChiGui, diaChiNhan, noiGui, noiNhan, sanPham, soKi, giaTien, trangThai, thoiGianTao) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)';
+    const params = [
+      currentId,
+      orderData.nguoiGui,
+      orderData.nguoiNhan,
+      orderData.diaChiGui,
+      orderData.diaChiNhan,
+      orderData.noiGui,
+      orderData.noiNhan,
+      orderData.sanPham,
+      orderData.soKi,
+      orderData.giaTien,
+      orderData.trangThai,
+      orderData.thoiGianTao
+    ];
+
+    db.query(sql, params, (err, result) => {
+      if (err) {
+        // Nếu trùng khóa chính (duplicate key) và chưa vượt quá số lần thử lại
+        if ((err.code === 'ER_DUP_ENTRY' || err.errno === 1062) && attempts < maxRetries) {
+          const nextId = generateUniqueSPXCode();
+          console.warn('[Auto-Retry] Trùng mã ' + currentId + ', tự động sinh mã mới: ' + nextId + ' (thử lần ' + attempts + ')');
+          return tryInsert(nextId);
+        }
+        return callback(err);
+      }
+      return callback(null, { ...orderData, id: currentId });
+    });
+  }
+
+  const initialId = (orderData.id && String(orderData.id).trim() !== "")
+    ? String(orderData.id).trim()
+    : generateUniqueSPXCode();
+
+  tryInsert(initialId);
+}
+
+//tao order moi tu form (co co che tu dong check trung & retry 5 lan)
 router.post("/", (req, res) => {
   const { id, nguoiGui, nguoiNhan, diaChiGui, diaChiNhan, noiGui, noiNhan, sanPham, soKi, giaTien, trangThai } = req.body;
   const thoiGianTao = new Date();
   const status = trangThai || 'Outbound';
-  db.query(
-    'INSERT INTO orders(id, nguoiGui, nguoiNhan, diaChiGui, diaChiNhan, noiGui, noiNhan, sanPham, soKi, giaTien, trangThai, thoiGianTao) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)',
-    [id, nguoiGui, nguoiNhan, diaChiGui, diaChiNhan, noiGui, noiNhan, sanPham, soKi, giaTien, status, thoiGianTao],
-    (err, result) => {
-      if (err) {
-        console.log("DB error:", err);
-        return res.status(500).json({ error: err.message });
-      }
-      return res.json({
-        id,
-        nguoiGui,
-        nguoiNhan,
-        diaChiGui,
-        diaChiNhan,
-        noiGui,
-        noiNhan,
-        sanPham,
-        soKi,
-        giaTien,
-        trangThai: status,
-        thoiGianTao,
-      });
+
+  const orderData = {
+    id,
+    nguoiGui,
+    nguoiNhan,
+    diaChiGui,
+    diaChiNhan,
+    noiGui,
+    noiNhan,
+    sanPham,
+    soKi,
+    giaTien,
+    trangThai: status,
+    thoiGianTao,
+  };
+
+  insertOrderWithRetry(orderData, 5, (err, savedOrder) => {
+    if (err) {
+      console.log("DB error:", err);
+      return res.status(500).json({ error: err.message });
     }
-  );
+    return res.json(savedOrder);
+  });
 });
 
 module.exports = router;
