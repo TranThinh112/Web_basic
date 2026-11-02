@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import {
   Package,
   Scan,
@@ -29,6 +30,7 @@ interface ScannedItem {
 }
 
 export default function PhanLoaiScanView({ initialMaTO }: { initialMaTO?: string }) {
+  const router = useRouter();
   const [currentTO, setCurrentTO] = useState<TOOrder | null>(null);
 
   const [barcodeInput, setBarcodeInput] = useState("");
@@ -89,6 +91,7 @@ export default function PhanLoaiScanView({ initialMaTO }: { initialMaTO?: string
     if (!silent) {
       sounds.playSuccess();
     }
+    router.push(`/TOmanagement/sorting/${newMaTO}`);
     setTimeout(() => inputRef.current?.focus(), 100);
   };
 

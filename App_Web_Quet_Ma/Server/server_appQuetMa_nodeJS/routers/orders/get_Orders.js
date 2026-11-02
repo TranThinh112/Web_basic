@@ -5,7 +5,7 @@ const db = require("../../db");
 
 ////////////////////////////////// lấy order theo id, lay order theo trạng thái ///////////////////////////////
 router.get('/getIn4', (req, res) => {
-  let { id, trangThai, keyword, page = 1, limit = 10 } = req.query;
+  let { id, maTO, trangThai, keyword, page = 1, limit = 10 } = req.query;
 
   page = Number(page);
   limit = Number(limit);
@@ -19,6 +19,12 @@ router.get('/getIn4', (req, res) => {
   if (id) {
     conditions.push("id = ?");
     values.push(id);
+  }
+
+  /// 🔹 lọc theo maTO
+  if (maTO) {
+    conditions.push("maTO = ?");
+    values.push(maTO);
   }
 
   /// 🔹 lọc theo trạng thái (hỗ trợ cả các đơn cũ trạng thái NULL chưa vào bao)
@@ -58,11 +64,14 @@ router.get('/getIn4', (req, res) => {
     SELECT * ${baseSql}
     ORDER BY 
       CASE 
-        WHEN LOWER(trangThai) = 'inbound' THEN 0
-        WHEN LOWER(trangThai) = 'outbound' THEN 1
-        ELSE 2
+        WHEN (LOWER(trangThai) = 'inbound' OR (maTO IS NOT NULL AND maTO != '')) THEN 0
+        ELSE 1
       END,
-      thoiGianDongBao DESC
+      CASE 
+        WHEN (LOWER(trangThai) = 'inbound' OR (maTO IS NOT NULL AND maTO != '')) THEN thoiGianDongBao
+        ELSE thoiGianTao
+      END DESC,
+      thoiGianTao DESC
     LIMIT ? OFFSET ?`;
 
   const dataValues = [...values, limit, offset];

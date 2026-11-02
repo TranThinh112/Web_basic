@@ -1,7 +1,7 @@
 "use client";
 
-import PhanLoaiScanView from "@/components/PhanLoaiScanView";
+import PhanLoaiLandingView from "@/components/PhanLoaiLandingView";
 
 export default function SortingTOPage() {
-  return <PhanLoaiScanView />;
+  return <PhanLoaiLandingView />;
 }
