@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useCallback } from "react";
 import {
@@ -297,7 +297,7 @@ export default function InventoryOrdersView() {
                     </td>
 
                     {/* MÃ VẬN ĐƠN */}
-                    <td className="py-2.5 px-2.5 font-mono font-bold text-orange-600 truncate" title={maDon}>
+                    <td className="py-2.5 px-2.5 font-mono font-bold text-slate-900 truncate" title={maDon}>
                       {maDon}
                     </td>
 
