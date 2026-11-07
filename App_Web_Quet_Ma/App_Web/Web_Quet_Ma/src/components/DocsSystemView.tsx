@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -22,11 +22,14 @@ import {
   Sparkles,
   Workflow,
   Copy,
-  LogIn
+  LogIn,
+  Smartphone,
+  Download,
+  ExternalLink
 } from "lucide-react";
 
 export default function DocsSystemView() {
-  const [activeTab, setActiveTab] = useState<"overview" | "code_format" | "scan_flow" | "erd" | "apis">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "code_format" | "scan_flow" | "mobile_app" | "erd" | "apis">("overview");
   const [copiedText, setCopiedText] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -89,8 +92,9 @@ export default function DocsSystemView() {
           { id: "overview", label: "1. Tổng Quan Kiến Trúc", icon: Layers },
           { id: "code_format", label: "2. Cấu Trúc Mã Vận Đơn", icon: QrCode },
           { id: "scan_flow", label: "3. Luồng Quét & Gom Bao TO", icon: Workflow },
-          { id: "erd", label: "4. Sơ Đồ Cơ Sở Dữ Liệu (ERD)", icon: Database },
-          { id: "apis", label: "5. Danh Mục Endpoints API", icon: Server },
+          { id: "mobile_app", label: "4. Ứng Dụng Di Động & Chạy Web", icon: Smartphone },
+          { id: "erd", label: "5. Sơ Đồ Cơ Sở Dữ Liệu (ERD)", icon: Database },
+          { id: "apis", label: "6. Danh Mục Endpoints API", icon: Server },
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -304,6 +308,162 @@ export default function DocsSystemView() {
                 <p className="text-[11px] text-blue-800 leading-relaxed">
                   Sau khi bao TO đã ghi nhận thành công, đơn hàng mới được chuyển thành <span className="text-emerald-700 font-bold">Inbound</span>, gán <code className="font-mono">maTO</code> và lưu mốc giờ đóng bao theo GMT+7.
                 </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+
+      {/* TAB 4: ỨNG DỤNG DI ĐỘNG & HƯỚNG DẪN CHẠY WEB QUA NETLIFY DROP */}
+      {activeTab === "mobile_app" && (
+        <div className="space-y-6">
+          {/* BANNER TẢI BẢN BUILD NÉN */}
+          <div className="bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl p-6 text-white shadow-md space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/20 text-[11px] font-bold">
+                  <Package className="w-3.5 h-3.5" /> Gói Biên Dịch Flutter Web Sẵn Sàng
+                </div>
+                <h3 className="text-xl font-black">Chạy Ứng Dụng Flutter Web Trực Tuyến</h3>
+                <p className="text-xs text-orange-100 max-w-xl">
+                  Bạn có thể tải gói mã nguồn web đã biên dịch (spx_mobile_web_build.zip), giải nén và kéo thả trực tiếp lên Netlify Drop để chạy ứng dụng độc lập trên trình duyệt.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2">
+                <a
+                  href="/downloads/spx_mobile_web_build.zip"
+                  download
+                  className="px-4 py-2.5 bg-white text-orange-600 hover:bg-orange-50 rounded-xl font-bold text-xs flex items-center gap-2 shadow-sm transition active:scale-95 cursor-pointer"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Tải spx_mobile_web_build.zip</span>
+                </a>
+
+                <a
+                  href="https://app.netlify.com/drop"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-4 py-2.5 bg-slate-900/40 hover:bg-slate-900/60 text-white rounded-xl font-bold text-xs flex items-center gap-2 border border-white/20 transition cursor-pointer"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  <span>Trang Netlify Drop</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* HƯỚNG DẪN CÁC BƯỚC UPLOAD NETLIFY DROP */}
+          <div className="bg-white rounded-2xl p-6 border border-orange-100 shadow-xs space-y-4">
+            <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+              <Workflow className="w-4 h-4 text-orange-600" /> Hướng Dẫn Chi Tiết 3 Bước Chạy Bằng Netlify Drop
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+              <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/70 space-y-2">
+                <span className="w-6 h-6 rounded-full bg-orange-600 text-white font-bold flex items-center justify-center text-xs">1</span>
+                <h4 className="font-bold text-slate-900">Bước 1: Tải & Giải Nén</h4>
+                <p className="text-slate-600 text-[11px] leading-relaxed">
+                  Bấm nút <b>Tải spx_mobile_web_build.zip</b> ở trên về máy tính, sau đó nhấp chuột phải chọn <b>Extract All (Giải nén)</b> để thu được thư mục web chứa các tệp index.html, main.dart.js, canvaskit...
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/70 space-y-2">
+                <span className="w-6 h-6 rounded-full bg-orange-600 text-white font-bold flex items-center justify-center text-xs">2</span>
+                <h4 className="font-bold text-slate-900">Bước 2: Mở Netlify Drop</h4>
+                <p className="text-slate-600 text-[11px] leading-relaxed">
+                  Truy cập đường dẫn công cụ miễn phí: <a href="https://app.netlify.com/drop" target="_blank" rel="noreferrer" className="text-orange-600 font-bold underline">https://app.netlify.com/drop</a> trên trình duyệt web.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/70 space-y-2">
+                <span className="w-6 h-6 rounded-full bg-orange-600 text-white font-bold flex items-center justify-center text-xs">3</span>
+                <h4 className="font-bold text-slate-900">Bước 3: Kéo Thả & Khởi Chạy</h4>
+                <p className="text-slate-600 text-[11px] leading-relaxed">
+                  Kéo chính thư mục web đã giải nén thả vào khung tròn của Netlify. Chỉ sau vài giây, Netlify sẽ cấp cho bạn một đường link trực tuyến (VD: <a href="https://tranquil-figolla-16df43.netlify.app" target="_blank" rel="noreferrer" className="text-emerald-700 font-bold underline">tranquil-figolla-16df43.netlify.app</a>) để trải nghiệm app ngay lập tức!
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* GIAO DIỆN PHÂN TẦNG CỦA APP */}
+          <div className="bg-white rounded-2xl p-6 border border-orange-100 shadow-xs space-y-6">
+            <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+              <Layers className="w-4 h-4 text-orange-600" /> Cấu Trúc Giao Diện Phân Tầng Của Ứng Dụng (Mobile UI Hierarchy)
+            </h3>
+
+            {/* TẦNG 1: ĐĂNG NHẬP & MENU CHÍNH */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider bg-orange-50 px-3 py-1.5 rounded-lg border border-orange-100 inline-block">
+                Tầng 1: Đăng Nhập & Menu Điều Hướng Chính
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="border border-slate-200 rounded-xl p-3 bg-slate-50/50 text-center space-y-2">
+                  <p className="text-xs font-bold text-slate-800">1.1. Màn Hình Đăng Nhập</p>
+                  <img src="/screenshots/01_app_login.png" alt="Đăng Nhập App" className="mx-auto rounded-lg shadow-xs max-h-72 object-contain" />
+                  <p className="text-[11px] text-slate-500">Tài khoản mặc định: admin / 123456</p>
+                </div>
+                <div className="border border-slate-200 rounded-xl p-3 bg-slate-50/50 text-center space-y-2">
+                  <p className="text-xs font-bold text-slate-800">1.2. Menu Điều Hướng Chính (Home Menu)</p>
+                  <img src="/screenshots/02_app_home_menu.png" alt="Menu Điều Hướng" className="mx-auto rounded-lg shadow-xs max-h-72 object-contain" />
+                  <p className="text-[11px] text-slate-500">4 chức năng: Phân loại, Tra cứu, Quản lý đơn, Tạo đơn</p>
+                </div>
+              </div>
+            </div>
+
+            {/* TẦNG 2: PHÂN LOẠI TO (3 TAB CHÍNH) */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider bg-orange-50 px-3 py-1.5 rounded-lg border border-orange-100 inline-block">
+                Tầng 2: Phân Hệ Phân Loại & Gom Bao Hàng TO (3 Tab Theo Thứ Tự)
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="border border-slate-200 rounded-xl p-3 bg-slate-50/50 text-center space-y-2">
+                  <span className="text-[10px] bg-orange-100 text-orange-700 font-bold px-2 py-0.5 rounded">Tab 1: Create TO</span>
+                  <p className="text-xs font-bold text-slate-800">Khởi Tạo Bao Hàng Mới</p>
+                  <img src="/screenshots/04_app_create_to.png" alt="Create TO" className="mx-auto rounded-lg shadow-xs max-h-72 object-contain" />
+                  <p className="text-[11px] text-slate-500">Sinh mã TO, chọn packer, quét gói đầu tiên gán Hub</p>
+                </div>
+
+                <div className="border border-slate-200 rounded-xl p-3 bg-slate-50/50 text-center space-y-2">
+                  <span className="text-[10px] bg-orange-100 text-orange-700 font-bold px-2 py-0.5 rounded">Tab 2: Scan TO</span>
+                  <p className="text-xs font-bold text-slate-800">Quét Mã Kiểm Tra Bao</p>
+                  <img src="/screenshots/05_app_scan_to.png" alt="Scan TO" className="mx-auto rounded-lg shadow-xs max-h-72 object-contain" />
+                  <p className="text-[11px] text-slate-500">Quét camera nhanh thông tin bao hàng hiện có</p>
+                </div>
+
+                <div className="border border-slate-200 rounded-xl p-3 bg-slate-50/50 text-center space-y-2">
+                  <span className="text-[10px] bg-orange-100 text-orange-700 font-bold px-2 py-0.5 rounded">Tab 3: Table TO</span>
+                  <p className="text-xs font-bold text-slate-800">Danh Sách Quản Lý Bao</p>
+                  <img src="/screenshots/06_app_table_to.png" alt="Table TO" className="mx-auto rounded-lg shadow-xs max-h-72 object-contain" />
+                  <p className="text-[11px] text-slate-500">Theo dõi trạng thái Packing/Packed, tải trọng, ReOpen</p>
+                </div>
+              </div>
+            </div>
+
+            {/* TẦNG 3: TRA CỨU & QUẢN LÝ ĐƠN HÀNG */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider bg-orange-50 px-3 py-1.5 rounded-lg border border-orange-100 inline-block">
+                Tầng 3: Tra Cứu, In Phiếu Vận Đơn & Tạo Đơn Mới
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="border border-slate-200 rounded-xl p-3 bg-slate-50/50 text-center space-y-2">
+                  <p className="text-xs font-bold text-slate-800">Tra Cứu Bưu Kiện & Xem Bill</p>
+                  <img src="/screenshots/08_app_bill_modal.png" alt="Phiếu Bưu Kiện" className="mx-auto rounded-lg shadow-xs max-h-72 object-contain" />
+                  <p className="text-[11px] text-slate-500">Mẫu tem Barcode Code128 & QR Code tiêu chuẩn SPX</p>
+                </div>
+
+                <div className="border border-slate-200 rounded-xl p-3 bg-slate-50/50 text-center space-y-2">
+                  <p className="text-xs font-bold text-slate-800">Quản Lý Toàn Bộ Đơn Kho</p>
+                  <img src="/screenshots/09_app_quan_ly_don.png" alt="Quản Lý Đơn" className="mx-auto rounded-lg shadow-xs max-h-72 object-contain" />
+                  <p className="text-[11px] text-slate-500">Phân biệt Inbound xanh lá & Outbound cam</p>
+                </div>
+
+                <div className="border border-slate-200 rounded-xl p-3 bg-slate-50/50 text-center space-y-2">
+                  <p className="text-xs font-bold text-slate-800">Tạo Đơn Hàng Mới</p>
+                  <img src="/screenshots/10_app_tao_don.png" alt="Tạo Bưu Kiện" className="mx-auto rounded-lg shadow-xs max-h-72 object-contain" />
+                  <p className="text-[11px] text-slate-500">Tự động định tuyến tỉnh thành về 5 Hub bưu cục</p>
+                </div>
               </div>
             </div>
           </div>

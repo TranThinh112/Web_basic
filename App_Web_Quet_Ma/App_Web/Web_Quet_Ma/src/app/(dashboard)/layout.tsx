@@ -75,6 +75,20 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
     }
   }, [router, pathname]);
 
+  // BẢO VỆ CHẶT CHẼ: Nếu chưa đăng nhập và cố tình truy cập vào các trang quản lý khác ngoài /docs, CHẶN render nội dung ngay lập tức
+  const isPublicPage = pathname === "/docs" || pathname.startsWith("/docs/");
+  if (!isPublicPage && !currentUser) {
+    return (
+      <div className="min-h-screen bg-[#FFF9F6] flex flex-col items-center justify-center p-4">
+        <div className="w-12 h-12 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center mb-3">
+          <Lock className="w-6 h-6" />
+        </div>
+        <p className="text-sm font-bold text-slate-800">Yêu cầu đăng nhập</p>
+        <p className="text-xs text-slate-500 mt-1">Bạn cần đăng nhập để truy cập trang quản lý này.</p>
+      </div>
+    );
+  }
+
   const handleLogout = () => {
     if (confirm("Bạn có chắc muốn đăng xuất?")) {
       localStorage.removeItem("spx_user");
@@ -139,157 +153,227 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
           {/* NAVIGATION MENU */}
           <nav className="p-3 space-y-1">
             {/* 1. QUẢN LÝ CHUYẾN XE */}
-            <Link
-              href="/dispatch"
-              onClick={() => setMobileMenuOpen(false)}
-              className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors duration-150 ${
-                pathname === "/dispatch" || pathname.startsWith("/dispatch/")
-                  ? "bg-orange-600 text-white shadow-md shadow-orange-600/25"
-                  : "text-slate-600 hover:bg-orange-50 hover:text-orange-600"
-              }`}
-            >
-              <Truck className="w-4 h-4 shrink-0" />
-              <span>Quản lý chuyến xe</span>
-            </Link>
-
-            {/* 2. TO MANAGEMENT (DROPDOWN) */}
-            <div className="space-y-0.5">
-              <button
-                type="button"
-                onClick={() => setToOpen(!toOpen)}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors duration-150 cursor-pointer ${
-                  isTOActive
-                    ? "bg-orange-50 text-orange-700 border border-orange-200"
+            {currentUser ? (
+              <Link
+                href="/dispatch"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors duration-150 ${
+                  pathname === "/dispatch" || pathname.startsWith("/dispatch/")
+                    ? "bg-orange-600 text-white shadow-md shadow-orange-600/25"
                     : "text-slate-600 hover:bg-orange-50 hover:text-orange-600"
                 }`}
               >
+                <Truck className="w-4 h-4 shrink-0" />
+                <span>Quản lý chuyến xe</span>
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:bg-slate-50 transition"
+              >
                 <div className="flex items-center gap-3">
-                  <Box className="w-4 h-4 shrink-0 text-orange-600" />
-                  <span className="font-bold">TO management</span>
+                  <Truck className="w-4 h-4 shrink-0 text-slate-400" />
+                  <span>Quản lý chuyến xe</span>
                 </div>
-                <ChevronDown
-                  className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${
-                    toOpen ? "rotate-180 text-orange-600" : ""
-                  }`}
-                />
-              </button>
+                <Lock className="w-3.5 h-3.5 text-slate-400" />
+              </Link>
+            )}
 
-              {toOpen && (
-                <div className="pl-6 pr-1 py-1 space-y-1">
-                  <Link
-                    href="/TOmanagement/sorting"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
-                      pathname === "/TOmanagement/sorting" || pathname === "/sorting"
-                        ? "bg-orange-600 text-white font-bold shadow-sm shadow-orange-600/20"
+            {/* 2. TO MANAGEMENT (DROPDOWN) */}
+            <div className="space-y-0.5">
+              {currentUser ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setToOpen(!toOpen)}
+                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors duration-150 cursor-pointer ${
+                      isTOActive
+                        ? "bg-orange-50 text-orange-700 border border-orange-200"
                         : "text-slate-600 hover:bg-orange-50 hover:text-orange-600"
                     }`}
                   >
-                    <Scan className="w-3.5 h-3.5 shrink-0" />
-                    <span>Phân loại & quét TO</span>
-                  </Link>
+                    <div className="flex items-center gap-3">
+                      <Box className="w-4 h-4 shrink-0 text-orange-600" />
+                      <span className="font-bold">TO management</span>
+                    </div>
+                    <ChevronDown
+                      className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${
+                        toOpen ? "rotate-180 text-orange-600" : ""
+                      }`}
+                    />
+                  </button>
 
-                  <Link
-                    href="/TOmanagement/listTO"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
-                      pathname === "/TOmanagement/listTO" || pathname === "/transfer-orders"
-                        ? "bg-orange-600 text-white font-bold shadow-sm shadow-orange-600/20"
-                        : "text-slate-600 hover:bg-orange-50 hover:text-orange-600"
-                    }`}
-                  >
-                    <Package className="w-3.5 h-3.5 shrink-0" />
-                    <span>Danh sách bao hàng</span>
-                  </Link>
-                </div>
+                  {toOpen && (
+                    <div className="pl-6 pr-1 py-1 space-y-1">
+                      <Link
+                        href="/TOmanagement/sorting"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
+                          pathname === "/TOmanagement/sorting" || pathname === "/sorting"
+                            ? "bg-orange-600 text-white font-bold shadow-sm shadow-orange-600/20"
+                            : "text-slate-600 hover:bg-orange-50 hover:text-orange-600"
+                        }`}
+                      >
+                        <Scan className="w-3.5 h-3.5 shrink-0" />
+                        <span>Phân loại & quét TO</span>
+                      </Link>
+
+                      <Link
+                        href="/TOmanagement/listTO"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
+                          pathname === "/TOmanagement/listTO" || pathname === "/transfer-orders"
+                            ? "bg-orange-600 text-white font-bold shadow-sm shadow-orange-600/20"
+                            : "text-slate-600 hover:bg-orange-50 hover:text-orange-600"
+                        }`}
+                      >
+                        <Package className="w-3.5 h-3.5 shrink-0" />
+                        <span>Danh sách bao hàng</span>
+                      </Link>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <Link
+                  href="/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:bg-slate-50 transition"
+                >
+                  <div className="flex items-center gap-3">
+                    <Box className="w-4 h-4 shrink-0 text-slate-400" />
+                    <span>TO management</span>
+                  </div>
+                  <Lock className="w-3.5 h-3.5 text-slate-400" />
+                </Link>
               )}
             </div>
 
             {/* 3. ORDERS MANAGEMENT (DROPDOWN GOM: TẤT CẢ ĐƠN, TÌM MÃ, TẠO ĐƠN) */}
             <div className="space-y-0.5">
-              <button
-                type="button"
-                onClick={() => setOrdersOpen(!ordersOpen)}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors duration-150 cursor-pointer ${
-                  isOrdersActive
-                    ? "bg-orange-50 text-orange-700 border border-orange-200"
-                    : "text-slate-600 hover:bg-orange-50 hover:text-orange-600"
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <Boxes className="w-4 h-4 shrink-0 text-orange-600" />
-                  <span className="font-bold">Quản lý đơn hàng</span>
-                </div>
-                <ChevronDown
-                  className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${
-                    ordersOpen ? "rotate-180 text-orange-600" : ""
-                  }`}
-                />
-              </button>
-
-              {ordersOpen && (
-                <div className="pl-6 pr-1 py-1 space-y-1">
-                  {/* Toàn bộ đơn trong kho */}
-                  <Link
-                    href="/orders"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
-                      pathname === "/orders" || pathname === "/orders/inventory"
-                        ? "bg-orange-600 text-white font-bold shadow-sm shadow-orange-600/20"
+              {currentUser ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setOrdersOpen(!ordersOpen)}
+                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors duration-150 cursor-pointer ${
+                      isOrdersActive
+                        ? "bg-orange-50 text-orange-700 border border-orange-200"
                         : "text-slate-600 hover:bg-orange-50 hover:text-orange-600"
                     }`}
                   >
-                    <Package className="w-3.5 h-3.5 shrink-0" />
-                    <span>Toàn bộ đơn trong kho</span>
-                  </Link>
+                    <div className="flex items-center gap-3">
+                      <Boxes className="w-4 h-4 shrink-0 text-orange-600" />
+                      <span className="font-bold">Quản lý đơn hàng</span>
+                    </div>
+                    <ChevronDown
+                      className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${
+                        ordersOpen ? "rotate-180 text-orange-600" : ""
+                      }`}
+                    />
+                  </button>
 
-                  {/* Tìm mã đơn / Tra cứu */}
-                  <Link
-                    href="/orders/tracking"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
-                      pathname === "/orders/tracking" || pathname === "/tracking"
-                        ? "bg-orange-600 text-white font-bold shadow-sm shadow-orange-600/20"
-                        : "text-slate-600 hover:bg-orange-50 hover:text-orange-600"
-                    }`}
-                  >
-                    <Search className="w-3.5 h-3.5 shrink-0" />
-                    <span>Tìm mã đơn (Tra cứu)</span>
-                  </Link>
+                  {ordersOpen && (
+                    <div className="pl-6 pr-1 py-1 space-y-1">
+                      <Link
+                        href="/orders"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
+                          pathname === "/orders"
+                            ? "bg-orange-600 text-white font-bold shadow-sm shadow-orange-600/20"
+                            : "text-slate-600 hover:bg-orange-50 hover:text-orange-600"
+                        }`}
+                      >
+                        <Package className="w-3.5 h-3.5 shrink-0" />
+                        <span>Toàn bộ đơn trong kho</span>
+                      </Link>
 
-                  {/* Tạo đơn mới */}
-                  <Link
-                    href="/orders/create"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
-                      pathname === "/orders/create" || pathname === "/create-order"
-                        ? "bg-orange-600 text-white font-bold shadow-sm shadow-orange-600/20"
-                        : "text-slate-600 hover:bg-orange-50 hover:text-orange-600"
-                    }`}
-                  >
-                    <PlusCircle className="w-3.5 h-3.5 shrink-0" />
-                    <span>Tạo mới đơn hàng</span>
-                  </Link>
-                </div>
+                      <Link
+                        href="/orders/tracking"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
+                          pathname === "/orders/tracking"
+                            ? "bg-orange-600 text-white font-bold shadow-sm shadow-orange-600/20"
+                            : "text-slate-600 hover:bg-orange-50 hover:text-orange-600"
+                        }`}
+                      >
+                        <Search className="w-3.5 h-3.5 shrink-0" />
+                        <span>Tìm mã đơn (Tra cứu)</span>
+                      </Link>
+
+                      <Link
+                        href="/orders/create"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
+                          pathname === "/orders/create"
+                            ? "bg-orange-600 text-white font-bold shadow-sm shadow-orange-600/20"
+                            : "text-slate-600 hover:bg-orange-50 hover:text-orange-600"
+                        }`}
+                      >
+                        <PlusCircle className="w-3.5 h-3.5 shrink-0" />
+                        <span>Tạo mới đơn hàng</span>
+                      </Link>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <Link
+                  href="/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:bg-slate-50 transition"
+                >
+                  <div className="flex items-center gap-3">
+                    <Boxes className="w-4 h-4 shrink-0 text-slate-400" />
+                    <span>Quản lý đơn hàng</span>
+                  </div>
+                  <Lock className="w-3.5 h-3.5 text-slate-400" />
+                </Link>
               )}
             </div>
 
             {/* 4. CÀI ĐẶT & THIẾT BỊ */}
+            {currentUser ? (
+              <Link
+                href="/settings"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors duration-150 ${
+                  pathname === "/settings" || pathname.startsWith("/settings/")
+                    ? "bg-orange-600 text-white shadow-md shadow-orange-600/25"
+                    : "text-slate-600 hover:bg-orange-50 hover:text-orange-600"
+                }`}
+              >
+                <Settings className="w-4 h-4 shrink-0" />
+                <span>Cài đặt & thiết bị</span>
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:bg-slate-50 transition"
+              >
+                <div className="flex items-center gap-3">
+                  <Settings className="w-4 h-4 shrink-0 text-slate-400" />
+                  <span>Cài đặt & thiết bị</span>
+                </div>
+                <Lock className="w-3.5 h-3.5 text-slate-400" />
+              </Link>
+            )}
+
+            {/* 5. CẤU TRÚC HỆ THỐNG & ERD */}
             <Link
-              href="/settings"
+              href="/docs"
               onClick={() => setMobileMenuOpen(false)}
               className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors duration-150 ${
-                pathname === "/settings" || pathname.startsWith("/settings/")
+                pathname === "/docs" || pathname.startsWith("/docs/")
                   ? "bg-orange-600 text-white shadow-md shadow-orange-600/25"
                   : "text-slate-600 hover:bg-orange-50 hover:text-orange-600"
               }`}
             >
-              <Settings className="w-4 h-4 shrink-0" />
-              <span>Cài đặt & thiết bị</span>
+              <BookOpen className="w-4 h-4 shrink-0" />
+              <span>Cấu trúc hệ thống & ERD</span>
             </Link>
           </nav>
         </div>
-
         {/* USER INFO & LOGOUT HOẶC NÚT ĐĂNG NHẬP */}
         <div className="p-4 border-t border-orange-100 bg-orange-50/20 text-xs">
           {currentUser ? (
