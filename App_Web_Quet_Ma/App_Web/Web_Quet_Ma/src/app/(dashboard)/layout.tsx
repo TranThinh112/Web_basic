@@ -21,6 +21,7 @@ import {
   Volume2,
   VolumeX,
   BookOpen,
+  Lock,
 } from "lucide-react";
 import { sounds } from "@/lib/sound";
 

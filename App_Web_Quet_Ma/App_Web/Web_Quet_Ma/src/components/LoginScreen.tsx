@@ -32,24 +32,18 @@ export default function LoginScreen({ onSuccess }: LoginModalProps) {
 
     try {
       const user = await api.login(username.trim(), password.trim());
-      if (user) {
-        localStorage.setItem("spx_user", JSON.stringify(user));
+      if (user && user.username) {
+        localStorage.setItem("spx_user", JSON.stringify({
+          username: user.username,
+          name: user.name || "Nhân viên Bưu Cục",
+          id: user.id
+        }));
         onSuccess(user);
       } else {
-        // Nếu user demo offline
-        if (username.trim().toLowerCase() === "admin" || username.trim().toLowerCase() === "staff") {
-          const mockUser = { username: username.trim(), name: "Nhân viên Bưu Cục" };
-          localStorage.setItem("spx_user", JSON.stringify(mockUser));
-          onSuccess(mockUser);
-        } else {
-          setErrorMsg("Sai tài khoản hoặc mật khẩu đăng nhập");
-        }
+        setErrorMsg("Sai tài khoản hoặc mật khẩu đăng nhập! Vui lòng kiểm tra lại.");
       }
-    } catch {
-      // Fallback cho phép truy cập nếu server offline
-      const mockUser = { username: username.trim(), name: "Nhân viên Bưu Cục" };
-      localStorage.setItem("spx_user", JSON.stringify(mockUser));
-      onSuccess(mockUser);
+    } catch (err: any) {
+      setErrorMsg("Không thể xác thực với máy chủ: " + (err?.message || "Lỗi kết nối"));
     } finally {
       setLoading(false);
     }
