@@ -1,4 +1,4 @@
-const express = require('express');
+﻿const express = require('express');
 const router = express.Router();
 const db = require("../../db");
 
@@ -101,4 +101,25 @@ router.put("/:maTO/reopen", (req, res) => {
     }
   );
 });
+
+// Xóa thủ công bao hàng TO (Hỗ trợ nút thùng rác ở Web / App)
+router.delete("/:maTO", (req, res) => {
+  const maTO = req.params.maTO;
+
+  // Giải phóng các đơn hàng nếu bao TO này đang giữ đơn
+  db.query(
+    "UPDATE orders SET trangThai = 'Outbound', maTO = NULL, thoiGianDongBao = NULL WHERE maTO = ?",
+    [maTO],
+    (errOrder) => {
+      if (errOrder) console.error("[Delete TO] Lỗi reset đơn hàng:", errOrder.message);
+
+      // Xóa bao hàng khỏi bảng TO_orders
+      db.query("DELETE FROM TO_orders WHERE maTO = ?", [maTO], (errDelete, result) => {
+        if (errDelete) return res.status(500).json({ error: errDelete.message });
+        return res.json({ success: true, message: `Đã xóa bao ${maTO}` });
+      });
+    }
+  );
+});
+
 module.exports = router;

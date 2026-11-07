@@ -1,133 +1,136 @@
-﻿const db = require("../../db");
+const db = require("../../db");
 const express = require('express');
 const router = express.Router();
 const INSTANCE_ID = Math.random().toString(36).substring(2, 8);
 
-//update trang thai = 'Inbound' + maTO = maTO + thoiGianDongBao = now
+// Quét đóng đơn vào bao TO: Kiểm tra hợp lệ & cùng nơi nhận TRƯỚC, chỉ UPDATE khi hoàn toàn hợp lệ
 router.post('/scan/:id', (req, res) => {
   const { id } = req.params;
   const { maTO } = req.body;
 
-  console.log("SCAN ID:", id);
+  console.log("SCAN ID:", id, "into TO:", maTO);
 
-  // CHECK FORMAT
-  const validIdPattern = /^SPXVN\d{11}$/;
+  // CHECK FORMAT SPXVN (chấp nhận cả 11 chữ số hoặc 10 chữ số + ký tự A, B, C cho tháng 10, 11, 12)
+  const validIdPattern = /^SPXVN\d{10}[\dA-C]$/i;
   if (!validIdPattern.test(id)) {
     return res.status(400).json({ message: "Sai định dạng" });
   }
 
-//dong bo ve gio ho chi minh
+  // Chuẩn hóa giờ theo múi giờ Việt Nam
   const now = new Date().toLocaleString("sv-SE", {
-  timeZone: "Asia/Ho_Chi_Minh"
-});
+    timeZone: "Asia/Ho_Chi_Minh"
+  });
 
-  //  UPDATE TRƯỚC (giảm 1 query)
+  // BƯỚC 1: Lấy thông tin đơn hàng và kiểm tra xem đơn có tồn tại không
   db.query(
-    `UPDATE orders 
-     SET trangThai = 'Inbound', maTO = ?, thoiGianDongBao = ?
-     WHERE id = ? AND trangThai = 'Outbound'`,
-    [maTO, now, id],
-    (err0, result0) => {
-      if (err0) return res.status(500).json(err0);
-
-      if (result0.affectedRows === 0) {
-        return res.status(400).json({
-          message: "Đơn không hợp lệ hoặc đã scan"
-        });
+    "SELECT id, soKi, noiNhan, trangThai FROM orders WHERE id = ?",
+    [id],
+    (errOrder, orderRows) => {
+      if (errOrder) return res.status(500).json(errOrder);
+      if (!orderRows.length) {
+        return res.status(404).json({ message: "Đơn hàng không tồn tại" });
       }
 
-      //  2. LẤY order (nhẹ hơn vì đã chắc chắn tồn tại)
+      const orderItem = orderRows[0];
+      const currentTrangThai = String(orderItem.trangThai || "").toLowerCase();
+
+      // Chỉ cho phép quét đơn đang ở trạng thái Outbound (chưa vào bao)
+      if (currentTrangThai === "inbound") {
+        return res.status(400).json({ message: "Đơn không hợp lệ hoặc đã scan" });
+      }
+
+      const soKi = Number(orderItem.soKi) || 0;
+      const noiNhan = (orderItem.noiNhan || "").trim().toLowerCase();
+
+      // BƯỚC 2: Lấy thông tin bao TO để kiểm tra nơi nhận & danh sách hiện tại
       db.query(
-        "SELECT soKi, noiNhan FROM orders WHERE id = ?",
-        [id],
-        (err, rows) => {
-          if (err) return res.status(500).json(err);
+        "SELECT maTO, diaDiemGiaoHang, danhSachGoiHang FROM TO_orders WHERE maTO = ?",
+        [maTO],
+        (errTO, toRows) => {
+          if (errTO) return res.status(500).json(errTO);
+          if (!toRows.length) {
+            return res.status(404).json({ message: "TO không tồn tại" });
+          }
 
-          const soKi = Number(rows[0].soKi) || 0;
-          const noiNhan = rows[0].noiNhan?.trim().toLowerCase();
+          let list = [];
+          const raw = toRows[0].danhSachGoiHang;
+          if (raw && raw.length > 5) {
+            try {
+              const parsed = typeof raw === "string" ? JSON.parse(raw) : raw;
+              list = Array.isArray(parsed) ? parsed : [];
+            } catch {
+              list = [];
+            }
+          }
 
-          //  3. LẤY TO (bỏ TRIM → dùng index)
-          db.query(
-            "SELECT danhSachGoiHang FROM TO_orders WHERE maTO = ?",
-            [maTO],
-            (err2, rows2) => {
-              if (err2) return res.status(500).json(err2);
-              if (!rows2.length)
-                return res.status(404).json({ message: "TO không tồn tại" });
+          // Kiểm tra xem đơn đã nằm trong bao này chưa
+          const isExistedInTO = list.some(item => item.orderId === id);
+          if (isExistedInTO) {
+            return res.json({
+              success: false,
+              message: "Đơn đã Scan"
+            });
+          }
 
-              let list = [];
-              let raw = rows2[0].danhSachGoiHang;
-
-              // 🔥 parse nhanh + an toàn
-              if (raw && raw.length > 5) {
-                try {
-                  if (Buffer.isBuffer(raw)) raw = raw.toString();
-                  list = JSON.parse(raw);
-                  if (!Array.isArray(list)) list = [];
-                } catch {
-                  list = [];
-                }
-              }
-
-              //  CHECK TRÙNG nhanh hơn
-              const set = new Set(list.map(i => i.orderId));
-              if (set.has(id)) {
-                return res.json({
-                  success: false,
-                  message: "Đơn đã Scan"
-                });
-              }
-
-              const isFirstOrder = list.length === 0;
-
-              //  KHÔNG QUERY LẠI DB nếu có thể
-              if (!isFirstOrder) {
-                const firstNoiNhan = list[0]?.noiNhan?.toLowerCase?.();
-
-                if (firstNoiNhan && firstNoiNhan !== noiNhan) {
-                  return res.status(400).json({
-                    message: "Khác nơi nhận"
-                  });
-                }
-              }
-
-              // push (thêm luôn noiNhan để tránh query lần sau)
-              list.push({
-                orderId: id,
-                soKi: soKi,
-                noiNhan: noiNhan,
-                thoiGianScan: now
+          // BƯỚC 3: Kiểm tra tính hợp lệ về NƠI NHẬN (chỉ cho phép vào bao nếu khớp nơi đến)
+          const isFirstOrder = list.length === 0;
+          if (!isFirstOrder) {
+            const currentDestInTO = (list[0]?.noiNhan || toRows[0].diaDiemGiaoHang || "").trim().toLowerCase();
+            if (currentDestInTO && currentDestInTO !== noiNhan) {
+              // KHÁC NƠI NHẬN: DỪNG LẠI NGAY, tuyệt đối không chỉnh sửa gì trong Database!
+              return res.status(400).json({
+                message: "Khác nơi nhận"
               });
+            }
+          }
 
-              //  UPDATE TO
+          // BƯỚC 4: Tất cả điều kiện đã thỏa mãn -> Thêm đơn vào danh sách bao TO
+          list.push({
+            orderId: id,
+            soKi: soKi,
+            noiNhan: noiNhan,
+            thoiGianScan: now
+          });
+
+          // Cập nhật bao TO (TO_orders)
+          db.query(
+            `UPDATE TO_orders 
+             SET danhSachGoiHang = ?, 
+                 totalWeight = totalWeight + ?,
+                 SL = SL + 1,
+                 diaDiemGiaoHang = CASE 
+                   WHEN ? THEN ? 
+                   ELSE diaDiemGiaoHang 
+                 END
+             WHERE maTO = ?`,
+            [
+              JSON.stringify(list),
+              soKi,
+              isFirstOrder,
+              orderItem.noiNhan,
+              maTO
+            ],
+            (errUpdateTO) => {
+              if (errUpdateTO) return res.status(500).json(errUpdateTO);
+
+              // BƯỚC 5: Cập nhật trạng thái đơn hàng sang Inbound và gắn mã TO
               db.query(
-                `UPDATE TO_orders 
-                 SET danhSachGoiHang = ?, 
-                     totalWeight = totalWeight + ?,
-                     SL = SL + 1,
-                     diaDiemGiaoHang = CASE 
-                       WHEN ? THEN ? 
-                       ELSE diaDiemGiaoHang 
-                     END
-                 WHERE maTO = ?`,
-                [
-                  JSON.stringify(list),
-                  soKi,
-                  isFirstOrder,
-                  rows[0].noiNhan,
-                  maTO
-                ],
-                (err4) => {
-                  if (err4) return res.status(500).json(err4);
+                `UPDATE orders 
+                 SET trangThai = 'Inbound', maTO = ?, thoiGianDongBao = ?
+                 WHERE id = ?`,
+                [maTO, now, id],
+                (errUpdateOrder) => {
+                  if (errUpdateOrder) return res.status(500).json(errUpdateOrder);
 
-                  res.json({
+                  // Phản hồi thành công
+                  return res.json({
                     success: true,
                     instance: INSTANCE_ID,
                     addedWeight: soKi,
                     order: {
                       id: id,
                       soKi: soKi,
-                      noiNhan: rows[0].noiNhan
+                      noiNhan: orderItem.noiNhan
                     }
                   });
                 }
