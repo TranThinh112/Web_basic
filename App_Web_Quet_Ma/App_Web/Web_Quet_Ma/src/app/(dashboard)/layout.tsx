@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
@@ -19,6 +19,7 @@ import {
   X,
   Volume2,
   VolumeX,
+  BookOpen,
 } from "lucide-react";
 import { sounds } from "@/lib/sound";
 
@@ -84,6 +85,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
       return "Quản lý đơn hàng / Danh sách toàn bộ đơn trong kho";
     if (pathname.startsWith("/dispatch")) return "Quản lý chuyến xe";
     if (pathname.startsWith("/settings")) return "Cài đặt & thiết bị";
+    if (pathname.startsWith("/docs")) return "Tài liệu cấu trúc hệ thống & ERD";
     return "Hub Phân loại";
   };
 
