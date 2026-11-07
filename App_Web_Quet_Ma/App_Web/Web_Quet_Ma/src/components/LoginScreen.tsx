@@ -164,29 +164,41 @@ export default function LoginScreen({ onSuccess }: LoginModalProps) {
           </form>
 
           {/* Quick test accounts */}
-          <div className="mt-6 pt-5 border-t border-slate-100 text-center">
-            <p className="text-[11px] text-slate-400">Tài khoản kiểm thử nhanh:</p>
-            <div className="flex justify-center gap-2 mt-2">
-              <button
-                type="button"
-                onClick={() => {
-                  setUsername("admin");
-                  setPassword("123456");
-                }}
-                className="px-2.5 py-1 bg-orange-50 hover:bg-orange-100 text-orange-700 rounded-lg text-[11px] font-semibold border border-orange-200"
+          <div className="mt-6 pt-5 border-t border-slate-100 text-center space-y-3">
+            <div>
+              <p className="text-[11px] text-slate-400">Tài khoản kiểm thử nhanh:</p>
+              <div className="flex justify-center gap-2 mt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setUsername("admin");
+                    setPassword("123456");
+                  }}
+                  className="px-2.5 py-1 bg-orange-50 hover:bg-orange-100 text-orange-700 rounded-lg text-[11px] font-semibold border border-orange-200 cursor-pointer"
+                >
+                  admin / 123456
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setUsername("staff01");
+                    setPassword("123456");
+                  }}
+                  className="px-2.5 py-1 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-lg text-[11px] font-semibold border border-slate-200 cursor-pointer"
+                >
+                  staff01 / 123456
+                </button>
+              </div>
+            </div>
+
+            {/* Link xem tài liệu hệ thống công khai */}
+            <div className="pt-2 border-t border-slate-100">
+              <a
+                href="/docs"
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-orange-600 hover:text-orange-700 hover:underline bg-orange-50/80 hover:bg-orange-100 px-3 py-1.5 rounded-xl border border-orange-200 transition"
               >
-                admin / 123456
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setUsername("staff01");
-                  setPassword("123456");
-                }}
-                className="px-2.5 py-1 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-lg text-[11px] font-semibold border border-slate-200"
-              >
-                staff01 / 123456
-              </button>
+                📖 Xem Cấu Trúc Hệ Thống & ERD (Không Cần Đăng Nhập)
+              </a>
             </div>
           </div>
         </div>

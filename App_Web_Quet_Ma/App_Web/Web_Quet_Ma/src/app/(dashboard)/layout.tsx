@@ -54,6 +54,11 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
   }, [isOrdersActive]);
 
   useEffect(() => {
+    // Cho phép xem trang tài liệu cấu trúc hệ thống công khai mà không bắt buộc login
+    if (pathname === "/docs" || pathname.startsWith("/docs/")) {
+      return;
+    }
+
     const saved = localStorage.getItem("spx_user");
     if (!saved) {
       router.replace("/login");
@@ -64,7 +69,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
         router.replace("/login");
       }
     }
-  }, [router]);
+  }, [router, pathname]);
 
   const handleLogout = () => {
     if (confirm("Bạn có chắc muốn đăng xuất?")) {
