@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Link from "next/link";
 import {
   Server,
   Database,
@@ -14,18 +15,27 @@ import {
   Boxes,
   FileText,
   Search,
+  Check,
   CheckCircle2,
   AlertTriangle,
   RotateCcw,
   Sparkles,
   Workflow,
   Copy,
-  Check
+  LogIn
 } from "lucide-react";
 
 export default function DocsSystemView() {
   const [activeTab, setActiveTab] = useState<"overview" | "code_format" | "scan_flow" | "erd" | "apis">("overview");
   const [copiedText, setCopiedText] = useState<string | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const user = localStorage.getItem("spx_user");
+      setIsLoggedIn(!!user);
+    }
+  }, []);
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -37,16 +47,38 @@ export default function DocsSystemView() {
     <div className="space-y-6 max-w-6xl mx-auto pb-16">
       {/* HEADER BANNER */}
       <div className="relative overflow-hidden bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500 rounded-2xl p-6 sm:p-8 text-white shadow-lg shadow-orange-600/20">
-        <div className="relative z-10 space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-bold uppercase tracking-wider">
-            <Sparkles className="w-3.5 h-3.5" /> SPX Express System Architecture
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-bold uppercase tracking-wider">
+              <Sparkles className="w-3.5 h-3.5" /> SPX Express System Architecture
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
+              Tài Liệu Cấu Trúc Hệ Thống & Cơ Chế Hoạt Động
+            </h1>
+            <p className="text-orange-100 text-xs sm:text-sm max-w-2xl leading-relaxed">
+              Mô tả toàn diện kiến trúc 3 tầng, cấu trúc định dạng mã vận đơn, quy trình tạo đơn chống trùng mã, luồng quét kiểm tra và gom bao TO an toàn cùng sơ đồ cơ sở dữ liệu ERD trực quan.
+            </p>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
-            Tài Liệu Cấu Trúc Hệ Thống & Cơ Chế Hoạt Động
-          </h1>
-          <p className="text-orange-100 text-xs sm:text-sm max-w-2xl leading-relaxed">
-            Mô tả toàn diện kiến trúc 3 tầng, cấu trúc định dạng mã vận đơn, quy trình tạo đơn chống trùng mã, luồng quét kiểm tra và gom bao TO an toàn cùng sơ đồ cơ sở dữ liệu ERD trực quan.
-          </p>
+
+          <div className="shrink-0 flex items-center gap-2.5">
+            {isLoggedIn ? (
+              <Link
+                href="/orders"
+                className="px-5 py-3 bg-white text-orange-600 hover:bg-orange-50 rounded-xl font-bold text-xs flex items-center gap-2 shadow-md transition active:scale-95 cursor-pointer"
+              >
+                <span>Vào Trang Quản Lý Kho</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                className="px-5 py-3 bg-white text-orange-600 hover:bg-orange-50 rounded-xl font-bold text-xs flex items-center gap-2 shadow-md transition active:scale-95 cursor-pointer"
+              >
+                <LogIn className="w-4 h-4" />
+                <span>Đăng Nhập Để Vào Quản Lý</span>
+              </Link>
+            )}
+          </div>
         </div>
         <div className="absolute -right-8 -bottom-8 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none" />
       </div>

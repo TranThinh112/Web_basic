@@ -11,6 +11,7 @@ import {
   PlusCircle,
   Settings,
   LogOut,
+  LogIn,
   ChevronRight,
   ChevronDown,
   Box,
@@ -54,18 +55,20 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
   }, [isOrdersActive]);
 
   useEffect(() => {
-    // Cho phép xem trang tài liệu cấu trúc hệ thống công khai mà không bắt buộc login
-    if (pathname === "/docs" || pathname.startsWith("/docs/")) {
-      return;
-    }
-
-    const saved = localStorage.getItem("spx_user");
-    if (!saved) {
-      router.replace("/login");
-    } else {
+    const saved = typeof window !== "undefined" ? localStorage.getItem("spx_user") : null;
+    if (saved) {
       try {
         setCurrentUser(JSON.parse(saved));
       } catch {
+        setCurrentUser(null);
+      }
+    } else {
+      setCurrentUser(null);
+    }
+
+    // Nếu không phải trang docs và chưa đăng nhập thì bắt buộc chuyển sang login
+    if (pathname !== "/docs" && !pathname.startsWith("/docs/")) {
+      if (!saved) {
         router.replace("/login");
       }
     }
@@ -286,20 +289,32 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
           </nav>
         </div>
 
-        {/* USER INFO & LOGOUT */}
-        <div className="p-4 border-t border-orange-100 bg-orange-50/20 flex items-center justify-between text-xs">
-          <div>
-            <p className="font-bold text-slate-800">{currentUser?.username || "admin"}</p>
-            <p className="text-[11px] text-slate-500">{currentUser?.name || "Nhân viên Bưu cục"}</p>
-          </div>
+        {/* USER INFO & LOGOUT HOẶC NÚT ĐĂNG NHẬP */}
+        <div className="p-4 border-t border-orange-100 bg-orange-50/20 text-xs">
+          {currentUser ? (
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-bold text-slate-800">{currentUser.username}</p>
+                <p className="text-[11px] text-slate-500">{currentUser.name || "Nhân viên Bưu cục"}</p>
+              </div>
 
-          <button
-            onClick={handleLogout}
-            title="Đăng xuất"
-            className="p-2 text-slate-400 hover:text-orange-600 hover:bg-orange-100/50 rounded-xl transition-colors cursor-pointer"
-          >
-            <LogOut className="w-4 h-4" />
-          </button>
+              <button
+                onClick={handleLogout}
+                title="Đăng xuất"
+                className="p-2 text-slate-400 hover:text-orange-600 hover:bg-orange-100/50 rounded-xl transition-colors cursor-pointer"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
+            </div>
+          ) : (
+            <Link
+              href="/login"
+              className="w-full py-2.5 px-3 bg-orange-600 hover:bg-orange-700 text-white rounded-xl font-bold flex items-center justify-center gap-2 shadow-sm shadow-orange-600/30 transition cursor-pointer"
+            >
+              <LogIn className="w-4 h-4" />
+              <span>Đăng nhập quản lý</span>
+            </Link>
+          )}
         </div>
       </aside>
 
