@@ -1727,15 +1727,18 @@ function setTheme(theme) {
     themeToggle.classList.toggle("on", theme === "dark");
 }
 
-el("openSearchBtn").addEventListener("click", () => {
-    if (searchBox.classList.contains("open")) {
-        closeSearch();
-        return;
-    }
+const openSearchBtn = el("openSearchBtn");
+if (openSearchBtn) {
+    openSearchBtn.addEventListener("click", () => {
+        if (searchBox.classList.contains("open")) {
+            closeSearch();
+            return;
+        }
 
-    searchBox.classList.add("open");
-    keywordInput.focus();
-});
+        searchBox.classList.add("open");
+        keywordInput.focus();
+    });
+}
 
 el("searchDismiss").addEventListener("click", closeSearch);
 searchButton.addEventListener("click", searchUsers);
@@ -1772,15 +1775,22 @@ document.querySelectorAll("[data-friend-tab]").forEach(button => {
 });
 const logoutBtn = el("logoutBtn");
 if (logoutBtn) {
-    logoutBtn.addEventListener("click", async () => {
+    logoutBtn.addEventListener("click", async event => {
+        event.preventDefault();
+        // 1. Xóa ngay token trên client để chặn mọi request tiếp theo
+        localStorage.removeItem("accessToken");
+        sessionStorage.clear();
         try {
-            await apiFetch("/api/auth/signout", { method: "POST" });
+            // 2. Dùng sendBeacon hoặc fetch no-cors/direct để xóa refresh cookie trên backend mà không bị chặn
+            await fetch("/api/auth/signout", {
+                method: "POST",
+                credentials: "include"
+            });
         } catch (err) {
             console.warn("Signout request error:", err);
         } finally {
-            localStorage.removeItem("accessToken");
-            sessionStorage.clear();
-            location.replace("/");
+            // 3. Chuyển hướng ngay lập tức về trang đăng nhập
+            window.location.href = "/";
         }
     });
 }
