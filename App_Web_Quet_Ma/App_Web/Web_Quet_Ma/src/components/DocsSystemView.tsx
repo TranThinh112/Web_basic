@@ -1,8 +1,11 @@
-﻿"use client";
+"use client";
 
-import { useState, useEffect } from "react";
+import AppDocsContent from "@/components/AppDocsContent";
+import {
+  useState, useEffect } from "react";
 import Link from "next/link";
 import {
+  Monitor,
   Server,
   Database,
   Layers,
@@ -29,6 +32,7 @@ import {
 } from "lucide-react";
 
 export default function DocsSystemView() {
+  const [docsMode, setDocsMode] = useState<"system" | "app">("system");
   const [mainScope, setMainScope] = useState<"system" | "app">("system");
   const [activeTab, setActiveTab] = useState<"overview" | "code_format" | "scan_flow" | "erd" | "apis">("overview");
   const [copiedText, setCopiedText] = useState<string | null>(null);
@@ -49,6 +53,51 @@ export default function DocsSystemView() {
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto pb-16">
+      {/* SWITCHER TABS TRÊN CÙNG: WEB (HỆ THỐNG) vs APP (MOBILE) */}
+      <div className="bg-white rounded-2xl p-2.5 border border-orange-200/90 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="flex items-center gap-2 p-1 bg-orange-50/80 rounded-xl w-full sm:w-auto">
+          <button
+            type="button"
+            onClick={() => setDocsMode("system")}
+            className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+              docsMode === "system"
+                ? "bg-orange-600 text-white shadow-md shadow-orange-600/30"
+                : "text-slate-600 hover:text-orange-600 hover:bg-orange-100/60"
+            }`}
+          >
+            <Monitor className="w-4 h-4" />
+            <span>Tài Liệu Cấu Trúc Hệ Thống (Web & BE)</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setDocsMode("app")}
+            className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+              docsMode === "app"
+                ? "bg-orange-600 text-white shadow-md shadow-orange-600/30"
+                : "text-slate-600 hover:text-orange-600 hover:bg-orange-100/60"
+            }`}
+          >
+            <Smartphone className="w-4 h-4" />
+            <span>Giao Diện App Mobile & Hướng Dẫn Netlify</span>
+            <span className={`text-[10px] px-1.5 py-0.5 rounded font-black uppercase ${
+              docsMode === "app" ? "bg-white text-orange-600" : "bg-orange-200 text-orange-950"
+            }`}>
+              APP
+            </span>
+          </button>
+        </div>
+
+        <div className="hidden md:flex items-center gap-2 pr-2 text-xs text-slate-500">
+          <Sparkles className="w-3.5 h-3.5 text-orange-500" />
+          <span>Chuyển đổi linh hoạt giữa tài liệu Web và App Mobile</span>
+        </div>
+      </div>
+
+      {docsMode === "app" ? (
+        <AppDocsContent />
+      ) : (
+        <>
       {/* HEADER BANNER */}
       <div className="relative overflow-hidden bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500 rounded-2xl p-6 sm:p-8 text-white shadow-lg shadow-orange-600/20">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -618,6 +667,8 @@ export default function DocsSystemView() {
             </div>
           </div>
         </div>
+      )}
+            </>
       )}
     </div>
   );
