@@ -894,10 +894,32 @@ function appendRealtimeMessage(message) {
     if (!activeId || messageConversationId(message) !== activeId) return;
 
     const id = itemId(message);
+    // Chặn trùng lặp 1: kiểm tra trong Set
     if (id && state.renderedMessageIds.has(id)) return;
+
+    // Chặn trùng lặp 2: kiểm tra trực tiếp trên DOM
+    if (id && messageArea.querySelector(`[data-message-id="${id}"]`)) {
+        state.renderedMessageIds.add(id);
+        return;
+    }
+
+    // Chặn trùng lặp 3 (Optimistic UI matching):
+    // Khi SignalR trả về tin nhắn của chính mình trước hoặc song song với HTTP fetch,
+    // ghép nối tin nhắn SignalR với bubble tạm 'temp-' đang hiển thị thay vì thêm bubble thứ 2
+    const currentUserId = itemId(state.currentUser);
+    const isMine = (message.senderId && message.senderId === currentUserId) || Boolean(message.isMine);
+    if (isMine && id && !id.startsWith("temp-")) {
+        const pendingTempRow = messageArea.querySelector('.message.outgoing[data-message-id^="temp-"]');
+        if (pendingTempRow) {
+            pendingTempRow.dataset.messageId = id;
+            state.renderedMessageIds.add(id);
+            return;
+        }
+    }
+
     if (id) state.renderedMessageIds.add(id);
 
-    const shouldScrollToBottom = isNearMessageBottom() || message.senderId === itemId(state.currentUser);
+    const shouldScrollToBottom = isNearMessageBottom() || isMine;
     messageArea.querySelector(".empty-state")?.remove();
     messageArea.appendChild(createMessage(message));
     if (shouldScrollToBottom) {
