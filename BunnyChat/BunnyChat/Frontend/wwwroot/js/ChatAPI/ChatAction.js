@@ -1770,14 +1770,20 @@ document.querySelectorAll("[data-close-settings]").forEach(button => button.addE
 document.querySelectorAll("[data-friend-tab]").forEach(button => {
     button.addEventListener("click", () => setFriendRequestTab(button.dataset.friendTab));
 });
-el("logoutBtn").addEventListener("click", async () => {
-    try {
-        await apiFetch("/api/auth/logout", { method: "POST" });
-    } finally {
-        localStorage.removeItem("accessToken");
-        location.href = "/";
-    }
-});
+const logoutBtn = el("logoutBtn");
+if (logoutBtn) {
+    logoutBtn.addEventListener("click", async () => {
+        try {
+            await apiFetch("/api/auth/signout", { method: "POST" });
+        } catch (err) {
+            console.warn("Signout request error:", err);
+        } finally {
+            localStorage.removeItem("accessToken");
+            sessionStorage.clear();
+            location.replace("/");
+        }
+    });
+}
 
 
 // ==================== TÌM KIẾM TIN NHẮN TRONG ĐOẠN CHAT & TOÀN BỘ ====================

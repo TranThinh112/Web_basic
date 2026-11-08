@@ -199,6 +199,7 @@ namespace BunnyChat.Controllers
 
         //Api SignOut
         [HttpPost("signout")]
+        [HttpPost("logout")]
         public async Task<ActionResult> LogOut()
         {
             try
