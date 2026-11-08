@@ -46,7 +46,7 @@ Gồm 3 chức năng chính được phân cấp rõ ràng: **Create TO** ➔ **
 ---
 
 ## 🌐 Trải Nghiệm Ứng Dụng Trên Trình Duyệt (Flutter Web Live)
-- **Đường dẫn chạy thử:** [https://tranquil-figolla-16df43.netlify.app](https://tranquil-figolla-16df43.netlify.app)
+- **Đường dẫn chạy thử:** [https://spx-mobile.netlify.app](https://spx-mobile.netlify.app)
 - **Tải gói build sẵn để tự upload:** Tải tệp nén spx_mobile_web_build.zip và thả vào [Netlify Drop](https://app.netlify.com/drop).
 
 ## 📱 Các Chức Năng Chính

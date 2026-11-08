@@ -177,7 +177,7 @@ export default function AppDocsContent() {
               Mở Netlify Drop
             </a>
             <a
-              href="https://tranquil-figolla-16df43.netlify.app"
+              href="https://spx-mobile.netlify.app"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-orange-700/60 hover:bg-orange-700 text-white font-medium text-sm backdrop-blur transition"
@@ -192,6 +192,34 @@ export default function AppDocsContent() {
       {/* QUICK GUIDE CÀI ĐẶT / UPLOAD NETLIFY DROP */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-orange-200/80 shadow-sm space-y-6">
         <div className="flex items-center justify-between border-b border-orange-100 pb-4">
+        {/* LÝ DO TẠI SAO DÙNG NETLIFY DROP */}
+        <div className="p-4 sm:p-5 rounded-2xl bg-amber-50/80 border border-amber-200/90 text-xs text-amber-950 space-y-2">
+          <div className="flex items-center gap-2 font-black text-amber-900 text-sm">
+            <HelpCircle className="w-4 h-4 text-amber-600" />
+            <span>Tại sao lại dùng Netlify Drop thay vì chạy bằng localhost thông thường?</span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1 text-slate-700">
+            <div className="p-3 bg-white/80 rounded-xl border border-amber-100 space-y-1">
+              <p className="font-bold text-amber-800">1. Không cần cài môi trường Flutter</p>
+              <p className="text-[11px] leading-relaxed">
+                Source mobile Flutter gốc yêu cầu cài đặt Flutter SDK, Dart, Android Studio, Gradle rất phức tạp (&gt;10 GB). Với gói Web Build thả vào Netlify Drop, người dùng mở trình duyệt là chạy ngay lập tức.
+              </p>
+            </div>
+            <div className="p-3 bg-white/80 rounded-xl border border-amber-100 space-y-1">
+              <p className="font-bold text-amber-800">2. Test trực tiếp trên Điện thoại thật</p>
+              <p className="text-[11px] leading-relaxed">
+                Netlify Drop tự động cấp URL công khai HTTPS toàn cầu (như <span className="font-mono text-orange-600 font-bold">spx-mobile.netlify.app</span>). Bạn có thể cầm điện thoại thật quét Barcode/QR mượt mà mà không lo bị chặn quyền Camera hay giới hạn mạng LAN.
+              </p>
+            </div>
+            <div className="p-3 bg-white/80 rounded-xl border border-amber-100 space-y-1">
+              <p className="font-bold text-amber-800">3. Máy chủ tĩnh 100% miễn phí &amp; vĩnh viễn</p>
+              <p className="text-[11px] leading-relaxed">
+                Netlify lưu trữ các file tĩnh HTML/JS/Wasm của Flutter Web trên hệ thống CDN toàn cầu, kết nối thẳng về Backend Railway không tốn thêm chi phí server hay tài nguyên máy cá nhân.
+              </p>
+            </div>
+          </div>
+        </div>
+
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center font-bold">
               <FolderArchive className="w-5 h-5" />
@@ -300,13 +328,12 @@ export default function AppDocsContent() {
                   className="bg-slate-50 rounded-2xl p-4 border border-slate-200/80 hover:border-orange-300 hover:shadow-md transition flex flex-col justify-between group"
                 >
                   <div className="space-y-3">
-                    <div className="relative w-full aspect-[9/16] max-h-[380px] bg-slate-900 rounded-xl overflow-hidden shadow-inner flex items-center justify-center">
-                      <Image
+                    <div className="w-full h-[440px] bg-slate-900 rounded-xl overflow-hidden shadow-inner flex items-center justify-center p-1.5">
+                      <img
                         src={item.src}
                         alt={item.title}
-                        fill
-                        className="object-contain transition-transform duration-300 group-hover:scale-105"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                        className="w-full h-full object-contain rounded-lg transition-transform duration-300 group-hover:scale-105"
+                        loading="lazy"
                       />
                     </div>
                     <h4 className="font-bold text-sm text-slate-900 group-hover:text-orange-600 transition">

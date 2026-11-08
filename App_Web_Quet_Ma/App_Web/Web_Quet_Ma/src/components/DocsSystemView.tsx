@@ -430,7 +430,7 @@ export default function DocsSystemView() {
                 <span className="w-6 h-6 rounded-full bg-orange-600 text-white font-bold flex items-center justify-center text-xs">3</span>
                 <h4 className="font-bold text-slate-900">Bước 3: Kéo Thả & Khởi Chạy</h4>
                 <p className="text-slate-600 text-[11px] leading-relaxed">
-                  Kéo chính thư mục web đã giải nén thả vào khung tròn của Netlify. Chỉ sau vài giây, Netlify sẽ cấp cho bạn một đường link trực tuyến (VD: <a href="https://tranquil-figolla-16df43.netlify.app" target="_blank" rel="noreferrer" className="text-emerald-700 font-bold underline">tranquil-figolla-16df43.netlify.app</a>) để trải nghiệm app ngay lập tức!
+                  Kéo chính thư mục web đã giải nén thả vào khung tròn của Netlify. Chỉ sau vài giây, Netlify sẽ cấp cho bạn một đường link trực tuyến (VD: <a href="https://spx-mobile.netlify.app" target="_blank" rel="noreferrer" className="text-emerald-700 font-bold underline">spx-mobile.netlify.app</a>) để trải nghiệm app ngay lập tức!
                 </p>
               </div>
             </div>
