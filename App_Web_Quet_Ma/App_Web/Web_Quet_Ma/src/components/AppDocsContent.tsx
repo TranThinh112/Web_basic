@@ -49,7 +49,7 @@ export default function AppDocsContent() {
       badge: (
         <div className="inline-flex items-center gap-2 bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-lg text-xs font-mono text-amber-900">
           <Key className="w-3.5 h-3.5 text-amber-600" />
-          Tài khoản: <strong>admin</strong> | Mật khẩu: <strong>admin</strong>
+          Tài khoản: <strong>admin</strong> | Mật khẩu: <strong>123456</strong>
         </div>
       ),
     },
@@ -65,7 +65,7 @@ export default function AppDocsContent() {
         {
           src: "/screenshots/01_app_login.png",
           title: "1. Màn hình Đăng nhập App",
-          desc: "Tài khoản: admin / Mật khẩu: admin. Tích hợp ghi nhớ phiên làm việc.",
+          desc: "Tài khoản: admin / Mật khẩu: 123456. Tích hợp ghi nhớ phiên làm việc.",
         },
         {
           src: "/screenshots/02_app_home_menu.png",
@@ -191,51 +191,53 @@ export default function AppDocsContent() {
 
       {/* QUICK GUIDE CÀI ĐẶT / UPLOAD NETLIFY DROP */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-orange-200/80 shadow-sm space-y-6">
-        <div className="flex items-center justify-between border-b border-orange-100 pb-4">
-        {/* LÝ DO TẠI SAO DÙNG NETLIFY DROP */}
-        <div className="p-4 sm:p-5 rounded-2xl bg-amber-50/80 border border-amber-200/90 text-xs text-amber-950 space-y-2">
-          <div className="flex items-center gap-2 font-black text-amber-900 text-sm">
-            <HelpCircle className="w-4 h-4 text-amber-600" />
-            <span>Tại sao lại dùng Netlify Drop thay vì chạy bằng localhost thông thường?</span>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1 text-slate-700">
-            <div className="p-3 bg-white/80 rounded-xl border border-amber-100 space-y-1">
-              <p className="font-bold text-amber-800">1. Không cần cài môi trường Flutter</p>
-              <p className="text-[11px] leading-relaxed">
-                Source mobile Flutter gốc yêu cầu cài đặt Flutter SDK, Dart, Android Studio, Gradle rất phức tạp (&gt;10 GB). Với gói Web Build thả vào Netlify Drop, người dùng mở trình duyệt là chạy ngay lập tức.
-              </p>
-            </div>
-            <div className="p-3 bg-white/80 rounded-xl border border-amber-100 space-y-1">
-              <p className="font-bold text-amber-800">2. Test trực tiếp trên Điện thoại thật</p>
-              <p className="text-[11px] leading-relaxed">
-                Netlify Drop tự động cấp URL công khai HTTPS toàn cầu (như <span className="font-mono text-orange-600 font-bold">spx-mobile.netlify.app</span>). Bạn có thể cầm điện thoại thật quét Barcode/QR mượt mà mà không lo bị chặn quyền Camera hay giới hạn mạng LAN.
-              </p>
-            </div>
-            <div className="p-3 bg-white/80 rounded-xl border border-amber-100 space-y-1">
-              <p className="font-bold text-amber-800">3. Máy chủ tĩnh 100% miễn phí &amp; vĩnh viễn</p>
-              <p className="text-[11px] leading-relaxed">
-                Netlify lưu trữ các file tĩnh HTML/JS/Wasm của Flutter Web trên hệ thống CDN toàn cầu, kết nối thẳng về Backend Railway không tốn thêm chi phí server hay tài nguyên máy cá nhân.
-              </p>
-            </div>
-          </div>
-        </div>
-
+        
+        {/* HEADER HƯỚNG DẪN */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-orange-100 pb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center font-bold">
+            <div className="w-10 h-10 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center font-bold shrink-0">
               <FolderArchive className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-slate-900">
-                Hướng dẫn chạy Web App qua Netlify Drop (Không cần cài đặt)
+              <h2 className="text-base sm:text-lg font-bold text-slate-900 leading-tight">
+                Hướng dẫn chạy App Mobile qua Netlify Drop
               </h2>
-              <p className="text-xs text-slate-500">
-                Thao tác kéo thả trong 30 giây để có ngay đường link web mobile hoạt động vĩnh viễn
+              <p className="text-xs text-slate-500 mt-0.5">
+                Kéo thả file ZIP trong 30 giây để tạo link chạy trực tiếp trên điện thoại &amp; trình duyệt
               </p>
             </div>
           </div>
-          <span className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+          <span className="self-start sm:self-auto inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200 shrink-0">
             <CheckCircle className="w-3.5 h-3.5" /> Đã kết nối Railway Backend
           </span>
+        </div>
+
+        {/* LÝ DO TẠI SAO DÙNG NETLIFY DROP (GỌN GÀNG) */}
+        <div className="p-3.5 sm:p-4 rounded-2xl bg-amber-50/80 border border-amber-200/90 text-xs text-amber-950 space-y-2">
+          <div className="flex items-center gap-2 font-bold text-amber-900 text-xs">
+            <HelpCircle className="w-4 h-4 text-amber-600 shrink-0" />
+            <span>Tại sao dùng Netlify Drop thay vì chạy localhost?</span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 pt-0.5 text-slate-700">
+            <div className="p-2.5 bg-white/90 rounded-xl border border-amber-100 space-y-0.5">
+              <p className="font-bold text-amber-800 text-[11px]">1. Không cần cài Flutter SDK</p>
+              <p className="text-[11px] leading-relaxed text-slate-600">
+                Tránh phải cài đặt Android Studio, Flutter, Gradle nặng &gt;10 GB. Mở trình duyệt là chạy ngay.
+              </p>
+            </div>
+            <div className="p-2.5 bg-white/90 rounded-xl border border-amber-100 space-y-0.5">
+              <p className="font-bold text-amber-800 text-[11px]">2. Test trực tiếp trên Mobile thật</p>
+              <p className="text-[11px] leading-relaxed text-slate-600">
+                Có URL HTTPS toàn cầu (<span className="text-orange-600 font-bold">spx-mobile.netlify.app</span>) để điện thoại quét mã bằng Camera mượt mà.
+              </p>
+            </div>
+            <div className="p-2.5 bg-white/90 rounded-xl border border-amber-100 space-y-0.5">
+              <p className="font-bold text-amber-800 text-[11px]">3. Miễn phí &amp; Hoạt động vĩnh viễn</p>
+              <p className="text-[11px] leading-relaxed text-slate-600">
+                Lưu trữ CDN toàn cầu, kết nối thẳng Backend Railway không tốn phí duy trì server.
+              </p>
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -265,7 +267,7 @@ export default function AppDocsContent() {
             <span>
               <strong>Lưu ý:</strong> Sau khi kéo thả vào Netlify Drop, Netlify sẽ cấp đường link dạng:{" "}
               <code className="text-orange-300 font-mono">https://[random-name].netlify.app</code>. Đăng nhập với:{" "}
-              <code className="text-emerald-300 font-mono font-bold">admin / admin</code>.
+              <code className="text-emerald-300 font-mono font-bold">admin / 123456</code>.
             </span>
           </div>
           <a
