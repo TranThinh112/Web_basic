@@ -52,16 +52,11 @@ namespace BunnyChat.Controllers
                 .FirstOrDefaultAsync();
         }
 
-        // Format response của conversation để frontend render card dễ hơn
-        private async Task<object> FormatConversation(Conversation conversation, string currentUserId)
+        // Overload nhận danh sách user có sẵn (tránh N+1 query khi format hàng loạt conversation)
+        private object FormatConversation(Conversation conversation, string currentUserId, List<User> participantUsers)
         {
-            //lấy id của các tv trong nhóm
             var participantIds = ConversationHelper.GetParticipantIds(conversation);
-            var users = await _userCollection
-                .Find(x => participantIds.Contains(x.Id!))
-                .ToListAsync();
-
-            var members = users.Select(user => new
+            var members = participantUsers.Select(user => new
             {
                 id = user.Id,
                 userName = user.Username,
@@ -69,8 +64,7 @@ namespace BunnyChat.Controllers
                 avatarUrl = user.AvatarUrl
             }).ToList();
 
-            // lấy người còn lại trong cuộc trò chuyện 1-1.
-            var directUser = users.FirstOrDefault(x => x.Id != currentUserId);
+            var directUser = participantUsers.FirstOrDefault(x => x.Id != currentUserId);
             var isGroup = conversation.Type == "group";
             var displayName = isGroup
                 ? conversation.Group?.Name
@@ -88,14 +82,23 @@ namespace BunnyChat.Controllers
                 members,
                 createdAt = conversation.CreatedAt,
                 updatedAt = conversation.UpdatedAt,
-                lastMessage = conversation.LastMessage?.Content, // nộ dung tn cuối
-                lastMessageAt = conversation.LastMessageAt, // thời gian tin nhắn cuối
-
-                // Nếu Dictionary có currentUserId thì lấy số tin chưa đọc của user đó, ngược lại trả về 0.
+                lastMessage = conversation.LastMessage?.Content,
+                lastMessageAt = conversation.LastMessageAt,
                 unreadCount = conversation.UnreadCounts.ContainsKey(currentUserId)
                     ? conversation.UnreadCounts[currentUserId]
                     : 0
             };
+        }
+
+        // Format response của conversation để frontend render card dễ hơn
+        private async Task<object> FormatConversation(Conversation conversation, string currentUserId)
+        {
+            var participantIds = ConversationHelper.GetParticipantIds(conversation);
+            var users = await _userCollection
+                .Find(x => participantIds.Contains(x.Id!))
+                .ToListAsync();
+
+            return FormatConversation(conversation, currentUserId, users);
         }
 
         // Format message kèm thông tin người gửi để frontend hiển thị avatar cạnh tin nhắn.
@@ -256,12 +259,30 @@ namespace BunnyChat.Controllers
                     .ThenByDescending(x => x.UpdatedAt)
                     .ToListAsync();
 
+                // Batch Query tối ưu triệt để: Gom toàn bộ ParticipantId của tất cả conversation để query 1 lần duy nhất
+                var allParticipantIds = conversations
+                    .SelectMany(c => ConversationHelper.GetParticipantIds(c))
+                    .Where(id => !string.IsNullOrEmpty(id))
+                    .Distinct()
+                    .ToList();
+
+                var allUsers = await _userCollection
+                    .Find(x => allParticipantIds.Contains(x.Id!))
+                    .ToListAsync();
+                var userDict = allUsers.ToDictionary(u => u.Id!);
+
                 //format data cho FE
                 var data = new List<object>();
 
                 foreach (var conversation in conversations)
                 {
-                    data.Add(await FormatConversation(conversation, currentUserId));
+                    var pIds = ConversationHelper.GetParticipantIds(conversation);
+                    var convUsers = pIds
+                        .Where(id => userDict.ContainsKey(id))
+                        .Select(id => userDict[id])
+                        .ToList();
+
+                    data.Add(FormatConversation(conversation, currentUserId, convUsers));
                 }
 
                 return Ok(ApiResponse.Success("Lây danh sách conversation thành công", data));

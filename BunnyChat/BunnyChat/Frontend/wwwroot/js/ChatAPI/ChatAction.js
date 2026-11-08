@@ -1433,10 +1433,38 @@ function joinConversation(conversationId) {
     });
 }
 
-// Tải dữ liệu thật từ backend, không dùng dữ liệu mẫu.
+// Tải dữ liệu thật từ backend, kết hợp Local Cache để UI hiển thị tức thì 0ms (Stale-While-Revalidate)
 async function loadChatData() {
-    setEmpty(groupList, "Đang tải nhóm chat...");
-    setEmpty(friendList, "Đang tải bạn bè...");
+    // 1. Phục hồi dữ liệu từ localStorage cache nếu có để không bị treo "Đang tải..."
+    try {
+        const cachedUser = JSON.parse(localStorage.getItem("bunny_cache_user") || "null");
+        if (cachedUser) {
+            state.currentUser = cachedUser;
+            renderCurrentUser();
+        }
+
+        const cachedConversations = JSON.parse(localStorage.getItem("bunny_cache_convs") || "null");
+        if (Array.isArray(cachedConversations) && cachedConversations.length > 0) {
+            state.conversations = cachedConversations;
+            renderGroups();
+            renderFriends();
+        }
+
+        const cachedFriends = JSON.parse(localStorage.getItem("bunny_cache_friends") || "null");
+        if (Array.isArray(cachedFriends) && cachedFriends.length > 0) {
+            state.friends = cachedFriends;
+            renderFriends();
+        }
+    } catch {
+        // Bỏ qua lỗi parse cache
+    }
+
+    if (!state.conversations.length) {
+        setEmpty(groupList, "Đang tải nhóm chat...");
+    }
+    if (!state.friends.length) {
+        setEmpty(friendList, "Đang tải bạn bè...");
+    }
     setEmpty(messageArea, "Chọn một cuộc trò chuyện để xem tin nhắn.");
 
     const [me, conversations, friends, friendRequests] = await Promise.allSettled([
@@ -1446,16 +1474,21 @@ async function loadChatData() {
         fetchData(API.friendRequests)
     ]);
 
-    state.currentUser = me.status === "fulfilled" ? me.value : null;
-    renderCurrentUser();
+    if (me.status === "fulfilled" && me.value) {
+        state.currentUser = me.value;
+        renderCurrentUser();
+        try { localStorage.setItem("bunny_cache_user", JSON.stringify(me.value)); } catch {}
+    }
 
-    state.conversations = conversations.status === "fulfilled" && Array.isArray(conversations.value)
-        ? conversations.value
-        : [];
+    if (conversations.status === "fulfilled" && Array.isArray(conversations.value)) {
+        state.conversations = conversations.value;
+        try { localStorage.setItem("bunny_cache_convs", JSON.stringify(conversations.value)); } catch {}
+    }
 
-    state.friends = friends.status === "fulfilled" && Array.isArray(friends.value)
-        ? friends.value
-        : [];
+    if (friends.status === "fulfilled" && Array.isArray(friends.value)) {
+        state.friends = friends.value;
+        try { localStorage.setItem("bunny_cache_friends", JSON.stringify(friends.value)); } catch {}
+    }
 
     if (friendRequests.status === "fulfilled") {
         state.friendRequests.received = Array.isArray(friendRequests.value.received) ? friendRequests.value.received : [];
