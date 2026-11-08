@@ -146,28 +146,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
 
           {/* NAVIGATION MENU (DÀNH CHO NGƯỜI ĐÃ ĐĂNG NHẬP) */}
           <nav className="p-3 space-y-1">
-            {/* TAB APP MOBILE RIÊNG BIỆT PHÍA TRÊN */}
-            <Link
-              href="/app-docs"
-              onClick={() => setMobileMenuOpen(false)}
-              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-150 ${
-                pathname === "/app-docs" || pathname.startsWith("/app-docs/")
-                  ? "bg-gradient-to-r from-orange-600 to-amber-600 text-white shadow-md shadow-orange-600/30"
-                  : "text-orange-700 bg-orange-50/90 hover:bg-orange-100 hover:text-orange-800 border border-orange-200/80"
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                <Smartphone className="w-4 h-4 shrink-0 text-orange-600" />
-                <span>App Mobile & Hướng dẫn</span>
-              </div>
-              <span className={`text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded-md ${
-                pathname === "/app-docs"
-                  ? "bg-white text-orange-600 font-black"
-                  : "bg-orange-200 text-orange-950 font-bold"
-              }`}>
-                App
-              </span>
-            </Link>
+            
             {/* 1. QUẢN LÝ CHUYẾN XE */}
             <Link
               href="/dispatch"
