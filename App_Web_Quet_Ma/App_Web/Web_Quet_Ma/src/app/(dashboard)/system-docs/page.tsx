@@ -2,6 +2,6 @@
 
 import DocsSystemView from "@/components/DocsSystemView";
 
-export default function DocsPage() {
+export default function DashboardDocsPage() {
   return <DocsSystemView />;
 }

@@ -47,6 +47,45 @@ Người dùng có thể sử dụng các mã vận đơn mẫu và hình ảnh 
 
 ---
 
+## 📸 Giao Diện Cổng Quản Trị Web Portal (Web UI Screenshots)
+
+Các màn hình chức năng chính của phiên bản Web Portal (Desktop / Tablet) được thiết kế hiện đại, hỗ trợ Dark Mode và trực quan hóa toàn bộ quy trình kho bãi:
+
+### 1. Quản Lý Chuyến Xe Trung Chuyển & Xuất Bến (/dispatch)
+Giao diện điều phối vận tải theo dõi hành trình xe từ Hub, bốc dỡ hàng và cấp lệnh xuất bến:
+<p align="center">
+  <img src="public/screenshots/tao_chuyen_xe.png" width="850" alt="Quản lý chuyến xe và xuất bến" />
+</p>
+
+---
+
+### 2. Trạm Phân Loại & Gom Kiện Hàng Vào Bao TO (/TOmanagement/sorting)
+Hỗ trợ cả súng bắn mã vạch chuyên dụng và quét trực tiếp qua Webcam/Camera, cảnh báo âm thanh tức thì:
+<p align="center">
+  <img src="public/screenshots/phan_loai_bao.png" width="850" alt="Trạm phân loại và quét kiện vào bao TO" />
+</p>
+
+---
+
+### 3. Danh Sách Quản Lý Bao Hàng & Chi Tiết Kiện Trong Bao (/TOmanagement/listTO)
+Theo dõi tình trạng niêm phong, tải trọng bao hàng và xem chi tiết danh sách bưu kiện bên trong:
+<p align="center">
+  <img src="public/screenshots/danh_sach_to.png" width="850" alt="Danh sách quản lý bao hàng TO" />
+</p>
+<p align="center">
+  <img src="public/screenshots/chi_tiet_to.png" width="850" alt="Chi tiết bưu kiện trong bao hàng" />
+</p>
+
+---
+
+### 4. Tra Cứu Vận Đơn Nâng Cao & Xem Tem Vận Đơn Chi Tiết (/orders/search)
+Tra cứu đơn lẻ hoặc hàng loạt với kiểm tra cơ sở dữ liệu nghiêm ngặt, hiển thị tem Bill chuẩn SPX:
+<p align="center">
+  <img src="public/screenshots/tra_cuu_don.png" width="850" alt="Tra cứu vận đơn và xem bill" />
+</p>
+
+---
+
 ## 🚀 Các Tính Năng Đã Triển Khai & Cập Nhật Mới Nhất
 
 ### 1. Quản lý Điều phối & Menu Điều hướng (TO Management & Orders Router)

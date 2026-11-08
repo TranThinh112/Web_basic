@@ -29,7 +29,8 @@ import {
 } from "lucide-react";
 
 export default function DocsSystemView() {
-  const [activeTab, setActiveTab] = useState<"overview" | "code_format" | "scan_flow" | "mobile_app" | "erd" | "apis">("overview");
+  const [mainScope, setMainScope] = useState<"system" | "app">("system");
+  const [activeTab, setActiveTab] = useState<"overview" | "code_format" | "scan_flow" | "erd" | "apis">("overview");
   const [copiedText, setCopiedText] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -116,7 +117,7 @@ export default function DocsSystemView() {
       </div>
 
       {/* TAB 1: TỔNG QUAN KIẾN TRÚC */}
-      {activeTab === "overview" && (
+      {mainScope === "system" && activeTab === "overview" && (
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Frontend Client */}
@@ -199,7 +200,7 @@ export default function DocsSystemView() {
       )}
 
       {/* TAB 2: CẤU TRÚC MÃ VẬN ĐƠN */}
-      {activeTab === "code_format" && (
+      {mainScope === "system" && activeTab === "code_format" && (
         <div className="space-y-6">
           <div className="bg-white rounded-2xl p-6 border border-orange-100 shadow-xs space-y-4">
             <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
@@ -255,7 +256,7 @@ export default function DocsSystemView() {
       )}
 
       {/* TAB 3: LUỒNG QUÉT & GOM BAO TO */}
-      {activeTab === "scan_flow" && (
+      {mainScope === "system" && activeTab === "scan_flow" && (
         <div className="space-y-6">
           <div className="bg-white rounded-2xl p-6 border border-orange-100 shadow-xs space-y-4">
             <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
@@ -315,8 +316,8 @@ export default function DocsSystemView() {
       )}
 
 
-      {/* TAB 4: ỨNG DỤNG DI ĐỘNG & HƯỚNG DẪN CHẠY WEB QUA NETLIFY DROP */}
-      {activeTab === "mobile_app" && (
+      {/* PHÂN HỆ RIÊNG BIỆT: ỨNG DỤNG DI ĐỘNG & HƯỚNG DẪN CHẠY WEB QUA NETLIFY DROP */}
+      {mainScope === "app" && (
         <div className="space-y-6">
           {/* BANNER TẢI BẢN BUILD NÉN */}
           <div className="bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl p-6 text-white shadow-md space-y-4">
@@ -471,7 +472,7 @@ export default function DocsSystemView() {
       )}
 
       {/* TAB 4: SƠ ĐỒ CƠ SỞ DỮ LIỆU ERD */}
-      {activeTab === "erd" && (
+      {mainScope === "system" && activeTab === "erd" && (
         <div className="space-y-6">
           <div className="bg-white rounded-2xl p-6 border border-orange-100 shadow-xs space-y-4">
             <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
@@ -581,7 +582,7 @@ export default function DocsSystemView() {
       )}
 
       {/* TAB 5: APIS */}
-      {activeTab === "apis" && (
+      {mainScope === "system" && activeTab === "apis" && (
         <div className="space-y-4">
           <div className="bg-white rounded-2xl p-6 border border-orange-100 shadow-xs space-y-4">
             <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">

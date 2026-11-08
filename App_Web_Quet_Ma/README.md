@@ -48,44 +48,6 @@ Dưới đây là các mã đơn mẫu có sẵn trên hệ thống, kèm hình 
   <img src="public/sample_bills/SPXVN06670867033.jpg" width="280" alt="Bill SPXVN06670867033" />
 </p>
 
-## 📸 Giao Diện Ứng Dụng Di Động (Mobile App UI Screenshots)
-
-Giao diện ứng dụng di động Flutter được thiết kế theo phân cấp chức năng rõ ràng, sắp xếp từ trên xuống dưới theo từng tầng nghiệp vụ thực tế tại bưu cục:
-
-### 1. Đăng Nhập & Menu Chính (Home Menu)
-| 1.1. Màn Hình Đăng Nhập | 1.2. Màn Hình Menu Điều Hướng Chính |
-| :---: | :---: |
-| <img src="screenshots/01_app_login.png" width="300" alt="Đăng Nhập App" /> | <img src="screenshots/02_app_home_menu.png" width="300" alt="Menu Điều Hướng App" /> |
-
----
-
-### 2. Phân Hệ Phân Loại & Gom Bao Hàng (TO Management)
-Bao gồm 3 phân mục nghiệp vụ cốt lõi theo thứ tự từ trên xuống: **Create TO** ➔ **Scan TO** ➔ **Table TO**:
-
-| 2.1. Menu Điều Hướng Phân Loại (3 Tab Chính) | 2.2. Tab 1: Tạo Mới Bao Hàng (Create TO) |
-| :---: | :---: |
-| <img src="screenshots/03_app_to_menu.png" width="300" alt="Menu Phân Loại TO" /> | <img src="screenshots/04_app_create_to.png" width="300" alt="Tạo Mới Bao TO" /> |
-
-| 2.3. Tab 2: Quét Mã Gom Bao (Scan TO) | 2.4. Tab 3: Danh Sách Quản Lý Bao (Table TO) |
-| :---: | :---: |
-| <img src="screenshots/05_app_scan_to.png" width="300" alt="Quét Mã Gom Bao TO" /> | <img src="screenshots/06_app_table_to.png" width="300" alt="Danh Sách Bao Hàng TO" /> |
-
----
-
-### 3. Phân Hệ Tra Cứu & In Phiếu Vận Đơn (Tracking & Bill)
-| 3.1. Tra Cứu Thông Tin Vận Đơn | 3.2. Mẫu In Phiếu Bưu Kiện (Barcode + QR Code) |
-| :---: | :---: |
-| <img src="screenshots/07_app_tra_cuu.png" width="300" alt="Tra Cứu Bưu Kiện" /> | <img src="screenshots/08_app_bill_modal.png" width="300" alt="Phiếu Bưu Kiện Điện Tử" /> |
-
----
-
-### 4. Phân Hệ Quản Lý Đơn Hàng & Tạo Mới Đơn Hàng
-| 4.1. Bảng Quản Lý Toàn Bộ Đơn Hàng | 4.2. Form Tạo Mới Bưu Kiện & Nhận Diện Hub |
-| :---: | :---: |
-| <img src="screenshots/09_app_quan_ly_don.png" width="300" alt="Quản Lý Đơn Hàng Kho" /> | <img src="screenshots/10_app_tao_don.png" width="300" alt="Tạo Mới Bưu Kiện" /> |
-
----
-
 ## 🚀 Các Thành Phần Trong Hệ Thống
 
 ### 1. Ứng dụng Di động Mobile (`App_Web/App_Quet_Ma` - Flutter)
