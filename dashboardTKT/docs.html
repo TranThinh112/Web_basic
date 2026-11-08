@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tài Liệu Dự Án - Tuyển Dụng TPD</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+  <style>
+    :root {
+      --bg: #f5f7fa;
+      --surface: #ffffff;
+      --surface-soft: #edf2f5;
+      --text: #1f252b;
+      --muted: #66727e;
+      --border: #dce3ea;
+      --brand: #106466;
+      --brand-strong: #0d5153;
+      --brand-soft: #dff1ef;
+      --success: #2d7c4f;
+      --success-soft: #e3f5ea;
+      --warning: #aa6410;
+      --warning-soft: #fff0d6;
+      --danger: #b84343;
+      --danger-soft: #ffe5e5;
+      --shadow: 0 4px 20px rgba(25, 38, 52, 0.06);
+      --card-shadow: 0 10px 30px rgba(25, 38, 52, 0.05);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 40px 20px;
+    }
+    .container { max-width: 1040px; margin: 0 auto; }
+    header {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 24px;
+      box-shadow: var(--card-shadow);
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      background: var(--brand-soft);
+      color: var(--brand);
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      border: 1px solid rgba(16, 100, 102, 0.15);
+    }
+    h1 { font-size: 2.1rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; color: var(--text); }
+    .subtitle { color: var(--muted); font-size: 1.05rem; }
+    .nav-actions { margin-top: 20px; display: flex; gap: 12px; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .btn-primary { background: var(--brand); color: #fff; }
+    .btn-primary:hover { background: var(--brand-strong); transform: translateY(-1px); }
+    .btn-outline { background: var(--surface-soft); color: var(--text); border: 1px solid var(--border); }
+    .btn-outline:hover { background: #e2e8ee; }
+
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 24px;
+      box-shadow: var(--card-shadow);
+    }
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--brand-strong);
+    }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 16px; }
+    .feature-card {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .feature-card:hover { border-color: var(--brand); box-shadow: var(--shadow); }
+    .feature-title { font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; font-size: 1.05rem; color: var(--brand); }
+    .feature-desc { color: var(--muted); font-size: 0.92rem; }
+
+    /* Rules & Pipeline Specific Styles */
+    .rule-box {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-bottom: 14px;
+    }
+    .rule-title { font-weight: 700; color: var(--brand); margin-bottom: 6px; font-size: 1rem; }
+    .rule-desc { color: var(--muted); font-size: 0.92rem; }
+
+    .pipeline-flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin: 16px 0;
+    }
+    .pipeline-node {
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .pipeline-arrow { color: var(--muted); font-weight: 800; }
+
+    /* Status badges */
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+    .status-cho-pv { background: #e0f2fe; color: #0369a1; }
+    .status-lich-pv { background: #fef3c7; color: #92400e; }
+    .status-cho-kq { background: #ffedd5; color: #c2410c; }
+    .status-dau-pv { background: #dcfce7; color: #15803d; }
+    .status-truot-pv { background: #fee2e2; color: #b91c1c; }
+    .status-cho-cty { background: #ede9fe; color: #6d28d9; }
+    .status-hoan-thanh { background: var(--brand-soft); color: var(--brand); }
+    .status-da-nhan-tien { background: #d1fae5; color: #047857; }
+    .status-bo-don { background: #f1f5f9; color: #64748b; }
+
+    table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 12px; }
+    th {
+      background: var(--surface-soft);
+      text-align: left;
+      padding: 12px 14px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+    }
+    th:first-child { border-top-left-radius: 8px; }
+    th:last-child { border-top-right-radius: 8px; }
+    td {
+      padding: 12px 14px;
+      font-size: 0.9rem;
+      border-bottom: 1px solid var(--border);
+    }
+    tr:last-child td { border-bottom: none; }
+    .method-get { color: var(--brand-strong); font-weight: 700; background: var(--brand-soft); padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; }
+    .method-post { color: var(--success); font-weight: 700; background: var(--success-soft); padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; }
+    code { font-family: 'JetBrains Mono', monospace; background: var(--surface-soft); color: var(--brand-strong); padding: 3px 7px; border-radius: 6px; font-size: 0.85rem; border: 1px solid var(--border); }
+    pre {
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--surface-soft);
+      color: var(--brand-strong);
+      padding: 14px 18px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      border: 1px solid var(--border);
+      overflow-x: auto;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <span class="badge">Tuyển Dụng TPD &bull; Project Overview</span>
+      <h1>Hệ Thống Dashboard Tuyển Dụng & Telegram Bot</h1>
+      <p class="subtitle">Hệ thống quản lý quy trình tuyển dụng ứng viên, theo dõi đơn tuyển dụng (Job Orders), quản lý mạng lưới cộng tác viên (CTV) và tự động đồng bộ qua Telegram Bot.</p>
+      <div class="nav-actions">
+        <a href="/" class="btn btn-primary">💻 Mở Giao Diện Dashboard</a>
+        <a href="/api/database-status" target="_blank" class="btn btn-outline">🔍 Trạng Thái Database</a>
+      </div>
+    </header>
+
+    <!-- PHẦN 1: TÁCH CHỮ & BÓC TÁCH DỮ LIỆU ĐƠN HÀNG -->
+    <div class="section">
+      <h2 class="section-title">🔍 1. Logic Tách Chữ & Bóc Tách Dữ Liệu (Parser Logic)</h2>
+      <p class="rule-desc" style="margin-bottom: 16px;">
+        Hệ thống trang bị bộ phân tích ngữ nghĩa Regex đa tầng (<code>parseOrderText</code>, <code>parseRawTextByRules</code>) giúp bóc tách tức thì nội dung tin tuyển dụng dạng thô hoặc tin chat CTV thành dữ liệu có cấu trúc:
+      </p>
+
+      <div class="rule-box">
+        <div class="rule-title">📌 Bóc tách Tiêu đề & Mã đơn (Order Code & Title):</div>
+        <div class="rule-desc">
+          Tự động nhận diện cấu trúc đơn: <code>[Loại đơn] - [Tên công việc] - [Mã đơn]</code> (VD: <em>Tokutei / Kỹ sư - Chế biến thực phẩm - DH012</em>). Tự tách nhãn SOS/GẤP và lọc các dòng ghi chú phụ.
+        </div>
+      </div>
+
+      <div class="rule-box">
+        <div class="rule-title">📍 Nhận diện Địa điểm & Tỉnh thành (Location Parser):</div>
+        <div class="rule-desc">
+          Bóc tách biểu tượng <code>📍</code> hoặc tiền tố <em>"Địa điểm / Nơi làm / Tỉnh / TP"</em>, tự động chuẩn hóa tên tỉnh thành Nhật Bản (Tokyo, Osaka, Aichi, Kanagawa, Fukuoka,...).
+        </div>
+      </div>
+
+      <div class="rule-box">
+        <div class="rule-title">💰 Phân tích Mức lương & Tiền nhà (Salary & Housing):</div>
+        <div class="rule-desc">
+          Nhận diện dòng <code>💰 LCB</code> hoặc <em>"Lương cơ bản"</em>: Tự quy đổi Yên ➔ Man (ví dụ: <code>200.000円</code> ➔ <code>20 man</code>), tách riêng tiền trợ cấp/thực lĩnh và tiền nhà (<code>🏡 NHÀ</code>).
+        </div>
+      </div>
+
+      <div class="rule-box">
+        <div class="rule-title">🤝 Trích xuất Back Fee & Yêu cầu (Back Fee & Requirements):</div>
+        <div class="rule-desc">
+          Tự trích xuất số tiền hoa hồng CTV (<code>🤝 Back: ... man</code>), số lượng chỉ tiêu cần tuyển (<code>👥 SL: ...</code>) và trình độ tiếng Nhật / kinh nghiệm yêu cầu (<code>💢 Yc: ...</code>).
+        </div>
+      </div>
+    </div>
+
+    <!-- PHẦN 2: GỘP TEXT & CHUẨN HOÁ UP FACEBOOK -->
+    <div class="section">
+      <h2 class="section-title">📢 2. Logic Gộp Text & Đăng Bài Facebook (FB Post Generator)</h2>
+      <p class="rule-desc" style="margin-bottom: 16px;">
+        Được xử lý qua hàm <code>makeShortText(data)</code> và <code>shortenFacebookWords(text)</code> nhằm tối ưu hóa ký tự, thu hút tương tác khi đăng bài hàng loạt vào các group tuyển dụng Facebook:
+      </p>
+
+      <div class="rule-box">
+        <div class="rule-title">✂️ Chuẩn hoá & Rút gọn thuật ngữ Facebook:</div>
+        <div class="rule-desc">
+          Tự động chuyển đổi các từ ngữ dài thành định dạng chuẩn mạng xã hội:
+          <ul style="margin: 8px 0 0 20px;">
+            <li><code>Kỹ sư</code> &rarr; <strong>KSư</strong> | <code>Quản lý</code> &rarr; <strong>Qly</strong></li>
+            <li><code>Yêu cầu</code> &rarr; <strong>yc</strong> | <code>Kinh nghiệm</code> &rarr; <strong>KN</strong></li>
+            <li><code>Thưởng</code> &rarr; <strong>thg</strong> | <code>Giờ</code> &rarr; <strong>H</strong></li>
+            <li>Quy đổi tiền tệ sang <strong>man</strong>, lược bỏ khoảng cách dư thừa dấu chấm/phẩy.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="rule-box">
+        <div class="rule-title">📝 Cấu trúc 3 dòng rút gọn chuẩn FB:</div>
+        <pre>DÒNG 1: [TIÊU ĐỀ ĐƠN VIẾT HOA RÚT GỌN]
+DÒNG 2: [ĐỊA ĐIỂM / TỈNH THÀNH]
+DÒNG 3: LCB [LƯƠNG MAN]. [TRỢ CẤP / THƯỞNG]. YC: [TIẾNG NHẬT / KN]</pre>
+      </div>
+    </div>
+
+    <!-- PHẦN 3: QUY TRÌNH & TRẠNG THÁI ỨNG VIÊN -->
+    <div class="section">
+      <h2 class="section-title">👥 3. Quy Trình Vòng Đời Trạng Thái Ứng Viên (Candidate Status Pipeline)</h2>
+      <p class="rule-desc">
+        Hệ thống theo dõi trạng thái ứng viên (<code>getCandidateStatus</code>) theo quy trình tuyển dụng khép kín:
+      </p>
+
+      <div class="pipeline-flow">
+        <span class="pipeline-node"><span class="status-badge status-cho-pv">Chờ PV</span></span>
+        <span class="pipeline-arrow">&rarr;</span>
+        <span class="pipeline-node"><span class="status-badge status-lich-pv">Đã có lịch PV</span></span>
+        <span class="pipeline-arrow">&rarr;</span>
+        <span class="pipeline-node"><span class="status-badge status-cho-kq">Chờ kết quả</span></span>
+        <span class="pipeline-arrow">&rarr;</span>
+        <span class="pipeline-node"><span class="status-badge status-dau-pv">Đậu PV</span></span>
+        <span class="pipeline-arrow">&rarr;</span>
+        <span class="pipeline-node"><span class="status-badge status-cho-cty">Chờ về Cty</span></span>
+        <span class="pipeline-arrow">&rarr;</span>
+        <span class="pipeline-node"><span class="status-badge status-hoan-thanh">Hoàn thành</span></span>
+        <span class="pipeline-arrow">&rarr;</span>
+        <span class="pipeline-node"><span class="status-badge status-da-nhan-tien">Đã nhận tiền</span></span>
+      </div>
+
+      <table style="margin-top: 18px;">
+        <thead>
+          <tr>
+            <th style="width: 170px;">Trạng Thái UV</th>
+            <th style="width: 200px;">Điều Kiện Kích Hoạt</th>
+            <th>Ý Nghĩa Nghiệp Vụ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="status-badge status-cho-pv">Chờ PV</span></td>
+            <td>Mặc định khi tạo mới hồ sơ</td>
+            <td>Ứng viên mới nộp hồ sơ, chưa xếp được lịch phỏng vấn với nghiệp đoàn / xí nghiệp.</td>
+          </tr>
+          <tr>
+            <td><span class="status-badge status-lich-pv">Đã có lịch PV</span></td>
+            <td>Có ngày giờ phỏng vấn hoặc link họp</td>
+            <td>Đã chốt ngày phỏng vấn (tự động hiển thị kèm ngày/tháng trên giao diện).</td>
+          </tr>
+          <tr>
+            <td><span class="status-badge status-cho-kq">Chờ kết quả</span></td>
+            <td>Giai đoạn: <code>cho ket qua</code></td>
+            <td>Ứng viên đã phỏng vấn xong, đang đợi phản hồi từ phía đối tác Nhật Bản.</td>
+          </tr>
+          <tr>
+            <td><span class="status-badge status-dau-pv">Đậu PV</span></td>
+            <td>Giai đoạn: <code>dau pv</code> / <code>dat pv</code></td>
+            <td>Ứng viên đỗ phỏng vấn, chuẩn bị nộp hồ sơ tư cách lưu trú (COE) hoặc chuyển việc.</td>
+          </tr>
+          <tr>
+            <td><span class="status-badge status-truot-pv">Trượt PV</span></td>
+            <td>Giai đoạn: <code>truot pv</code> / <code>rot pv</code></td>
+            <td>Ứng viên không đạt phỏng vấn, có thể chuyển sang đơn tuyển dụng khác.</td>
+          </tr>
+          <tr>
+            <td><span class="status-badge status-cho-cty">Chờ về Cty</span></td>
+            <td>Giai đoạn: <code>cho ve cty</code> / <code>ve cty</code></td>
+            <td>Đã có visa/COE, đang trong thời gian chờ nhập cảnh hoặc di chuyển đến công ty.</td>
+          </tr>
+          <tr>
+            <td><span class="status-badge status-hoan-thanh">Hoàn thành</span></td>
+            <td>Giai đoạn: <code>nhan viec</code> / <code>hoan thanh</code></td>
+            <td>Ứng viên đã chính thức nhận việc tại công ty đối tác.</td>
+          </tr>
+          <tr>
+            <td><span class="status-badge status-da-nhan-tien">Đã nhận tiền</span></td>
+            <td>Giai đoạn: <code>da nhan tien</code></td>
+            <td>Đã hoàn tất thanh toán hoa hồng (back fee) cho CTV giới thiệu hồ sơ.</td>
+          </tr>
+          <tr>
+            <td><span class="status-badge status-bo-don">Bỏ đơn</span></td>
+            <td>Giai đoạn: <code>bo don</code></td>
+            <td>Ứng viên tự hủy hoặc dừng tham gia tuyển dụng giữa chừng.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PHẦN 4: DANH MỤC API -->
+    <div class="section">
+      <h2 class="section-title">📡 4. Danh Mục REST API Endpoints</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 90px;">Method</th>
+            <th style="width: 270px;">Endpoint</th>
+            <th>Mô Tả Chức Năng</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="method-get">GET</span></td>
+            <td><code>/api/bootstrap</code></td>
+            <td>Tải đồng thời dữ liệu ban đầu cho Dashboard (đơn tuyển dụng, ứng viên, CTV, số liệu tổng quan).</td>
+          </tr>
+          <tr>
+            <td><span class="method-get">GET</span></td>
+            <td><code>/api/orders</code></td>
+            <td>Lấy danh sách các đơn hàng tuyển dụng theo bộ lọc tìm kiếm &amp; phân trang.</td>
+          </tr>
+          <tr>
+            <td><span class="method-get">GET</span></td>
+            <td><code>/api/order-detail?code=...</code></td>
+            <td>Xem thông tin chi tiết một đơn tuyển dụng và danh sách ứng viên nộp vào đơn đó.</td>
+          </tr>
+          <tr>
+            <td><span class="method-get">GET</span></td>
+            <td><code>/api/candidates</code></td>
+            <td>Lấy danh sách hồ sơ ứng viên và giai đoạn pipeline hiện tại.</td>
+          </tr>
+          <tr>
+            <td><span class="method-get">GET</span></td>
+            <td><code>/api/candidates/:id/cv</code></td>
+            <td>Xem inline CV ứng viên (PDF hoặc ảnh) qua bộ nhớ đệm.</td>
+          </tr>
+          <tr>
+            <td><span class="method-get">GET</span></td>
+            <td><code>/api/candidates/:id/cv/download</code></td>
+            <td>Tải tệp đính kèm CV gốc của ứng viên về máy tính.</td>
+          </tr>
+          <tr>
+            <td><span class="method-get">GET</span></td>
+            <td><code>/api/ctvs</code></td>
+            <td>Danh sách cộng tác viên và thống kê số lượng hồ sơ đã giới thiệu.</td>
+          </tr>
+          <tr>
+            <td><span class="method-post">POST</span></td>
+            <td><code>/api/orders</code></td>
+            <td>Tạo mới một đơn hàng tuyển dụng.</td>
+          </tr>
+          <tr>
+            <td><span class="method-post">POST</span></td>
+            <td><code>/api/candidates</code></td>
+            <td>Tạo hồ sơ ứng viên mới (thủ công hoặc bot gọi).</td>
+          </tr>
+          <tr>
+            <td><span class="method-post">POST</span></td>
+            <td><code>/api/orders/:code/status</code></td>
+            <td>Cập nhật trạng thái đơn tuyển dụng (Đang mở, Tạm dừng, Hoàn thành).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>
