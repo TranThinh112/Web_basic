@@ -142,9 +142,8 @@ export default function DocsSystemView() {
           { id: "overview", label: "1. Tổng Quan Kiến Trúc", icon: Layers },
           { id: "code_format", label: "2. Cấu Trúc Mã Vận Đơn", icon: QrCode },
           { id: "scan_flow", label: "3. Luồng Quét & Gom Bao TO", icon: Workflow },
-          { id: "mobile_app", label: "4. Ứng Dụng Di Động & Chạy Web", icon: Smartphone },
-          { id: "erd", label: "5. Sơ Đồ Cơ Sở Dữ Liệu (ERD)", icon: Database },
-          { id: "apis", label: "6. Danh Mục Endpoints API", icon: Server },
+                    { id: "erd", label: "4. Sơ Đồ Cơ Sở Dữ Liệu (ERD)", icon: Database },
+          { id: "apis", label: "5. Danh Mục Endpoints API", icon: Server },
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
