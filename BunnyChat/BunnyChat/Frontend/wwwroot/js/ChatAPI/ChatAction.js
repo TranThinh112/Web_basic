@@ -1475,12 +1475,15 @@ messageArea.addEventListener("scroll", () => {
     }
 });
 
+let isSubmittingMessage = false;
+
 messageForm.addEventListener("submit", async event => {
     event.preventDefault();
 
     const content = messageInput.value.trim();
-    if (!content || !state.activeConversation) return;
+    if (!content || !state.activeConversation || isSubmittingMessage) return;
 
+    isSubmittingMessage = true;
     messageInput.value = "";
 
     const activeConversationId = itemId(state.activeConversation);
@@ -1510,14 +1513,22 @@ messageForm.addEventListener("submit", async event => {
             conversationId: messageConversationId(message) || activeConversationId
         };
 
+        const realId = itemId(normalizedMessage);
+        if (realId) {
+            state.renderedMessageIds.add(realId);
+        }
+
         const tempRow = messageArea.querySelector(`[data-message-id="${tempId}"]`);
-        if (tempRow) tempRow.dataset.messageId = itemId(normalizedMessage);
+        if (tempRow) tempRow.dataset.messageId = realId;
 
         updateConversationPreviewFromMessage(normalizedMessage);
     } catch {
         const tempRow = messageArea.querySelector(`[data-message-id="${tempId}"]`);
         tempRow?.remove();
+        state.renderedMessageIds.delete(tempId);
         messageInput.value = content;
+    } finally {
+        isSubmittingMessage = false;
     }
 });
 

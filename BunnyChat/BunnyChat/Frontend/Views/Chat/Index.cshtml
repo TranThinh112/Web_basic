@@ -23,13 +23,9 @@
 
 @* vùng search bạn bè *@
         <div class="sidebar-search">
-            <button class="compose-button" type="button" id="openSearchBtn">
-                <svg><use href="#icon-message"></use></svg>
-                <span>Gửi tin nhắn mới</span>
-            </button>
-
-            <div class="search-box" id="searchBox">
-                <input type="search" id="keyword" placeholder="Tìm người dùng..." autocomplete="off" />
+            <div class="search-box always-open" id="searchBox">
+                <svg class="sidebar-search-icon"><use href="#icon-search"></use></svg>
+                <input type="search" id="keyword" placeholder="Tìm tin nhắn, người dùng..." autocomplete="off" />
                 <button id="searchBtn" type="button" aria-label="Tìm kiếm"><svg><use href="#icon-search"></use></svg></button>
             </div>
             <div id="searchResult"></div>

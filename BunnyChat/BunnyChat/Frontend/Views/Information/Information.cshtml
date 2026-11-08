@@ -1,42 +1,51 @@
-@{
+﻿@{
     Layout = "~/Frontend/Views/Shared/AuthLayout.cshtml";
-    ViewData["Title"] = "About BunnyChat - Về Chúng Tôi";
+    ViewData["Title"] = "Tài Liệu Kỹ Thuật & Giới Thiệu - BunnyChat";
 }
 
 <style>
     .info-container {
-        width: min(860px, 94vw);
-        max-height: 86vh;
+        width: min(1060px, 95vw);
+        max-height: 88vh;
         overflow-y: auto;
-        padding: 32px 36px;
-        margin: 20px auto;
+        padding: 30px 36px;
+        margin: 15px auto;
         border-radius: 24px;
-        background: rgba(255, 255, 255, 0.75);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.85);
-        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+        background: rgba(255, 255, 255, 0.82);
+        backdrop-filter: blur(22px);
+        -webkit-backdrop-filter: blur(22px);
+        border: 1px solid rgba(255, 255, 255, 0.9);
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
         color: #1e1b4b;
         scrollbar-width: thin;
         scrollbar-color: #8b5cf6 rgba(255, 255, 255, 0.3);
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
     }
 
     .info-header {
         display: flex;
         align-items: center;
-        gap: 18px;
-        margin-bottom: 24px;
-        padding-bottom: 18px;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 20px;
+        padding-bottom: 16px;
         border-bottom: 1px solid rgba(139, 92, 246, 0.2);
     }
 
+    .header-brand {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
     .info-header img {
-        width: 64px;
+        width: 60px;
         height: auto;
     }
 
     .info-header h1 {
-        font-size: 28px;
+        font-size: 26px;
         font-weight: 800;
         margin: 0;
         color: #312e81;
@@ -44,9 +53,62 @@
 
     .info-header p {
         margin: 4px 0 0;
-        font-size: 14px;
+        font-size: 13.5px;
         color: #4338ca;
         font-weight: 600;
+    }
+
+    /* Tab bar điều hướng */
+    .nav-tabs-custom {
+        display: flex;
+        gap: 8px;
+        background: rgba(139, 92, 246, 0.08);
+        padding: 6px;
+        border-radius: 14px;
+        margin-bottom: 24px;
+        border: 1px solid rgba(139, 92, 246, 0.15);
+    }
+
+    .tab-btn {
+        flex: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 16px;
+        border: none;
+        background: transparent;
+        color: #475569;
+        font-weight: 700;
+        font-size: 14px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .tab-btn:hover {
+        color: #5b21b6;
+        background: rgba(255, 255, 255, 0.5);
+    }
+
+    .tab-btn.active {
+        color: #4338ca;
+        background: #ffffff;
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.18);
+    }
+
+    .tab-content-panel {
+        display: none;
+        animation: fadeInTab 0.25s ease-out;
+    }
+
+    .tab-content-panel.active {
+        display: block;
+    }
+
+    @@keyframes fadeInTab {
+        from { opacity: 0; transform: translateY(6px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
     .info-section {
@@ -54,7 +116,7 @@
     }
 
     .info-section h2 {
-        font-size: 18px;
+        font-size: 17.5px;
         font-weight: 700;
         color: #4338ca;
         margin-bottom: 12px;
@@ -63,26 +125,22 @@
         gap: 8px;
     }
 
-    .info-section h2 i {
-        color: #7c3aed;
-    }
-
     .info-section p {
-        font-size: 14.5px;
+        font-size: 14px;
         line-height: 1.6;
         color: #334155;
-        margin-bottom: 12px;
+        margin-bottom: 10px;
     }
 
     .feature-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
         gap: 14px;
         margin-top: 10px;
     }
 
     .feature-item {
-        background: rgba(255, 255, 255, 0.85);
+        background: rgba(255, 255, 255, 0.88);
         border: 1px solid rgba(139, 92, 246, 0.25);
         border-radius: 14px;
         padding: 14px 16px;
@@ -128,140 +186,619 @@
         font-weight: 600;
     }
 
-    .info-actions {
+    /* Thiết kế thẻ Card Kỹ Thuật (Architecture Cards) */
+    .arch-card {
+        background: #ffffff;
+        border: 1px solid rgba(139, 92, 246, 0.22);
+        border-radius: 16px;
+        padding: 18px 20px;
+        margin-bottom: 18px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    }
+
+    .arch-card-header {
         display: flex;
-        justify-content: flex-end;
         align-items: center;
-        margin-top: 28px;
-        padding-top: 18px;
-        border-top: 1px solid rgba(139, 92, 246, 0.2);
+        gap: 10px;
+        font-size: 16px;
+        font-weight: 700;
+        color: #312e81;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px dashed rgba(139, 92, 246, 0.25);
     }
 
-    /* Tối ưu chống chớp nháy phần cứng */
-    .info-container {
-        -webkit-transform: translateZ(0);
-        transform: translateZ(0);
-        will-change: transform;
-        backface-visibility: hidden;
-        -webkit-backface-visibility: hidden;
+    .flow-step-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin: 10px 0;
     }
 
-    .start-btn {
-        display: inline-flex;
+    .flow-step-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        font-size: 13.5px;
+        line-height: 1.5;
+        color: #334155;
+    }
+
+    .step-badge {
+        flex: 0 0 24px;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: #6366f1;
+        color: #ffffff;
+        display: grid;
+        place-items: center;
+        font-size: 11px;
+        font-weight: 800;
+    }
+
+    /* Schema Table Styling */
+    .table-responsive-custom {
+        overflow-x: auto;
+        margin: 10px 0;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .schema-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+        text-align: left;
+    }
+
+    .schema-table th {
+        background: #f1f5f9;
+        color: #1e293b;
+        font-weight: 700;
+        padding: 10px 14px;
+        border-bottom: 1px solid #cbd5e1;
+    }
+
+    .schema-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid #f1f5f9;
+        color: #475569;
+    }
+
+    .schema-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .field-name {
+        font-family: monospace;
+        font-weight: 700;
+        color: #6d28d9;
+    }
+
+    .field-type {
+        font-family: monospace;
+        color: #0284c7;
+        font-size: 12px;
+    }
+
+    /* Sơ đồ quan hệ ERD Diagram dạng SVG/Visual Nodes */
+    .erd-wrapper {
+        background: #0f172a;
+        color: #f8fafc;
+        border-radius: 16px;
+        padding: 22px;
+        margin: 14px 0;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+    }
+
+    .erd-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 16px;
+    }
+
+    .erd-node {
+        background: #1e293b;
+        border: 1.5px solid #334155;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .erd-node:hover {
+        border-color: #a855f7;
+        transform: translateY(-2px);
+    }
+
+    .erd-node-title {
+        background: #334155;
+        padding: 8px 12px;
+        font-size: 13px;
+        font-weight: 700;
+        color: #e2e8f0;
+        display: flex;
+        justify-content: space-between;
         align-items: center;
+    }
+
+    .erd-node-title span {
+        font-size: 11px;
+        background: rgba(168, 85, 247, 0.25);
+        color: #d8b4fe;
+        padding: 2px 6px;
+        border-radius: 6px;
+    }
+
+    .erd-node-fields {
+        padding: 10px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        font-size: 12px;
+        font-family: monospace;
+    }
+
+    .erd-field-row {
+        display: flex;
+        justify-content: space-between;
+        color: #94a3b8;
+    }
+
+    .erd-field-row strong {
+        color: #f1f5f9;
+    }
+
+    .erd-relations {
+        margin-top: 18px;
+        padding-top: 14px;
+        border-top: 1px solid #334155;
+        display: flex;
+        flex-direction: column;
         gap: 8px;
-        background: linear-gradient(135deg, #6d28d9, #8b5cf6);
-        color: #ffffff !important;
-        text-decoration: none;
-        padding: 12px 24px;
-        border-radius: 14px;
+        font-size: 12.5px;
+        color: #cbd5e1;
+    }
+
+    .rel-badge {
+        display: inline-block;
+        padding: 2px 7px;
+        border-radius: 6px;
+        font-size: 11px;
         font-weight: 700;
-        font-size: 15px;
-        box-shadow: 0 8px 18px rgba(109, 40, 217, 0.35);
-        transition: transform 0.2s ease;
+        margin-right: 6px;
     }
 
-    .start-btn:hover {
-        transform: scale(1.04);
-        box-shadow: 0 10px 24px rgba(109, 40, 217, 0.45);
-    }
+    .rel-1n { background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); }
+    .rel-nn { background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.4); }
 
-    .back-link {
-        color: #4338ca;
-        font-weight: 700;
-        text-decoration: none;
-        font-size: 14.5px;
-    }
-
-    .back-link:hover {
-        text-decoration: underline;
-    }
-
-    @@media (max-width: 600px) {
+    @@media (max-width: 768px) {
         .info-container {
-            padding: 22px 18px;
+            padding: 20px 16px;
             max-height: 88vh;
         }
-        .info-header h1 {
-            font-size: 22px;
+        .info-header {
+            flex-direction: column;
+            align-items: flex-start;
         }
-        .info-actions {
-            flex-direction: column-reverse;
-            gap: 14px;
-            align-items: stretch;
-            text-align: center;
+        .nav-tabs-custom {
+            flex-direction: column;
         }
-        .start-btn {
-            justify-content: center;
+        .erd-grid {
+            grid-template-columns: 1fr;
         }
-    }
+        }
 </style>
 
 <div class="auth-page">
     <div class="info-container">
+        <!-- Header -->
         <header class="info-header">
-            <img src="/images/Logo.png" alt="BunnyChat Logo" />
-            <div>
-                <h1>BunnyChat</h1>
-                <p>Nền tảng trò chuyện trực tuyến thời gian thực (Realtime Web Chat)</p>
+            <div class="header-brand">
+                <img src="/images/Logo.png" alt="BunnyChat Logo" />
+                <div>
+                    <h1>BunnyChat</h1>
+                    <p>Hệ thống trò chuyện trực tuyến thời gian thực & Kiến trúc phần mềm</p>
+                </div>
             </div>
         </header>
 
-        <section class="info-section">
-            <h2><i class="bi bi-info-circle-fill"></i> Giới Thiệu Dự Án</h2>
-            <p>
-                <strong>BunnyChat</strong> là ứng dụng nhắn tin trực tuyến thời gian thực hiện đại, được xây dựng với mục tiêu mang lại trải nghiệm giao tiếp tức thì, mượt mà và an toàn cho người dùng trên nền tảng Web.
-            </p>
-            <p>
-                Dự án tích hợp đầy đủ các chức năng trò chuyện cá nhân (1-1), trò chuyện nhóm (Group Chat), kết bạn linh hoạt, cùng bộ tính năng tương tác phong phú như tìm kiếm nội dung tin nhắn và thả cảm xúc (Reactions) chuẩn phong cách mạng xã hội.
-            </p>
-        </section>
+        <!-- Tab Bar -->
+        <div class="nav-tabs-custom">
+            <button type="button" class="tab-btn active" id="tabBtnOverview" onclick="switchInfoTab('overview')">
+                <i class="bi bi-info-circle-fill"></i> 1. Giới Thiệu & Tính Năng
+            </button>
+            <button type="button" class="tab-btn" id="tabBtnTech" onclick="switchInfoTab('tech')">
+                <i class="bi bi-shield-lock-fill"></i> 2. Kiến Trúc, Auth & Database (ERD)
+            </button>
+        </div>
 
-        <section class="info-section">
-            <h2><i class="bi bi-stars"></i> Tính Năng Nổi Bật</h2>
-            <div class="feature-grid">
-                <div class="feature-item">
-                    <strong>💬 Nhắn Tin Thời Gian Thực</strong>
-                    <p>Trao đổi thông điệp tức thời thông qua giao thức SignalR WebSockets hai chiều, độ trễ cực thấp.</p>
+        <!-- TAB 1: TỔNG QUAN & TÍNH NĂNG -->
+        <div class="tab-content-panel active" id="tabPanelOverview">
+            <section class="info-section">
+                <h2><i class="bi bi-info-circle-fill"></i> Giới Thiệu Dự Án</h2>
+                <p>
+                    <strong>BunnyChat</strong> là ứng dụng nhắn tin trực tuyến thời gian thực hiện đại, được xây dựng với mục tiêu mang lại trải nghiệm giao tiếp tức thì, mượt mà và an toàn cho người dùng trên nền tảng Web.
+                </p>
+                <p>
+                    Dự án tích hợp đầy đủ các chức năng trò chuyện cá nhân (1-1), trò chuyện nhóm (Group Chat), kết bạn linh hoạt, cùng bộ tính năng tương tác phong phú như tìm kiếm nội dung tin nhắn và thả cảm xúc (Reactions) chuẩn phong cách mạng xã hội.
+                </p>
+            </section>
+
+            <section class="info-section">
+                <h2><i class="bi bi-stars"></i> Tính Năng Nổi Bật</h2>
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <strong>💬 Nhắn Tin Realtime & Optimistic UI</strong>
+                        <p>Tin nhắn xuất hiện tức thì 0ms trên giao diện người gửi, sau đó phát thời gian thực tới người nhận qua SignalR WebSockets.</p>
+                    </div>
+                    <div class="feature-item">
+                        <strong>❤️ Thả Cảm Xúc (Messenger Reactions)</strong>
+                        <p>Tương tác cảm xúc tức thì (👍 ❤️ 😂 😮 😢 😡), tự động cập nhật preview, và đưa đoạn chat vừa tương tác lên đầu danh sách.</p>
+                    </div>
+                    <div class="feature-item">
+                        <strong>🔵 Chấm Tròn Xanh & Tin Chưa Đọc</strong>
+                        <p>Đoạn chat có tin mới chưa đọc được làm nổi bật với chữ in đậm và chấm tròn xanh Messenger, tự động xóa khi mở xem.</p>
+                    </div>
+                    <div class="feature-item">
+                        <strong>🔍 Tìm Kiếm In-Chat & Toàn Cục</strong>
+                        <p>Tìm kiếm từ khóa trong chính đoạn chat đang mở hoặc quét nhanh trên toàn bộ lịch sử trò chuyện của tài khoản.</p>
+                    </div>
+                    <div class="feature-item">
+                        <strong>👥 Kết Bạn & Chat Nhóm Động</strong>
+                        <p>Tìm kiếm người dùng theo tên/username, gửi/chấp nhận lời mời kết bạn tức thời và tạo nhóm chat nhiều thành viên.</p>
+                    </div>
+                    <div class="feature-item">
+                        <strong>⚙️ Cá Nhân Hóa & Đổi Màu Logo</strong>
+                        <p>Chỉnh sửa hồ sơ (Họ tên, Nickname, Bio, SĐT), tùy biến bộ màu nhận diện BunnyChat và ghi nhớ vào LocalStorage.</p>
+                    </div>
+                    <div class="feature-item">
+                        <strong>📜 Cuộn Tải Phân Trang (Cursor Pagination)</strong>
+                        <p>Tải 50 tin nhắn mỗi lượt, tự động tải ngược lịch sử cũ khi cuộn lên đầu và lưu đệm tin nhắn cục bộ 0ms độ trễ.</p>
+                    </div>
+                    <div class="feature-item">
+                        <strong>🛡️ Xác Thực JWT & Khôi Phục 2 Bước</strong>
+                        <p>Hệ thống Session bảo mật với Refresh Token HttpOnly, BCrypt và quy trình khôi phục mật khẩu 2 bước chuẩn xác.</p>
+                    </div>
                 </div>
-                <div class="feature-item">
-                    <strong>❤️ Thả Cảm Xúc (Reactions)</strong>
-                    <p>Thả và đổi biểu tượng cảm xúc (Like, Love, Haha, Wow, Sad, Angry) tương tác trực tiếp trên từng tin nhắn.</p>
+            </section>
+
+            <section class="info-section">
+                <h2><i class="bi bi-code-slash"></i> Công Nghệ Nền Tảng</h2>
+                <div class="tech-badges">
+                    <span class="tech-pill"><i class="bi bi-cpu"></i> ASP.NET Core (.NET 8/10)</span>
+                    <span class="tech-pill"><i class="bi bi-broadcast-pin"></i> Microsoft SignalR (WebSockets)</span>
+                    <span class="tech-pill"><i class="bi bi-database"></i> MongoDB Atlas (NoSQL)</span>
+                    <span class="tech-pill"><i class="bi bi-shield-lock"></i> JWT Authentication & BCrypt</span>
+                    <span class="tech-pill"><i class="bi bi-filetype-html"></i> Razor Pages & Modular JavaScript</span>
+                    <span class="tech-pill"><i class="bi bi-palette"></i> Modern Glassmorphism CSS</span>
                 </div>
-                <div class="feature-item">
-                    <strong>🔍 Tìm Kiếm Thông Minh</strong>
-                    <p>Tìm kiếm tin nhắn nhanh trong đoạn chat đang mở hoặc tra cứu trên toàn bộ lịch sử các cuộc trò chuyện.</p>
+            </section>
+        </div>
+
+        <!-- TAB 2: KIẾN TRÚC KỸ THUẬT, AUTHEN/AUTHOR & DATABASE ERD -->
+        <div class="tab-content-panel" id="tabPanelTech">
+            <!-- 1. Authentication & Authorization -->
+            <div class="arch-card">
+                <div class="arch-card-header">
+                    <i class="bi bi-shield-check" style="color: #6366f1; font-size: 20px;"></i>
+                    1. Cơ Chế Xác Thực (Authentication) & Phân Quyền (Authorization)
                 </div>
-                <div class="feature-item">
-                    <strong>👥 Quản Lý Bạn Bè & Nhóm</strong>
-                    <p>Tìm kiếm người dùng, gửi/nhận lời mời kết bạn và dễ dàng tạo các nhóm chat thảo luận cùng bạn bè.</p>
-                </div>
-                <div class="feature-item">
-                    <strong>🌗 Giao Diện Dark / Light Mode</strong>
-                    <p>Hỗ trợ chuyển đổi chế độ Sáng/Tối linh hoạt kèm thiết kế Glassmorphism và tối ưu hiển thị trên Mobile.</p>
-                </div>
-                <div class="feature-item">
-                    <strong>🛡️ Bảo Mật & Xác Thực</strong>
-                    <p>Bảo mật phiên bằng JWT (JSON Web Token), mã hóa mật khẩu BCrypt và luồng khôi phục tài khoản tiện lợi.</p>
+                <div class="flow-step-list">
+                    <div class="flow-step-item">
+                        <span class="step-badge">1</span>
+                        <div>
+                            <strong>Cơ chế Authentication (Xác thực người dùng):</strong>
+                            <p style="margin: 2px 0 0; color: #64748b; font-size: 13px;">
+                                Sử dụng <strong>JWT (JSON Web Token)</strong> kết hợp <strong>BCrypt Password Hashing</strong>. Khi người dùng đăng nhập thành công, hệ thống cấp phát <code>AccessToken</code> (hạn dùng ngắn hạn: 45 phút, chứa Claims: UserId, Username, Email) và <code>RefreshToken</code> (7 ngày, lưu vào bảng Session trên MongoDB và gán Cookie HttpOnly).
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flow-step-item">
+                        <span class="step-badge">2</span>
+                        <div>
+                            <strong>Cơ chế Authorization (Kiểm soát quyền truy cập):</strong>
+                            <p style="margin: 2px 0 0; color: #64748b; font-size: 13px;">
+                                Áp dụng thuộc tính <code>[Authorize]</code> cấp Controller/Action. Đối với các tài nguyên nhạy cảm như cuộc trò chuyện, tin nhắn hay thêm thành viên, hệ thống triển khai lớp kiểm tra động (<strong>Data-level Authorization</strong> qua <code>ConversationHelper.IsParticipant</code>) để ngăn chặn truy cập trái phép. Nếu không thuộc thành viên, server lập tức trả về mã lỗi <code>403 Forbid</code>.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flow-step-item">
+                        <span class="step-badge">3</span>
+                        <div>
+                            <strong>Tự động Refresh Token & Quên Mật Khẩu (Forgot Password):</strong>
+                            <p style="margin: 2px 0 0; color: #64748b; font-size: 13px;">
+                                Frontend sử dụng module bảo vệ <code>Protect_Chat.js</code> để tự động gửi request đến <code>/api/auth/refresh</code> khi AccessToken hết hạn. Luồng quên mật khẩu 2 bước: xác thực tài khoản/email và đặt lại mật khẩu mới được băm bảo mật bằng BCrypt.
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </section>
 
-        <section class="info-section">
-            <h2><i class="bi bi-code-slash"></i> Công Nghệ Nền Tảng</h2>
-            <div class="tech-badges">
-                <span class="tech-pill"><i class="bi bi-cpu"></i> ASP.NET Core (.NET 8/10)</span>
-                <span class="tech-pill"><i class="bi bi-broadcast-pin"></i> Microsoft SignalR (WebSockets)</span>
-                <span class="tech-pill"><i class="bi bi-database"></i> MongoDB Atlas (NoSQL)</span>
-                <span class="tech-pill"><i class="bi bi-shield-lock"></i> JWT Authentication & BCrypt</span>
-                <span class="tech-pill"><i class="bi bi-filetype-html"></i> Razor Pages & Modular JavaScript</span>
-                <span class="tech-pill"><i class="bi bi-palette"></i> Modern Glassmorphism CSS</span>
+            <!-- 2. Cơ sở dữ liệu & Sơ đồ ERD -->
+            <div class="arch-card">
+                <div class="arch-card-header">
+                    <i class="bi bi-diagram-3-fill" style="color: #8b5cf6; font-size: 20px;"></i>
+                    2. Sơ Đồ Thực Thể Quan Hệ (ERD Diagram - MongoDB Database)
+                </div>
+                <p style="font-size: 13.5px; color: #475569; margin-bottom: 12px;">
+                    BunnyChat sử dụng cơ sở dữ liệu NoSQL <strong>MongoDB Atlas</strong> với mô hình lưu trữ tài liệu (Document-based) kết hợp tham chiếu liên kết (Referenced IDs) và tài liệu nhúng (Embedded Documents) nhằm tối ưu tốc độ đọc tin nhắn thời gian thực:
+                </p>
+
+                <!-- Visual ERD Grid -->
+                <div class="erd-wrapper">
+                    <div class="erd-grid">
+                        <!-- Entity: User -->
+                        <div class="erd-node">
+                            <div class="erd-node-title">
+                                <strong>👤 User</strong>
+                                <span>Collection</span>
+                            </div>
+                            <div class="erd-node-fields">
+                                <div class="erd-field-row"><span>_id (PK)</span><strong>ObjectId</strong></div>
+                                <div class="erd-field-row"><span>Username</span><strong>string</strong></div>
+                                <div class="erd-field-row"><span>Email</span><strong>string</strong></div>
+                                <div class="erd-field-row"><span>HashPassword</span><strong>string (BCrypt)</strong></div>
+                                <div class="erd-field-row"><span>FirstName, LastName</span><strong>string</strong></div>
+                                <div class="erd-field-row"><span>AvatarUrl, Phone</span><strong>string</strong></div>
+                                <div class="erd-field-row"><span>CreatedAt</span><strong>DateTime</strong></div>
+                            </div>
+                        </div>
+
+                        <!-- Entity: Conversation -->
+                        <div class="erd-node">
+                            <div class="erd-node-title">
+                                <strong>💬 Conversation</strong>
+                                <span>Collection</span>
+                            </div>
+                            <div class="erd-node-fields">
+                                <div class="erd-field-row"><span>_id (PK)</span><strong>ObjectId</strong></div>
+                                <div class="erd-field-row"><span>Type</span><strong>direct | group</strong></div>
+                                <div class="erd-field-row"><span>Participants[]</span><strong>[UserId, Joined]</strong></div>
+                                <div class="erd-field-row"><span>Group</span><strong>{Name, CreatedBy}</strong></div>
+                                <div class="erd-field-row"><span>LastMessage</span><strong>{Id, Content, Time}</strong></div>
+                                <div class="erd-field-row"><span>UnreadCounts</span><strong>Dict&lt;Id, int&gt;</strong></div>
+                                <div class="erd-field-row"><span>UpdatedAt</span><strong>DateTime</strong></div>
+                            </div>
+                        </div>
+
+                        <!-- Entity: Message -->
+                        <div class="erd-node">
+                            <div class="erd-node-title">
+                                <strong>✉️ Message</strong>
+                                <span>Collection</span>
+                            </div>
+                            <div class="erd-node-fields">
+                                <div class="erd-field-row"><span>_id (PK)</span><strong>ObjectId</strong></div>
+                                <div class="erd-field-row"><span>ConversationId (FK)</span><strong>ObjectId</strong></div>
+                                <div class="erd-field-row"><span>SenderId (FK)</span><strong>ObjectId</strong></div>
+                                <div class="erd-field-row"><span>Content</span><strong>string</strong></div>
+                                <div class="erd-field-row"><span>Reactions[]</span><strong>[UserId, Emoji]</strong></div>
+                                <div class="erd-field-row"><span>CreatedAt</span><strong>DateTime</strong></div>
+                            </div>
+                        </div>
+
+                        <!-- Entity: Friend -->
+                        <div class="erd-node">
+                            <div class="erd-node-title">
+                                <strong>🤝 Friend</strong>
+                                <span>Collection</span>
+                            </div>
+                            <div class="erd-node-fields">
+                                <div class="erd-field-row"><span>_id (PK)</span><strong>ObjectId</strong></div>
+                                <div class="erd-field-row"><span>SenderId (FK)</span><strong>ObjectId</strong></div>
+                                <div class="erd-field-row"><span>ReceiveId (FK)</span><strong>ObjectId</strong></div>
+                                <div class="erd-field-row"><span>Status</span><strong>Enum (0..3)</strong></div>
+                                <div class="erd-field-row"><span>Message</span><strong>string</strong></div>
+                                <div class="erd-field-row"><span>CreatedAt</span><strong>DateTime</strong></div>
+                            </div>
+                        </div>
+
+                        <!-- Entity: Session -->
+                        <div class="erd-node">
+                            <div class="erd-node-title">
+                                <strong>🔑 Session</strong>
+                                <span>Collection</span>
+                            </div>
+                            <div class="erd-node-fields">
+                                <div class="erd-field-row"><span>_id (PK)</span><strong>ObjectId</strong></div>
+                                <div class="erd-field-row"><span>UserId (FK)</span><strong>string</strong></div>
+                                <div class="erd-field-row"><span>RefreshToken</span><strong>string</strong></div>
+                                <div class="erd-field-row"><span>ExpiresAt</span><strong>DateTime</strong></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quan hệ giữa các collection -->
+                    <div class="erd-relations">
+                        <div><span class="rel-badge rel-1n">1 : N</span> <strong>User ➔ Message:</strong> Một người dùng có thể gửi nhiều tin nhắn (SenderId).</div>
+                        <div><span class="rel-badge rel-1n">1 : N</span> <strong>Conversation ➔ Message:</strong> Một cuộc trò chuyện chứa danh sách nhiều tin nhắn (ConversationId).</div>
+                        <div><span class="rel-badge rel-nn">N : N</span> <strong>User ⇄ Conversation:</strong> Quan hệ nhiều - nhiều thông qua mảng nhúng <code>Participants</code> bên trong Conversation.</div>
+                        <div><span class="rel-badge rel-nn">N : N</span> <strong>User ⇄ User (Friends):</strong> Kết nối bạn bè 2 chiều giữa <code>SenderId</code> và <code>ReceiveId</code> với trạng thái (Pending, Accepted, Rejected, Blocked).</div>
+                    </div>
+                </div>
             </div>
-        </section>
 
-        <div class="info-actions">
-            
-            <a href="/" class="start-btn">Trải nghiệm ngay <i class="bi bi-arrow-right"></i></a>
+            <!-- 3. Luồng Realtime WebSockets (SignalR) -->
+            <div class="arch-card">
+                <div class="arch-card-header">
+                    <i class="bi bi-broadcast" style="color: #ec4899; font-size: 20px;"></i>
+                    3. Cơ Chế Thời Gian Thực (SignalR Realtime Hub)
+                </div>
+                <div class="table-responsive-custom">
+                    <table class="schema-table">
+                        <thead>
+                            <tr>
+                                <th>Kênh / Nhóm (Group)</th>
+                                <th>Sự Kiện (SignalR Event)</th>
+                                <th>Mục Đích & Cơ Chế Hoạt Động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>ConversationGroup({id})</code></td>
+                                <td><span class="field-name">new-message</span></td>
+                                <td>Phát tin nhắn mới tức thời tới toàn bộ thành viên đang mở đúng khung chat đó.</td>
+                            </tr>
+                            <tr>
+                                <td><code>UserGroup({userId})</code></td>
+                                <td><span class="field-name">new-message</span></td>
+                                <td>Đẩy hội thoại lên đầu sidebar, cập nhật text xem trước, in đậm và bật chấm tròn xanh chưa đọc.</td>
+                            </tr>
+                            <tr>
+                                <td><code>ConversationGroup({id})</code></td>
+                                <td><span class="field-name">reaction-updated</span></td>
+                                <td>Cập nhật số đếm và biểu tượng cảm xúc (👍 ❤️ 😂 😮 😢 😡) trên bong bóng chat tức thì.</td>
+                            </tr>
+                            <tr>
+                                <td><code>UserGroup({userId})</code></td>
+                                <td><span class="field-name">reaction-updated</span></td>
+                                <td>Đưa hội thoại vừa được tương tác lên đầu sidebar kèm dòng xem trước: "[Tên] đã bày tỏ cảm xúc...".</td>
+                            </tr>
+                            <tr>
+                                <td><code>ConversationGroup({id})</code> & <code>UserGroup({userId})</code></td>
+                                <td><span class="field-name">read-message</span></td>
+                                <td>Đồng bộ trạng thái đã xem: xóa chấm tròn xanh và bỏ in đậm ở sidebar của người đọc.</td>
+                            </tr>
+                            <tr>
+                                <td><code>UserGroup({userId})</code></td>
+                                <td><span class="field-name">friend-request-*</span></td>
+                                <td>Phát thông báo realtime khi có lời mời kết bạn mới, chấp nhận hoặc từ chối kết bạn.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 4. Kỹ Thuật Tối Ưu Hiệu Năng & Trải Nghiệm (Performance Engineering) -->
+            <div class="arch-card">
+                <div class="arch-card-header">
+                    <i class="bi bi-lightning-charge-fill" style="color: #f59e0b; font-size: 20px;"></i>
+                    4. Kỹ Thuật Tối Ưu Hiệu Năng (Performance Optimization)
+                </div>
+                <div class="flow-step-list">
+                    <div class="flow-step-item">
+                        <span class="step-badge">1</span>
+                        <div>
+                            <strong>Optimistic UI (Cập nhật giao diện 0ms):</strong>
+                            <p style="margin: 2px 0 0; color: #64748b; font-size: 13px;">
+                                Khi người dùng bấm gửi tin nhắn, giao diện client vẽ ngay lập tức bong bóng chat vào màn hình với trạng thái <code>status-sending</code> mà không cần chờ server phản hồi. Khi có kết quả từ API hoặc SignalR, client tự động đối soát theo <code>tempId</code> để cập nhật ID chính thức và trạng thái thành công.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flow-step-item">
+                        <span class="step-badge">2</span>
+                        <div>
+                            <strong>Batch Query MongoDB (Triệt tiêu vấn đề N+1 Query):</strong>
+                            <p style="margin: 2px 0 0; color: #64748b; font-size: 13px;">
+                                Tại các API tìm kiếm tin nhắn và nạp tin nhắn cuộc trò chuyện, Backend thu thập toàn bộ <code>SenderId</code> duy nhất và thực hiện truy vấn người gửi một lần duy nhất qua câu lệnh <code>Find(u => senderIds.Contains(u.Id))</code> kèm <code>ToDictionary</code>, giúp giảm tải hàng chục vòng lặp round-trip vào database.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flow-step-item">
+                        <span class="step-badge">3</span>
+                        <div>
+                            <strong>Bộ Nhớ Đệm Phía Client (In-memory Message Cache & DocumentFragment):</strong>
+                            <p style="margin: 2px 0 0; color: #64748b; font-size: 13px;">
+                                Lưu trữ tin nhắn đã tải vào bộ nhớ đệm <code>window._chatMessageCache</code> theo từng <code>conversationId</code>. Khi chuyển đổi qua lại giữa các bạn bè hay nhóm chat, giao diện tải lại tức thì 0ms mà không gây giật lag. Đồng thời, DOM được render theo khối bằng <code>DocumentFragment</code> để hạn chế tối đa Reflow/Repaint trình duyệt.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flow-step-item">
+                        <span class="step-badge">4</span>
+                        <div>
+                            <strong>Phân Trang Cursor-based (Cursor Pagination):</strong>
+                            <p style="margin: 2px 0 0; color: #64748b; font-size: 13px;">
+                                Lịch sử tin nhắn được tải theo cửa sổ trượt (limit 50 tin nhắn mỗi lần). Khi cuộn lên đầu màn hình chat, client gửi mốc thời gian <code>before={createdAt}</code> để tải thêm lịch sử mà không bị sai lệch số liệu như cơ chế <code>skip/offset</code> truyền thống.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. Danh Mục RESTful API Endpoints -->
+            <div class="arch-card">
+                <div class="arch-card-header">
+                    <i class="bi bi-hdd-network" style="color: #06b6d4; font-size: 20px;"></i>
+                    5. Danh Mục RESTful API Chính Của Hệ Thống
+                </div>
+                <div class="table-responsive-custom">
+                    <table class="schema-table">
+                        <thead>
+                            <tr>
+                                <th>Method</th>
+                                <th>Endpoint URL</th>
+                                <th>Chức Năng & Nghiệp Vụ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span style="color: #10b981; font-weight: 700;">POST</span></td>
+                                <td><code>/api/auth/signup</code> &amp; <code>/login</code></td>
+                                <td>Đăng ký tài khoản và đăng nhập cấp phát Access/Refresh Token.</td>
+                            </tr>
+                            <tr>
+                                <td><span style="color: #3b82f6; font-weight: 700;">POST</span></td>
+                                <td><code>/api/auth/forgot/verify-account</code> &amp; <code>/reset-password</code></td>
+                                <td>Quy trình quên mật khẩu 2 bước bảo mật.</td>
+                            </tr>
+                            <tr>
+                                <td><span style="color: #3b82f6; font-weight: 700;">GET</span></td>
+                                <td><code>/api/chat/conversations</code></td>
+                                <td>Lấy danh sách các cuộc trò chuyện trực tiếp và nhóm của người dùng.</td>
+                            </tr>
+                            <tr>
+                                <td><span style="color: #10b981; font-weight: 700;">POST</span></td>
+                                <td><code>/api/chat/conversations/{id}/messages</code></td>
+                                <td>Gửi tin nhắn mới vào cuộc trò chuyện và kích hoạt phát sóng SignalR.</td>
+                            </tr>
+                            <tr>
+                                <td><span style="color: #f59e0b; font-weight: 700;">POST</span></td>
+                                <td><code>/api/chat/messages/{id}/reactions</code></td>
+                                <td>Thả, đổi hoặc gỡ biểu tượng cảm xúc (Like, Love, Haha,...) trên tin nhắn.</td>
+                            </tr>
+                            <tr>
+                                <td><span style="color: #3b82f6; font-weight: 700;">GET</span></td>
+                                <td><code>/api/chat/search-messages?query=...</code></td>
+                                <td>Tìm kiếm tin nhắn theo từ khóa trong 1 đoạn chat hoặc trên toàn bộ các hội thoại.</td>
+                            </tr>
+                            <tr>
+                                <td><span style="color: #10b981; font-weight: 700;">POST</span></td>
+                                <td><code>/api/chat/conversations/{id}/read</code></td>
+                                <td>Đánh dấu đã xem toàn bộ tin nhắn, reset UnreadCount về 0 và đồng bộ trạng thái.</td>
+                            </tr>
+                            <tr>
+                                <td><span style="color: #8b5cf6; font-weight: 700;">GET/PUT</span></td>
+                                <td><code>/api/user/profile</code></td>
+                                <td>Xem và cập nhật thông tin cá nhân (Họ tên, biệt danh, giới thiệu, ảnh đại diện).</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+<script>
+    function switchInfoTab(tabId) {
+        const overviewBtn = document.getElementById("tabBtnOverview");
+        const techBtn = document.getElementById("tabBtnTech");
+        const overviewPanel = document.getElementById("tabPanelOverview");
+        const techPanel = document.getElementById("tabPanelTech");
+
+        if (tabId === "overview") {
+            overviewBtn.classList.add("active");
+            techBtn.classList.remove("active");
+            overviewPanel.classList.add("active");
+            techPanel.classList.remove("active");
+        } else {
+            techBtn.classList.add("active");
+            overviewBtn.classList.remove("active");
+            techPanel.classList.add("active");
+            overviewPanel.classList.remove("active");
+        }
+    }
+</script>
+
+

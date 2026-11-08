@@ -600,7 +600,16 @@ namespace BunnyChat.Controllers
                     conversation
                 );
 
-                //gửi signalR
+                //gửi signalR tới UserGroup của chính user để cập nhật unreadCount = 0 trên sidebar của họ
+                await _chatHub.Clients
+                    .Group(ChatHub.UserGroup(currentUserId))
+                    .SendAsync("read-message", new
+                    {
+                        conversation = await FormatConversation(conversation, currentUserId),
+                        lastMessage = conversation.LastMessage
+                    });
+
+                //gửi signalR tới ConversationGroup cho các thành viên khác biết tin nhắn đã được xem
                 await _chatHub.Clients
                     .Group(ChatHub.ConversationGroup(conversationId))
                     .SendAsync("read-message", new
@@ -653,14 +662,20 @@ namespace BunnyChat.Controllers
                         .Limit(50)
                         .ToListAsync();
 
+                    var senderIds = matchedMessages.Select(m => m.SenderId).Where(id => !string.IsNullOrEmpty(id)).Distinct().ToList();
+                    var senders = await _userCollection.Find(u => senderIds.Contains(u.Id!)).ToListAsync();
+                    var senderDict = senders.ToDictionary(u => u.Id!);
+
+                    var formattedConv = await FormatConversation(conversation, currentUserId);
                     var results = new List<object>();
                     foreach (var msg in matchedMessages)
                     {
-                        var formattedMsg = await FormatMessage(msg, currentUserId);
+                        senderDict.TryGetValue(msg.SenderId, out var sender);
+                        var formattedMsg = FormatMessage(msg, currentUserId, sender);
                         results.Add(new
                         {
                             message = formattedMsg,
-                            conversation = await FormatConversation(conversation, currentUserId)
+                            conversation = formattedConv
                         });
                     }
 
@@ -686,18 +701,27 @@ namespace BunnyChat.Controllers
                         .Limit(50)
                         .ToListAsync();
 
-                    var convDict = myConversations.ToDictionary(c => c.Id!);
-                    var results = new List<object>();
+                    var senderIds = matchedMessages.Select(m => m.SenderId).Where(id => !string.IsNullOrEmpty(id)).Distinct().ToList();
+                    var senders = await _userCollection.Find(u => senderIds.Contains(u.Id!)).ToListAsync();
+                    var senderDict = senders.ToDictionary(u => u.Id!);
 
+                    var convDict = new Dictionary<string, object>();
+                    foreach (var conv in myConversations)
+                    {
+                        convDict[conv.Id!] = await FormatConversation(conv, currentUserId);
+                    }
+
+                    var results = new List<object>();
                     foreach (var msg in matchedMessages)
                     {
-                        if (convDict.TryGetValue(msg.ConversationId, out var conv))
+                        if (convDict.TryGetValue(msg.ConversationId, out var formattedConv))
                         {
-                            var formattedMsg = await FormatMessage(msg, currentUserId);
+                            senderDict.TryGetValue(msg.SenderId, out var sender);
+                            var formattedMsg = FormatMessage(msg, currentUserId, sender);
                             results.Add(new
                             {
                                 message = formattedMsg,
-                                conversation = await FormatConversation(conv, currentUserId)
+                                conversation = formattedConv
                             });
                         }
                     }
@@ -733,11 +757,13 @@ namespace BunnyChat.Controllers
                     message.Reactions = new List<MessageReaction>();
 
                 var existingReaction = message.Reactions.FirstOrDefault(r => r.UserId == currentUserId);
+                bool isAddedOrChanged = true;
                 if (existingReaction != null)
                 {
                     if (existingReaction.Emoji == request.Emoji)
                     {
                         message.Reactions.Remove(existingReaction);
+                        isAddedOrChanged = false;
                     }
                     else
                     {
@@ -757,14 +783,52 @@ namespace BunnyChat.Controllers
 
                 await _messageCollection.ReplaceOneAsync(m => m.Id == message.Id, message);
 
+                // Thả/đổi/gỡ cảm xúc tính là 1 hoạt động mới của cuộc trò chuyện -> cập nhật thời gian để đưa lên đầu sidebar
+                conversation.LastMessageAt = DateTime.UtcNow;
+                conversation.UpdatedAt = DateTime.UtcNow;
+                await _conversationCollection.ReplaceOneAsync(x => x.Id == conversation.Id, conversation);
+
+                // Lấy tên người thả reaction
+                var actorUser = await FindUserById(currentUserId);
+                var actorName = actorUser?.DisplayName ?? "Ai đó";
+                var reactionPreviewText = isAddedOrChanged
+                    ? $"{actorName} đã bày tỏ cảm xúc {request.Emoji} về một tin nhắn"
+                    : $"{actorName} đã gỡ cảm xúc khỏi một tin nhắn";
+
+                // 1. Gửi tới ConversationGroup (cho người đang mở đoạn chat này cập nhật badge emoji)
                 await _chatHub.Clients
                     .Group(ChatHub.ConversationGroup(message.ConversationId))
                     .SendAsync("reaction-updated", new
                     {
                         messageId = message.Id,
                         conversationId = message.ConversationId,
-                        reactions = message.Reactions
+                        reactions = message.Reactions,
+                        actorId = currentUserId,
+                        actorName = actorName,
+                        emoji = isAddedOrChanged ? request.Emoji : null,
+                        previewText = reactionPreviewText,
+                        updatedAt = conversation.LastMessageAt
                     });
+
+                // 2. Gửi tới UserGroup của tất cả thành viên để cập nhật sidebar bên ngoài đưa lên đầu và đổi dòng tin nhắn phụ
+                var participantIds = ConversationHelper.GetParticipantIds(conversation);
+                foreach (var memberId in participantIds)
+                {
+                    await _chatHub.Clients
+                        .Group(ChatHub.UserGroup(memberId))
+                        .SendAsync("reaction-updated", new
+                        {
+                            messageId = message.Id,
+                            conversationId = message.ConversationId,
+                            reactions = message.Reactions,
+                            actorId = currentUserId,
+                            actorName = actorName,
+                            emoji = isAddedOrChanged ? request.Emoji : null,
+                            previewText = reactionPreviewText,
+                            conversation = await FormatConversation(conversation, memberId),
+                            updatedAt = conversation.LastMessageAt
+                        });
+                }
 
                 return Ok(ApiResponse.Success("Thao tác reaction thành công", new
                 {
